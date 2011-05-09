@@ -55,6 +55,9 @@ set autoindent
 set foldmethod=indent
 set nofoldenable
 
+" Don't show EOL chars for Python
+set listchars=tab:▸\ ,trail:.
+
 " To spot trailing spaces and indentation tabs
 set list
 

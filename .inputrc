@@ -1,0 +1,7 @@
+set meta-flag on
+set input-meta on
+set convert-meta off
+set output-meta on
+set completion-ignore-case on
+set bell-style none
+set show-all-if-ambiguous on

@@ -1,11 +1,84 @@
+" +---------------------------------------------------------------------------+
+" |                            VIM Settings                                   |
+" |                   (see gvimrc for gui vim settings)                       |
+" |                                                                           |
+" | Some highlights:                                                          |
+" |   ,n = toggle NERDTree off and on                                         |
+" |   ,c = comment block/line with NERDComment                                |
+" |                                                                           |
+" |   ,f = CommandT shortcut                                                  |
+" |   ,z = maximize (ZoomWin) current split window                            |
+" |   ,p = go to previous file                                                |
+" |                                                                           |
+" |   ,i = toggle invisibles                                                  |
+" |   ,v = toggle paste mode on/off                                           |
+" |   ,<Space> = clear search highlight                                       |
+" |                                                                           |
+" |   ,m = compile markdown file to PDF                                       |
+" |                                                                           |
+" |   :call Tabstyle_tabs = set tab to real tabs                              |
+" |   :call Tabstyle_spaces(2) = set tab to 2 spaces                          |
+" |                                                                           |
+" |                                                                           |
+" |                                                                           |
+" | Put machine/user specific settings in ~/.vimrc.local                      |
+" +---------------------------------------------------------------------------+
+
+
+
 filetype off
 call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
 filetype plugin indent on
 
 set nocompatible
 set nobomb
 
 let mapleader = ","
+
+" +---------------------------------------------------------------------------+
+" | Key-binds                                                                 |
+" +---------------------------------------------------------------------------+
+
+" For fast typers ^^
+command W w
+command Q q
+
+" Toggle invisible characters
+noremap <Leader>i :set list!<CR>
+
+" Fast switching between paste modes
+set pastetoggle=<Leader>v
+
+" ,<Space> to clear search highlight
+nnoremap <Leader><Space> :nohl<CR>
+
+" Opens an edit command with the path of the currently edited file filled in
+" Normal mode: <Leader>e
+map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
+
+" Opens a tab edit command with the path of the currently edited file filled in
+" Normal mode: <Leader>t
+map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
+" <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
+" it in a pdf/ subfolder and opens Preview
+function! MarkdownToPdf()
+	execute ":w"
+	let path = expand('%:p:h')
+	let file = expand('%')
+	silent execute "!mkdir -p ".path."/pdf/"
+	execute "!markdown2pdf ".file." -o ".path."/pdf/".@%
+	silent execute "!open ".path."/pdf/".expand('%:r').".pdf"
+endfunction
+autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR> 
+
+" Go to previous file
+map <Leader>p <C-^>
+
+" +---------------------------------------------------------------------------+
+" | Misc                                                                      |
+" +---------------------------------------------------------------------------+
 
 set number
 set ruler
@@ -29,14 +102,6 @@ set backspace=indent,eol,start
 set listchars=tab:▸\ ,trail:.,eol:¬
 "highlight SpecialKey ctermfg=DarkGray " nbsp, tab and trail
 "highlight NonText ctermfg=DarkGray " eol, extends and precedes
-noremap <Leader>i :set list!<CR> " Toggle invisible chars
-
-" Fast switching between paste modes
-set pastetoggle=<Leader>v
-
-" For fast typers ^^
-command W w
-command Q q
 
 " Searching
 set hlsearch
@@ -45,9 +110,6 @@ set ignorecase
 set smartcase
 " Assume the /g flag on :s substitutions to replace all matches in a line
 set gdefault
-
-" ,<Space> to get rid of seach highlight
-nnoremap <Leader><Space> :nohl<CR>
 
 " Indentation stuff
 set autoindent
@@ -67,6 +129,33 @@ set statusline+=[%{strlen(&ft)?&ft:'none'}, " Filetype
 set statusline+=\ %{&encoding},             " Encoding
 "set statusline+=\ %{&fileencoding},        " File encoding
 set statusline+=\ %{&fileformat}]\          " File format
+
+" Enable mouse usage (all modes)
+set mouse=a
+
+" Set to auto read when a file is changed from the outside
+set autoread
+
+" Automatically write a file when leaving a modified buffer
+"set autowrite
+
+" Spell checking on
+"set spell
+
+" Enables copy/pasting between vim and system clipboard
+set clipboard=unnamed
+
+" Tries to emulate tab behavior for buffers
+" Use :tab sball
+" to open a new tab for every buffer
+set switchbuf=usetab,newtab
+
+" Create directory if it doesn't exit
+silent execute '!mkdir -p $HOME/.vim/backup'
+
+" Directories for swp files
+set backupdir=$HOME/.vim/backup
+set directory=$HOME/.vim/backup
 
 " +---------------------------------------------------------------------------+
 " | Tabs and spaces                                                           |
@@ -105,6 +194,8 @@ endfunction
 
 function s:setupMarkup()
     call s:setupWrapping()
+	set colorcolumn=+1
+	highlight ColorColumn ctermbg=darkgrey ctermfg=white guibg=red guifg=white
     map <buffer> <Leader>p :Mm <CR>
 endfunction
 
@@ -119,6 +210,7 @@ autocmd BufRead,BufNewFile {Gemfile,Rakefile,Vagrantfile,Thorfile,config.ru} set
 
 " md, markdown, and mk are markdown and define buffer-local preview
 autocmd BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
+autocmd BufRead,BufNewFile *.md set filetype=markdown
 
 " Enable wrapping for txt files
 autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
@@ -139,53 +231,13 @@ set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn
 set wildchar=<TAB>
 
-" Opens an edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>e
-map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-
-" Opens a tab edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>t
-map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
 " Default color scheme
 set t_Co=256
 set background=dark				" Needed for solarized to enable dark theme
-let g:solarized_termcolors=256	" Also needed for solarized theme
+"let g:solarized_termcolors=256	" Also needed for solarized theme
 "colorscheme ir_black
 colorscheme solarized
 "colorscheme molokai
-
-" Create directory if it doesn't exit
-silent execute '!mkdir -p $HOME/.vim/backup'
-
-" Directories for swp files
-set backupdir=$HOME/.vim/backup
-set directory=$HOME/.vim/backup
-
-" MacVIM shift+arrow-keys behavior (required in .vimrc)
-if has("gui_macvim")
-	"let macvim_hig_shift_movement = 1
-endif
-
-" Enable mouse usage (all modes)
-set mouse=a
-
-" Set to auto read when a file is changed from the outside
-set autoread
-
-" Automatically write a file when leaving a modified buffer
-"set autowrite
-
-" Spell checking on
-"set spell
-
-" Enables copy/pasting between vim and system clipboard
-set clipboard=unnamed
-
-" Tries to emulate tab behavior for buffers
-" Use :tab sball
-" to open a new tab for every buffer
-set switchbuf=usetab,newtab
 
 " This uses the handy preview window feature of Vim. Flagging a window
 " as a preview window is useful because you can use pclose! to get rid of it,
@@ -226,3 +278,56 @@ map <Leader>c :call NERDComment(0, "toggle")<CR>
 
 " ZoomWin
 map <Leader>z <C-w>o<CR>
+
+" CommandT
+let g:CommandTMatchWindowAtTop=1
+map <Leader>f :CommandT<CR>
+
+" +---------------------------------------------------------------------------+
+" |                             OS Specific                                   |
+" |                      (GUI stuff goes in gvimrc)                           |
+" +---------------------------------------------------------------------------+
+
+" Mac *************************************************************************
+if has("mac") 
+  "" 
+endif
+
+" MacVIM shift+arrow-keys behavior (required in .vimrc)
+if has("gui_macvim")
+	"let macvim_hig_shift_movement = 1
+endif
+ 
+" Windows *********************************************************************
+if has("gui_win32")
+  "" 
+endif
+
+
+
+" +---------------------------------------------------------------------------+
+" |                               Startup                                     |
+" +---------------------------------------------------------------------------+ 
+" Open NERDTree on start
+"autocmd VimEnter * exe 'NERDTree' | wincmd l 
+
+
+
+" +---------------------------------------------------------------------------+ 
+" |                               Host specific                               |
+" +---------------------------------------------------------------------------+
+if filereadable(expand("~/.vimrc.local"))
+  source ~/.vimrc.local
+endif
+
+"if hostname() == "foo"
+  " do something
+"endif
+
+" Example .vimrc.local:
+
+"call Tabstyle_tabs()
+"colorscheme ir_dark
+"match LongLineWarning '\%120v.*'
+
+"autocmd User ~/git/some_folder/* call Tabstyle_spaces() | let g:force_xhtml=1

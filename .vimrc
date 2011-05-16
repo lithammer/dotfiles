@@ -75,6 +75,7 @@ set background=dark
 colorscheme solarized
 "colorscheme ir_black
 "colorscheme molokai
+"colorscheme robokai
 
 " BOM (Byte Order Mark) is only good in theory
 set nobomb

@@ -64,6 +64,12 @@ filetype plugin indent on
 
 " Default color scheme
 set t_Co=256
+
+colorscheme solarized
+"colorscheme ir_black
+"colorscheme molokai
+"colorscheme robokai
+
 set background=dark
 
 " Used by the Solarized theme if the terminal isn't using Solarized colors
@@ -72,10 +78,6 @@ set background=dark
 " To show original monokai background color
 "let g:molokai_original=1
 
-colorscheme solarized
-"colorscheme ir_black
-"colorscheme molokai
-"colorscheme robokai
 
 " BOM (Byte Order Mark) is only good in theory
 set nobomb

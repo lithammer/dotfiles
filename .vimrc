@@ -25,13 +25,58 @@
 " +---------------------------------------------------------------------------+
 
 
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
 
 filetype off
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+"call pathogen#runtime_append_all_bundles()
+"call pathogen#helptags()
+
+set rtp+=~/.vim/vundle.git/
+call vundle#rc()
+
+" Original Github repos
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-markdown'
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'ervandew/supertab'
+Bundle 'msanders/snipmate.vim'
+Bundle 'tomtom/tcomment_vim'
+
+" vim-scripts repos
+Bundle 'ZoomWin'
+Bundle 'Pydiction'
+let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
+
+" Non-Github repos
+Bundle 'git://git.wincent.com/command-t.git'
+
+" Color schemes
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'robokai'
+Bundle 'tomasr/molokai'
+Bundle 'wgibbs/vim-irblack'
+
 filetype plugin indent on
 
-set nocompatible
+" Default color scheme
+set t_Co=256
+set background=dark
+
+" Used by the Solarized theme if the terminal isn't using Solarized colors
+"let g:solarized_termcolors=256
+
+" To show original monokai background color
+"let g:molokai_original=1
+
+colorscheme solarized
+"colorscheme ir_black
+"colorscheme molokai
+
+" BOM (Byte Order Mark) is only good in theory
 set nobomb
 
 let mapleader = ","
@@ -61,20 +106,27 @@ map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 " Normal mode: <Leader>t
 map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
+" Inserts the path of the currently edited file into a command
+" Command mode: Ctrl+P
+cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
+
 " <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
 " it in a pdf/ subfolder and opens Preview
 function! MarkdownToPdf()
 	execute ":w"
 	let path = expand('%:p:h')
-	let file = expand('%')
+	let filepath = expand('%')
 	silent execute "!mkdir -p ".path."/pdf/"
-	execute "!markdown2pdf ".file." -o ".path."/pdf/".@%
-	silent execute "!open ".path."/pdf/".expand('%:r').".pdf"
+	execute "!markdown2pdf ".filepath." -o ".path."/pdf/".@%
+	silent execute "!open ".path."/pdf/".expand('%:t:r').".pdf"
 endfunction
 autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR> 
 
 " Go to previous file
 map <Leader>p <C-^>
+
+" Maps autocomplete to tab
+imap <Tab> <C-N>
 
 " +---------------------------------------------------------------------------+
 " | Misc                                                                      |
@@ -93,15 +145,15 @@ set nowrap
 set linebreak
 
 " Minimal number of screen lines to keep above and below the cursor
-set scrolloff=3
+set scrolloff=5
 
 " Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
 " Whitespace stuff (tip, :retab)
 set listchars=tab:▸\ ,trail:.,eol:¬
-"highlight SpecialKey ctermfg=DarkGray " nbsp, tab and trail
-"highlight NonText ctermfg=DarkGray " eol, extends and precedes
+"highlight SpecialKey ctermfg=DarkGrey " nbsp, tab and trail
+"highlight NonText ctermfg=DarkGrey " eol, extends and precedes
 
 " Searching
 set hlsearch
@@ -195,8 +247,9 @@ endfunction
 function s:setupMarkup()
     call s:setupWrapping()
 	set colorcolumn=+1
-	highlight ColorColumn ctermbg=darkgrey ctermfg=white guibg=red guifg=white
-    map <buffer> <Leader>p :Mm <CR>
+	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
+	set list
+    map <buffer> <Leader>p :Hammer <CR>
 endfunction
 
 " make files uses real tabs
@@ -218,6 +271,10 @@ autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
 autocmd FileType python set tabstop=4 textwidth=79
 
+" Sets path to directory buffer was loaded from.
+" Doesn't go well together with the CommandT plugin
+"autocmd BufEnter * lcd %:p:h 
+
 " Enable omnicompletion, <C-X> <C-O> to omnicomplete
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -229,15 +286,7 @@ autocmd Filetype java setlocal omnifunc=javacomplete#Complete
 set wildmenu
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn
-set wildchar=<TAB>
-
-" Default color scheme
-set t_Co=256
-set background=dark				" Needed for solarized to enable dark theme
-"let g:solarized_termcolors=256	" Also needed for solarized theme
-"colorscheme ir_black
-colorscheme solarized
-"colorscheme molokai
+set wildchar=<Tab>
 
 " This uses the handy preview window feature of Vim. Flagging a window
 " as a preview window is useful because you can use pclose! to get rid of it,
@@ -274,7 +323,11 @@ let NERDCreateDefaultMappings=0 " I turn this off to make it simple
 " Toggle commenting on 1 line or all selected lines. Wether to comment or not
 " is decided based on the first line; if it's not commented then all lines
 " will be commented
-map <Leader>c :call NERDComment(0, "toggle")<CR>
+"map <Leader>c :call NERDComment(0, "toggle")<CR>
+
+" tComment
+nnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>c :TComment<CR>
 
 " ZoomWin
 map <Leader>z <C-w>o<CR>

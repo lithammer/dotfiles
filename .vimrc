@@ -16,6 +16,9 @@
 " |                                                                           |
 " |   ,m = compile markdown file to PDF                                       |
 " |                                                                           |
+" |   ,j = go to definition (using Rope)                                      |
+" |   ,r = rename (using Rope)                                                |
+" |                                                                           |
 " |   :call Tabstyle_tabs = set tab to real tabs                              |
 " |   :call Tabstyle_spaces(2) = set tab to 2 spaces                          |
 " |                                                                           |
@@ -30,8 +33,6 @@
 set nocompatible
 
 filetype off
-"call pathogen#runtime_append_all_bundles()
-"call pathogen#helptags()
 
 set rtp+=~/.vim/vundle.git/
 call vundle#rc()
@@ -39,12 +40,18 @@ call vundle#rc()
 " Original Github repos
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-rails'
-Bundle 'tpope/vim-markdown'
-Bundle 'scrooloose/nerdcommenter'
+"Bundle 'scrooloose/nerdcommenter'
+let NERDCreateDefaultMappings=0
 Bundle 'scrooloose/nerdtree'
+let NERDTreeHijackNetrw=1			" User instead of Netrw when doing an edit /foobar
+let NERDTreeMouseMode=1				" Single click for everything
 Bundle 'ervandew/supertab'
-Bundle 'msanders/snipmate.vim'
+let g:SuperTabDefaultCompletionType = 'context'
+Bundle 'msanders/snipmate.vim' 
 Bundle 'tomtom/tcomment_vim'
+Bundle 'fs111/pydoc.vim'
+Bundle 'sontek/rope-vim'
+Bundle 'kevinw/pyflakes-vim'
 
 " vim-scripts repos
 Bundle 'ZoomWin'
@@ -53,40 +60,20 @@ let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
 
 " Non-Github repos
 Bundle 'git://git.wincent.com/command-t.git'
+let g:CommandTMatchWindowAtTop=1
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'robokai'
 Bundle 'tomasr/molokai'
 Bundle 'wgibbs/vim-irblack'
+Bundle 'trapd00r/neverland-vim-theme'
 
-filetype plugin indent on
-
-" Default color scheme
-set t_Co=256
-
-colorscheme solarized
-"colorscheme ir_black
-"colorscheme molokai
-"colorscheme robokai
-
-set background=dark
-
-" Used by the Solarized theme if the terminal isn't using Solarized colors
-"let g:solarized_termcolors=256
-
-" To show original monokai background color
-"let g:molokai_original=1
-
-
-" BOM (Byte Order Mark) is only good in theory
-set nobomb
+" +---------------------------------------------------------------------------+
+" | Shortcuts                                                                 |
+" +---------------------------------------------------------------------------+
 
 let mapleader = ","
-
-" +---------------------------------------------------------------------------+
-" | Key-binds                                                                 |
-" +---------------------------------------------------------------------------+
 
 " For fast typers ^^
 command W w
@@ -120,7 +107,7 @@ function! MarkdownToPdf()
 	let path = expand('%:p:h')
 	let filepath = expand('%')
 	silent execute "!mkdir -p ".path."/pdf/"
-	execute "!markdown2pdf ".filepath." -o ".path."/pdf/".@%
+	execute "!markdown2pdf --xetex ".filepath." -o ".path."/pdf/".@%
 	silent execute "!open ".path."/pdf/".expand('%:t:r').".pdf"
 endfunction
 autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR> 
@@ -131,17 +118,53 @@ map <Leader>p <C-^>
 " Maps autocomplete to tab
 imap <Tab> <C-N>
 
+" NERDTree
+noremap <Leader>n :NERDTreeToggle<CR>
+
+" NERDCommenter
+"map <Leader>c :call NERDComment(0, "toggle")<CR>
+
+" tComment
+nnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>c :TComment<CR>
+
+" ZoomWin
+map <Leader>z <C-w>o<CR>
+
+" CommandT
+map <Leader>f :CommandT<CR>
+
+" Rope
+map <Leader>j :RopeGotoDefinition<CR>
+map <Leader>r :RopeRename<CR>
+
 " +---------------------------------------------------------------------------+
-" | Misc                                                                      |
+" | Basic settings                                                            |
 " +---------------------------------------------------------------------------+
+
+filetype plugin indent on
+syntax on
+
+set t_Co=256		" Enable 256 colors
+
+colorscheme solarized
+"colorscheme ir_black
+"colorscheme molokai
+"colorscheme robokai
+"colorscheme neverland
+
+set background=dark	" Set background to `dark`, mostly because of Solarized
+
+" Used by the Solarized theme if the terminal isn't using Solarized colors
+"let g:solarized_termcolors=256
+
+" To show original monokai background color
+let g:molokai_original=1
 
 set number
 set ruler
-syntax on
-
-" Set encoding (set fileencoding=utf-8)
+set nobomb " BOM sucks
 set encoding=utf-8
-"scriptencoding utf-8
 
 " Line wrapping
 set nowrap
@@ -155,8 +178,9 @@ set backspace=indent,eol,start
 
 " Whitespace stuff (tip, :retab)
 set listchars=tab:▸\ ,trail:.,eol:¬
-"highlight SpecialKey ctermfg=DarkGrey " nbsp, tab and trail
-"highlight NonText ctermfg=DarkGrey " eol, extends and precedes
+
+" Show matching <> (html mainly) as well
+set matchpairs+=<:>
 
 " Searching
 set hlsearch
@@ -166,15 +190,8 @@ set smartcase
 " Assume the /g flag on :s substitutions to replace all matches in a line
 set gdefault
 
-" Indentation stuff
-set autoindent
-"set smartindent " Not really that smart
-
-" Cursor highlights
+" Highlight cursor line
 set cursorline
-"highlight CursorLine guibg=#333333
-"set cursorcolumn
-"highlight CursorColumn guibg=#333333
 
 " Status bar
 set laststatus=2
@@ -191,12 +208,6 @@ set mouse=a
 " Set to auto read when a file is changed from the outside
 set autoread
 
-" Automatically write a file when leaving a modified buffer
-"set autowrite
-
-" Spell checking on
-"set spell
-
 " Enables copy/pasting between vim and system clipboard
 set clipboard=unnamed
 
@@ -205,18 +216,24 @@ set clipboard=unnamed
 " to open a new tab for every buffer
 set switchbuf=usetab,newtab
 
-" Create directory if it doesn't exit
-silent execute '!mkdir -p $HOME/.vim/backup'
-
 " Directories for swp files
+silent execute '!mkdir -p $HOME/.vim/backup'
 set backupdir=$HOME/.vim/backup
 set directory=$HOME/.vim/backup
+
+" Tab completion
+set wildmenu
+set wildmode=list:longest,list:full
+set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn
+"set wildchar=<Tab>
+
+set completeopt=menuone,longest,preview
 
 " +---------------------------------------------------------------------------+
 " | Tabs and spaces                                                           |
 " +---------------------------------------------------------------------------+
 
-" When at 3 spaces, and i hit > ... go to 4, not 5
+" Rounds indent to a multiple of shiftwidth
 set shiftround
 
 function! Tabstyle_tabs()
@@ -252,7 +269,6 @@ function s:setupMarkup()
 	set colorcolumn=+1
 	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
 	set list
-    map <buffer> <Leader>p :Hammer <CR>
 endfunction
 
 " make files uses real tabs
@@ -271,9 +287,6 @@ autocmd BufRead,BufNewFile *.md set filetype=markdown
 " Enable wrapping for txt files
 autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 
-" Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
-autocmd FileType python set tabstop=4 textwidth=79
-
 " Sets path to directory buffer was loaded from.
 " Doesn't go well together with the CommandT plugin
 "autocmd BufEnter * lcd %:p:h 
@@ -285,11 +298,9 @@ autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 
-" Tab completion
-set wildmenu
-set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn
-set wildchar=<Tab>
+" +---------------------------------------------------------------------------+
+" | Python                                                                    |
+" +---------------------------------------------------------------------------+
 
 " This uses the handy preview window feature of Vim. Flagging a window
 " as a preview window is useful because you can use pclose! to get rid of it,
@@ -300,7 +311,7 @@ function! DoRunPyBuffer2()
 	setlocal ft=python
 
 	" copy the buffer into a new window, then run that buffer through python
-	sil %y a | below new | sil put a | sil %!python -
+	silent %y a | below new | silent put a | silent %!python -
 	" indicate the output window as the current previewwindow
 	setlocal previewwindow ro nomodifiable nomodified
 
@@ -311,40 +322,32 @@ endfunction
 command! RunPyBuffer call DoRunPyBuffer2()
 map <Leader>m :RunPyBuffer<CR>
 
-" +---------------------------------------------------------------------------+
-" | Plug-ins                                                                  |
-" +---------------------------------------------------------------------------+
+" Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
+autocmd FileType python set tabstop=4 textwidth=79
 
-" NERDTree
-noremap <Leader>n :NERDTreeToggle<CR>
-let NERDTreeHijackNetrw=1 " User instead of Netrw when doing an edit /foobar
-let NERDTreeMouseMode=1 " Single click for everything
+autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
-" NERD Commenter
-let NERDCreateDefaultMappings=0 " I turn this off to make it simple
+" Don't let pyflakes use the quickfix window
+let g:pyflakes_use_quickfix = 0
 
-" Toggle commenting on 1 line or all selected lines. Wether to comment or not
-" is decided based on the first line; if it's not commented then all lines
-" will be commented
-"map <Leader>c :call NERDComment(0, "toggle")<CR>
+" turn of hlsearch and update pyflakes on enter
+au BufRead,BufNewFile *.py nnoremap <buffer><CR> :nohlsearch\|:call PressedEnter()<cr>
+nnoremap <buffer><CR> :nohlsearch\|:call PressedEnter()<cr>
 
-" tComment
-nnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>c :TComment<CR>
-
-" ZoomWin
-map <Leader>z <C-w>o<CR>
-
-" CommandT
-let g:CommandTMatchWindowAtTop=1
-map <Leader>f :CommandT<CR>
+" clear the search buffer when hitting return and update pyflakes checks
+function! PressedEnter()
+    :nohlsearch
+    if &filetype == 'python'
+        :PyflakesUpdate
+    end
+endfunction
 
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |
 " |                      (GUI stuff goes in gvimrc)                           |
 " +---------------------------------------------------------------------------+
 
-" Mac *************************************************************************
+" Mac
 if has("mac") 
   "" 
 endif
@@ -354,12 +357,22 @@ if has("gui_macvim")
 	"let macvim_hig_shift_movement = 1
 endif
  
-" Windows *********************************************************************
+" Windows
 if has("gui_win32")
   "" 
 endif
 
-
+" Add the virtualenv's site-packages to vim path
+py << EOF
+import os.path
+import sys
+import vim
+if 'VIRTUAL_ENV' in os.environ:
+    project_base_dir = os.environ['VIRTUAL_ENV']
+    sys.path.insert(0, project_base_dir)
+    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+    execfile(activate_this, dict(__file__=activate_this))
+EOF
 
 " +---------------------------------------------------------------------------+
 " |                               Startup                                     |

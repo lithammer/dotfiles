@@ -55,8 +55,8 @@ Bundle 'kevinw/pyflakes-vim'
 
 " vim-scripts repos
 Bundle 'ZoomWin'
-Bundle 'Pydiction'
-let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
+"Bundle 'Pydiction'
+"let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
 
 " Non-Github repos
 Bundle 'git://git.wincent.com/command-t.git'

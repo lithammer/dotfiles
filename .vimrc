@@ -40,7 +40,7 @@ call vundle#rc()
 " Original Github repos
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-rails'
-"Bundle 'scrooloose/nerdcommenter'
+Bundle 'scrooloose/nerdcommenter'
 let NERDCreateDefaultMappings=0
 Bundle 'scrooloose/nerdtree'
 let NERDTreeHijackNetrw=1			" User instead of Netrw when doing an edit /foobar
@@ -48,10 +48,10 @@ let NERDTreeMouseMode=1				" Single click for everything
 Bundle 'ervandew/supertab'
 let g:SuperTabDefaultCompletionType = 'context'
 Bundle 'msanders/snipmate.vim' 
-Bundle 'tomtom/tcomment_vim'
 Bundle 'fs111/pydoc.vim'
 Bundle 'sontek/rope-vim'
 Bundle 'kevinw/pyflakes-vim'
+Bundle 'sjl/gundo.vim'
 
 " vim-scripts repos
 Bundle 'ZoomWin'
@@ -122,11 +122,7 @@ imap <Tab> <C-N>
 noremap <Leader>n :NERDTreeToggle<CR>
 
 " NERDCommenter
-"map <Leader>c :call NERDComment(0, "toggle")<CR>
-
-" tComment
-nnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>c :TComment<CR>
+map <Leader>c :call NERDComment(0, "toggle")<CR>
 
 " ZoomWin
 map <Leader>z <C-w>o<CR>
@@ -138,6 +134,9 @@ map <Leader>f :CommandT<CR>
 map <Leader>j :RopeGotoDefinition<CR>
 map <Leader>r :RopeRename<CR>
 
+" Load the Gundo window
+map <leader>g :GundoToggle<CR>
+
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
 " +---------------------------------------------------------------------------+
@@ -147,19 +146,20 @@ syntax on
 
 set t_Co=256		" Enable 256 colors
 
-colorscheme solarized
-"colorscheme ir_black
-"colorscheme molokai
-"colorscheme robokai
-"colorscheme neverland
-
-set background=dark	" Set background to `dark`, mostly because of Solarized
-
 " Used by the Solarized theme if the terminal isn't using Solarized colors
 "let g:solarized_termcolors=256
 
 " To show original monokai background color
 let g:molokai_original=1
+
+set background=dark	" Set background to `dark`, mostly because of Solarized
+
+"colorscheme solarized
+"colorscheme ir_black
+colorscheme molokai
+"colorscheme robokai
+"colorscheme neverland
+"colorscheme neverland2
 
 set number
 set ruler
@@ -225,7 +225,7 @@ set directory=$HOME/.vim/backup
 set wildmenu
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn
-"set wildchar=<Tab>
+set wildchar=<Tab>
 
 set completeopt=menuone,longest,preview
 
@@ -299,7 +299,7 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
 
 " +---------------------------------------------------------------------------+
-" | Python                                                                    |
+" |                              Python                                       |
 " +---------------------------------------------------------------------------+
 
 " This uses the handy preview window feature of Vim. Flagging a window
@@ -328,19 +328,7 @@ autocmd FileType python set tabstop=4 textwidth=79
 autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
 " Don't let pyflakes use the quickfix window
-let g:pyflakes_use_quickfix = 0
-
-" turn of hlsearch and update pyflakes on enter
-au BufRead,BufNewFile *.py nnoremap <buffer><CR> :nohlsearch\|:call PressedEnter()<cr>
-nnoremap <buffer><CR> :nohlsearch\|:call PressedEnter()<cr>
-
-" clear the search buffer when hitting return and update pyflakes checks
-function! PressedEnter()
-    :nohlsearch
-    if &filetype == 'python'
-        :PyflakesUpdate
-    end
-endfunction
+"let g:pyflakes_use_quickfix = 0
 
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |

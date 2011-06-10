@@ -45,15 +45,16 @@ let NERDCreateDefaultMappings=0
 Bundle 'scrooloose/nerdtree'
 let NERDTreeHijackNetrw=1			" User instead of Netrw when doing an edit /foobar
 let NERDTreeMouseMode=1				" Single click for everything
-Bundle 'ervandew/supertab'
-let g:SuperTabDefaultCompletionType = 'context'
 Bundle 'msanders/snipmate.vim' 
 Bundle 'fs111/pydoc.vim'
 Bundle 'sontek/rope-vim'
 Bundle 'kevinw/pyflakes-vim'
+let g:pyflakes_use_quickfix = 0
 Bundle 'sjl/gundo.vim'
 
 " vim-scripts repos
+Bundle 'AutoComplPop'
+let g:acp_completeoptPreview=1
 Bundle 'ZoomWin'
 "Bundle 'Pydiction'
 "let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
@@ -287,9 +288,8 @@ autocmd BufRead,BufNewFile *.md set filetype=markdown
 " Enable wrapping for txt files
 autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 
-" Sets path to directory buffer was loaded from.
-" Doesn't go well together with the CommandT plugin
-"autocmd BufEnter * lcd %:p:h 
+" Set working directory
+nnoremap <Leader>. :lcd %:p:h<CR>
 
 " Enable omnicompletion, <C-X> <C-O> to omnicomplete
 autocmd FileType python set omnifunc=pythoncomplete#Complete
@@ -325,11 +325,6 @@ map <Leader>m :RunPyBuffer<CR>
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
 autocmd FileType python set tabstop=4 textwidth=79
 
-autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
-
-" Don't let pyflakes use the quickfix window
-"let g:pyflakes_use_quickfix = 0
-
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |
 " |                      (GUI stuff goes in gvimrc)                           |
@@ -356,10 +351,10 @@ import os.path
 import sys
 import vim
 if 'VIRTUAL_ENV' in os.environ:
-    project_base_dir = os.environ['VIRTUAL_ENV']
-    sys.path.insert(0, project_base_dir)
-    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-    execfile(activate_this, dict(__file__=activate_this))
+	project_base_dir = os.environ['VIRTUAL_ENV']
+	sys.path.insert(0, project_base_dir)
+	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+	execfile(activate_this, dict(__file__=activate_this))
 EOF
 
 " +---------------------------------------------------------------------------+

@@ -45,12 +45,20 @@ let NERDCreateDefaultMappings=0
 Bundle 'scrooloose/nerdtree'
 let NERDTreeHijackNetrw=1			" User instead of Netrw when doing an edit /foobar
 let NERDTreeMouseMode=1				" Single click for everything
-Bundle 'msanders/snipmate.vim' 
 Bundle 'fs111/pydoc.vim'
 Bundle 'sontek/rope-vim'
 Bundle 'kevinw/pyflakes-vim'
 let g:pyflakes_use_quickfix = 0
 Bundle 'sjl/gundo.vim'
+Bundle 'wincent/Command-T'
+let g:CommandTMatchWindowAtTop=1
+
+" Required dependencies for Snipmate
+Bundle "MarcWeber/vim-addon-mw-utils"
+Bundle "tomtom/tlib_vim"
+Bundle "honza/snipmate-snippets"
+
+Bundle "garbas/snipmate.vim"
 
 " vim-scripts repos
 Bundle 'AutoComplPop'
@@ -58,10 +66,6 @@ let g:acp_completeoptPreview=1
 Bundle 'ZoomWin'
 "Bundle 'Pydiction'
 "let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
-
-" Non-Github repos
-Bundle 'git://git.wincent.com/command-t.git'
-let g:CommandTMatchWindowAtTop=1
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
@@ -79,6 +83,9 @@ let mapleader = ","
 " For fast typers ^^
 command W w
 command Q q
+
+" Search and replace the word under cursor
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
@@ -117,7 +124,7 @@ autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR>
 map <Leader>p <C-^>
 
 " Maps autocomplete to tab
-imap <Tab> <C-N>
+"imap <Tab> <C-N>
 
 " NERDTree
 noremap <Leader>n :NERDTreeToggle<CR>
@@ -225,8 +232,8 @@ set directory=$HOME/.vim/backup
 " Tab completion
 set wildmenu
 set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn
-set wildchar=<Tab>
+set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc
+"set wildchar=<Tab>
 
 set completeopt=menuone,longest,preview
 

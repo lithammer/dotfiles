@@ -55,7 +55,7 @@ Bundle 'sjl/gundo.vim'
 Bundle 'wincent/Command-T'
 let g:CommandTMatchWindowAtTop=1
 
-" Required dependencies for Snipmate
+" Required dependencies for Snipmate (sigh)
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
 Bundle 'honza/snipmate-snippets'
@@ -66,8 +66,6 @@ Bundle 'garbas/vim-snipmate'
 Bundle 'AutoComplPop'
 let g:acp_completeoptPreview=1
 Bundle 'ZoomWin'
-"Bundle 'Pydiction'
-"let g:pydiction_location = '~/.vim/bundle/Pydiction/complete-dict'
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
@@ -106,10 +104,6 @@ map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 " Normal mode: <Leader>t
 map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
-" Inserts the path of the currently edited file into a command
-" Command mode: Ctrl+P
-cmap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
-
 " <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
 " it in a pdf/ subfolder and opens Preview
 function! MarkdownToPdf()
@@ -120,13 +114,13 @@ function! MarkdownToPdf()
 	execute "!markdown2pdf --xetex ".filepath." -o ".path."/pdf/".@%
 	silent execute "!open ".path."/pdf/".expand('%:t:r').".pdf"
 endfunction
-autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR> 
+autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR>
 
 " Go to previous file
 map <Leader>p <C-^>
 
 " Maps autocomplete to tab
-"imap <Tab> <C-N>
+imap <Tab> <C-N>
 
 " NERDTree
 noremap <Leader>n :NERDTreeToggle<CR>
@@ -255,9 +249,9 @@ set writebackup
 set wildmenu
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc
-"set wildchar=<Tab>
-set suffixes+=.pyc,.pyo         " Don't autocomplete these filetypes
-
+set wildchar=<Tab>
+" Don't autocomplete these filetypes
+set suffixes+=.pyc,.pyo 
 set completeopt=menuone,longest,preview
 
 " +---------------------------------------------------------------------------+
@@ -317,6 +311,12 @@ autocmd BufRead,BufNewFile *.md set filetype=markdown
 " Enable wrapping for txt files
 autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 
+" When editing a file, always jump to the last known cursor position.
+autocmd BufReadPost *
+	\ if line("'\"") > 0 && line("'\"") <= line("$") |
+	\     execute "normal g`\"" |
+	\ endif
+
 " Set working directory
 nnoremap <Leader>. :lcd %:p:h<CR>
 
@@ -326,6 +326,9 @@ autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd Filetype java setlocal omnifunc=javacomplete#Complete 
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType c set omnifunc=ccomplete#Complete
 
 " +---------------------------------------------------------------------------+
 " |                              Python                                       |

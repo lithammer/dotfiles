@@ -190,8 +190,7 @@ set scrolloff=5
 set backspace=indent,eol,start
 
 " Whitespace stuff (tip, :retab)
-"set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
-set listchars=trail:.,precedes:<,extends:>
+set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
 
 " Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
 " Toggle with \l

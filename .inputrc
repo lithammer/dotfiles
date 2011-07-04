@@ -1,7 +1,16 @@
+# http://www.network-theory.co.uk/docs/bashref/ReadlineInitFileSyntax.html
+
+# Completion Options
+set page-completions on
+set completion-ignore-case on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set visible-stats on
+
+# Useful stuff for UTF-8
 set meta-flag on
 set input-meta on
-set convert-meta off
 set output-meta on
-set completion-ignore-case on
+set convert-meta off
+
 set bell-style none
-set show-all-if-ambiguous on

@@ -19,6 +19,8 @@
 " |   ,j = go to definition (using Rope)                                      |
 " |   ,r = rename (using Rope)                                                |
 " |                                                                           |
+" |   ,s = search and replace word under cursor                               |
+" |                                                                           |
 " |   :call Tabstyle_tabs = set tab to real tabs                              |
 " |   :call Tabstyle_spaces(2) = set tab to 2 spaces                          |
 " |                                                                           |
@@ -54,11 +56,11 @@ Bundle 'wincent/Command-T'
 let g:CommandTMatchWindowAtTop=1
 
 " Required dependencies for Snipmate
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle "honza/snipmate-snippets"
+Bundle 'MarcWeber/vim-addon-mw-utils'
+Bundle 'tomtom/tlib_vim'
+Bundle 'honza/snipmate-snippets'
 
-Bundle "garbas/snipmate.vim"
+Bundle 'garbas/vim-snipmate'
 
 " vim-scripts repos
 Bundle 'AutoComplPop'
@@ -155,16 +157,16 @@ syntax on
 set t_Co=256		" Enable 256 colors
 
 " Used by the Solarized theme if the terminal isn't using Solarized colors
-"let g:solarized_termcolors=256
+let g:solarized_termcolors=256
 
 " To show original monokai background color
 let g:molokai_original=1
 
 set background=dark	" Set background to `dark`, mostly because of Solarized
 
-"colorscheme solarized
+colorscheme solarized
 "colorscheme ir_black
-colorscheme molokai
+"colorscheme molokai
 "colorscheme robokai
 "colorscheme neverland
 "colorscheme neverland2
@@ -173,6 +175,9 @@ set number
 set ruler
 set nobomb " BOM sucks
 set encoding=utf-8
+
+" Improves redrawing for newer computers
+set ttyfast
 
 " Line wrapping
 set nowrap
@@ -185,7 +190,21 @@ set scrolloff=5
 set backspace=indent,eol,start
 
 " Whitespace stuff (tip, :retab)
-set listchars=tab:▸\ ,trail:.,eol:¬
+"set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
+set listchars=trail:.,precedes:<,extends:>
+
+" Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
+" Toggle with \l
+nnoremap <silent> <Leader>l
+      \ :set nolist!<CR>:set nolist?<CR>
+      \ :if exists('w:long_line_match') <Bar>
+      \   silent! call matchdelete(w:long_line_match) <Bar>
+      \   unlet w:long_line_match <Bar>
+      \ elseif &textwidth > 0 <Bar>
+      \   let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1) <Bar>
+      \ else <Bar>
+      \   let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
+      \ endif<CR>
 
 " Show matching <> (html mainly) as well
 set matchpairs+=<:>
@@ -197,6 +216,9 @@ set ignorecase
 set smartcase
 " Assume the /g flag on :s substitutions to replace all matches in a line
 set gdefault
+
+" Let cursor move past the last char in <C-v> mode
+set virtualedit=block
 
 " Highlight cursor line
 set cursorline
@@ -226,14 +248,16 @@ set switchbuf=usetab,newtab
 
 " Directories for swp files
 silent execute '!mkdir -p $HOME/.vim/backup'
-set backupdir=$HOME/.vim/backup
 set directory=$HOME/.vim/backup
+set nobackup
+set writebackup
 
 " Tab completion
 set wildmenu
 set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc
 "set wildchar=<Tab>
+set suffixes+=.pyc,.pyo         " Don't autocomplete these filetypes
 
 set completeopt=menuone,longest,preview
 
@@ -252,9 +276,9 @@ function! Tabstyle_tabs()
 endfunction
 
 function! Tabstyle_spaces(num)
-    set shiftwidth=a:num
-    set tabstop=a:num
-    set softtabstop=a:num
+    set shiftwidth=4
+    set tabstop=4
+    set softtabstop=4
     set expandtab
 endfunction
 
@@ -276,7 +300,6 @@ function s:setupMarkup()
     call s:setupWrapping()
 	set colorcolumn=+1
 	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
-	set list
 endfunction
 
 " make files uses real tabs
@@ -309,25 +332,45 @@ autocmd Filetype java setlocal omnifunc=javacomplete#Complete
 " |                              Python                                       |
 " +---------------------------------------------------------------------------+
 
-" This uses the handy preview window feature of Vim. Flagging a window
-" as a preview window is useful because you can use pclose! to get rid of it,
-" meaning you can reuse that vim real estate over and over for commands
-" that produce output, and the output has to go somewhere.
-function! DoRunPyBuffer2()
-	pclose! " force preview window closed
-	setlocal ft=python
+if has('python')
+    python << EOL
+import vim
+def EvaluateCurrentRange():
+    eval(compile('\n'.join(vim.current.range),'','exec'),globals())
+EOL
+    map <leader>p :py EvaluateCurrentRange()<cr>
 
-	" copy the buffer into a new window, then run that buffer through python
-	silent %y a | below new | silent put a | silent %!python -
-	" indicate the output window as the current previewwindow
-	setlocal previewwindow ro nomodifiable nomodified
+    " Add PYTHONPATH to Vim path to enable 'gf'
+    python << EOF
+import os
+import sys
+import vim
+for p in sys.path:
+    if os.path.isdir(p):
+        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
+EOF
 
-	" back into the original window
-	winc p
-endfunction
+	" This uses the handy preview window feature of Vim. Flagging a window
+	" as a preview window is useful because you can use pclose! to get rid of it,
+	" meaning you can reuse that vim real estate over and over for commands
+	" that produce output, and the output has to go somewhere.
+	function! DoRunPyBuffer2()
+		pclose! " force preview window closed
+		setlocal ft=python
 
-command! RunPyBuffer call DoRunPyBuffer2()
-map <Leader>m :RunPyBuffer<CR>
+		" copy the buffer into a new window, then run that buffer through python
+		silent %y a | below new | silent put a | silent %!python -
+		" indicate the output window as the current previewwindow
+		setlocal previewwindow ro nomodifiable nomodified
+
+		" back into the original window
+		winc p
+	endfunction
+
+	command! RunPyBuffer call DoRunPyBuffer2()
+	map <Leader>m :RunPyBuffer<CR>
+
+endif
 
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
 autocmd FileType python set tabstop=4 textwidth=79

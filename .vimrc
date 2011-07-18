@@ -340,7 +340,7 @@ import vim
 def EvaluateCurrentRange():
     eval(compile('\n'.join(vim.current.range),'','exec'),globals())
 EOL
-    map <leader>p :py EvaluateCurrentRange()<cr>
+    map <leader>e :py EvaluateCurrentRange()<CR>
 
     " Add PYTHONPATH to Vim path to enable 'gf'
     python << EOF

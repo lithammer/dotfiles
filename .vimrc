@@ -335,22 +335,13 @@ autocmd FileType c set omnifunc=ccomplete#Complete
 " +---------------------------------------------------------------------------+
 
 if has('python')
+" Add PYTHONPATH to Vim path to enable 'gf'
     python << EOL
-import vim
-def EvaluateCurrentRange():
-    eval(compile('\n'.join(vim.current.range),'','exec'),globals())
-EOL
-    map <leader>e :py EvaluateCurrentRange()<CR>
-
-    " Add PYTHONPATH to Vim path to enable 'gf'
-    python << EOF
-import os
-import sys
-import vim
+import vim, os, sys
 for p in sys.path:
-    if os.path.isdir(p):
-        vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
-EOF
+	if os.path.isdir(p):
+		vim.command(r'set path+=%s' % (p.replace(' ', r'\ ')))
+EOL
 
 	" This uses the handy preview window feature of Vim. Flagging a window
 	" as a preview window is useful because you can use pclose! to get rid of it,

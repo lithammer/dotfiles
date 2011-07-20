@@ -1,9 +1,22 @@
 # Install
 
+## Vim
+
 	$ git clone https://github.com/gmarik/vundle.git ~/.vim/vundle.git
 
-And from inside VIM run `:BundleInstall`
+And from inside VIM run `:BundleInstall`. And run this to enable
+Command-T:
 
-# OS X
+	$ cd ~/.vim/bundle/Command-T/ruby/command-t/
+	$ ruby extconf.rb
+	$ make
+
+And this for Pyflakes:
+
+	$ cd ~/.vim/bundle/pyflakes-vim/
+	$ git submodule init
+	$ git submodule update
+
+## OS X
 
 	$ ln -s ~/.bashrc ~/.profile

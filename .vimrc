@@ -45,7 +45,9 @@ Bundle 'tpope/vim-rails'
 Bundle 'scrooloose/nerdcommenter'
 let NERDCreateDefaultMappings=0
 Bundle 'scrooloose/nerdtree'
-let NERDTreeHijackNetrw=1			" User instead of Netrw when doing an edit /foobar
+let NERDTreeIgnore=['\.pyc$']
+let g:netrw_hide=1
+let g:netrw_list_hide='^\..*,\.pyc$'
 let NERDTreeMouseMode=1				" Single click for everything
 Bundle 'fs111/pydoc.vim'
 Bundle 'sontek/rope-vim'
@@ -105,7 +107,7 @@ map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
 " <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
-" it in a pdf/ subfolder and opens Preview
+" it in a `pdf` subfolder and opens Preview (OS X only)
 function! MarkdownToPdf()
 	execute ":w"
 	let path = expand('%:p:h')
@@ -317,6 +319,24 @@ autocmd BufReadPost *
 	\     execute "normal g`\"" |
 	\ endif
 
+" Helps if you have to use another editor on the same file
+autocmd FileChangedShell *
+    \ echohl WarningMsg |
+    \ echo 'File has been changed outside of vim.' |
+    \ echohl None
+
+" Outputs a small warning when opening a file that contains tab characters
+function! WarnTabs()
+    let save_cursor = getpos('.')
+    if searchpos('\t') != [0,0]
+        echohl WarningMsg |
+        \ echo "Warning, this file contains tabs." |
+        \ echohl None
+    endif
+    call setpos('.', save_cursor)
+endfunction
+autocmd BufReadPost * call WarnTabs()
+
 " Set working directory
 nnoremap <Leader>. :lcd %:p:h<CR>
 
@@ -330,9 +350,11 @@ autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 
-" +---------------------------------------------------------------------------+
-" |                              Python                                       |
-" +---------------------------------------------------------------------------+
+" Enables :make to compile, or validate, certain filetypes
+" (use :cn & :cp to jump between errors)
+autocmd FileType xml,xslt compiler xmllint
+autocmd FileType html compiler tidy
+autocmd FileType java compiler javac
 
 if has('python')
 " Add PYTHONPATH to Vim path to enable 'gf'
@@ -400,29 +422,9 @@ if 'VIRTUAL_ENV' in os.environ:
 	execfile(activate_this, dict(__file__=activate_this))
 EOF
 
-" +---------------------------------------------------------------------------+
-" |                               Startup                                     |
-" +---------------------------------------------------------------------------+ 
-" Open NERDTree on start
-"autocmd VimEnter * exe 'NERDTree' | wincmd l 
-
-
-
 " +---------------------------------------------------------------------------+ 
 " |                               Host specific                               |
 " +---------------------------------------------------------------------------+
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
-
-"if hostname() == "foo"
-  " do something
-"endif
-
-" Example .vimrc.local:
-
-"call Tabstyle_tabs()
-"colorscheme ir_dark
-"match LongLineWarning '\%120v.*'
-
-"autocmd User ~/git/some_folder/* call Tabstyle_spaces() | let g:force_xhtml=1

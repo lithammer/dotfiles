@@ -56,6 +56,7 @@ let g:pyflakes_use_quickfix = 0
 Bundle 'sjl/gundo.vim'
 Bundle 'wincent/Command-T'
 let g:CommandTMatchWindowAtTop=1
+Bundle 'ap/vim-css-color'
 
 " Required dependencies for Snipmate (sigh)
 Bundle 'MarcWeber/vim-addon-mw-utils'

@@ -70,3 +70,8 @@ else
 	export PS1='$(parse_git_branch "[\[$(branch_color)\]%s\[${c_sgr0}\]] ")\u@\h: \[${c_yellow}\]\w\[${c_sgr0}\] $ '
 fi
 #export PS1="\u@\[\e[00;33m\]\h\[\e[00m\]:\w $ "
+
+# Local changes
+if [ -e ~/.bashrc.local ]; then
+	source ~/.bashrc.local
+fi

@@ -36,8 +36,12 @@ set nocompatible
 
 filetype off
 
-set rtp+=~/.vim/vundle.git/
+set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
+
+" Let Vundle manage Vundle
+" required!
+Bundle 'gmarik/vundle'
 
 " Original Github repos
 Bundle 'tpope/vim-fugitive'
@@ -76,6 +80,17 @@ Bundle 'robokai'
 Bundle 'tomasr/molokai'
 Bundle 'wgibbs/vim-irblack'
 Bundle 'trapd00r/neverland-vim-theme'
+
+" Brief help
+"
+" :BundleInstall  - install bundles (won't update installed)
+" :BundleInstall! - update if installed
+"
+" :Bundles foo    - search for foo
+" :Bundles! foo   - refresh cached list and search for foo
+"
+" :BundleClean    - confirm removal of unused bundles
+" :BundleClean!   - remove without confirmation
 
 " +---------------------------------------------------------------------------+
 " | Shortcuts                                                                 |

@@ -2,7 +2,7 @@
 
 ## Vim
 
-	$ git clone https://github.com/gmarik/vundle.git ~/.vim/vundle.git
+	$ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
 And from inside VIM run `:BundleInstall`. And run this to enable
 Command-T:

@@ -4,7 +4,7 @@
 
 	$ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
-And from inside VIM run `:BundleInstall`. And run this to enable
+And from inside Vim run `:BundleInstall`. And run this to enable
 Command-T:
 
 	$ cd ~/.vim/bundle/Command-T/ruby/command-t/

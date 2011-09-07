@@ -2,6 +2,9 @@
 
 ## Vim
 
+Note that a lot of these addons requires that Vim is compiled with
+Python and Ruby
+
 	$ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
 And from inside Vim run `:BundleInstall`. And run this to enable

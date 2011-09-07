@@ -80,6 +80,9 @@ Bundle 'robokai'
 Bundle 'tomasr/molokai'
 Bundle 'wgibbs/vim-irblack'
 Bundle 'trapd00r/neverland-vim-theme'
+Bundle 'Diablo3'
+Bundle 'lemon256'
+Bundle 'jpo/vim-railscasts-theme'
 
 " Brief help
 "
@@ -174,22 +177,53 @@ let g:solarized_termcolors=256
 " To show original monokai background color
 let g:molokai_original=1
 
-set background=dark	" Set background to `dark`, mostly because of Solarized
+set background=dark
 
-colorscheme solarized
-"colorscheme ir_black
-"colorscheme molokai
-"colorscheme robokai
-"colorscheme neverland
-"colorscheme neverland2
+if has("gui_running")
+	colorscheme solarized
+	"colorscheme ir_black
+	"colorscheme molokai
+	"colorscheme robokai
+	"colorscheme neverland
+	"colorscheme neverland2
+	"colorscheme diablo3
+	"colorscheme railscasts
+
+	" Installed manually:
+
+	"colorscheme hunch-dark
+	"colorscheme hunch-dark-dimmed
+else
+	colorscheme solarized
+	"colorscheme ir_black
+	"colorscheme molokai
+	"colorscheme robokai
+	"colorscheme neverland
+	"colorscheme neverland2
+	"colorscheme diablo3
+	"colorscheme lemon256 " Requires Solarized terminal colors as well
+	
+	" Installed manually:
+
+	"colorscheme tomorrow-night
+	"colorscheme tomorrow-night-eighties
+endif
 
 set number
 set ruler
 set nobomb " BOM sucks
 set encoding=utf-8
 
+" Extended matching for the % command, good for HTML/XML tags
+runtime macros/matchit.vim
+
 " Improves redrawing for newer computers
 set ttyfast
+
+" Set encryption for Vim to blowfish and change some
+if version >= 700
+	set cryptmethod=blowfish
+endif
 
 " Line wrapping
 set nowrap
@@ -205,7 +239,7 @@ set backspace=indent,eol,start
 set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
 
 " Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
-" Toggle with \l
+" Toggle with <Leader>l
 nnoremap <silent> <Leader>l
       \ :set nolist!<CR>:set nolist?<CR>
       \ :if exists('w:long_line_match') <Bar>
@@ -372,7 +406,7 @@ autocmd FileType xml,xslt compiler xmllint
 autocmd FileType html compiler tidy
 autocmd FileType java compiler javac
 
-if has('python')
+if has("python")
 " Add PYTHONPATH to Vim path to enable 'gf'
     python << EOL
 import vim, os, sys
@@ -411,14 +445,39 @@ autocmd FileType python set tabstop=4 textwidth=79
 " |                      (GUI stuff goes in gvimrc)                           |
 " +---------------------------------------------------------------------------+
 
-" Mac
-if has("mac") 
-  "" 
-endif
-
-" MacVIM shift+arrow-keys behavior (required in .vimrc)
 if has("gui_macvim")
+    " Fullscreen takes up entire screen
+	set fuoptions=maxhorz,maxvert
+
+    " Command-Return for fullscreen
+    macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
+
+	" MacVIM shift+arrow-keys behavior (required in .vimrc)
 	"let macvim_hig_shift_movement = 1
+
+    " Command-][ to increase/decrease indentation
+    vmap <D-]> >gv
+    vmap <D-[> <gv
+	
+	" Map tab switch to cmd-<number>
+	map <D-1> :tabn 1<CR>
+	map <D-2> :tabn 2<CR>
+	map <D-3> :tabn 3<CR>
+	map <D-4> :tabn 4<CR>
+	map <D-5> :tabn 5<CR>
+	map <D-6> :tabn 6<CR>
+	map <D-7> :tabn 7<CR>
+	map <D-8> :tabn 8<CR>
+	map <D-9> :tabn 9<CR>
+	map! <D-1> <C-O>:tabn 1<CR>
+	map! <D-2> <C-O>:tabn 2<CR>
+	map! <D-3> <C-O>:tabn 3<CR>
+	map! <D-4> <C-O>:tabn 4<CR>
+	map! <D-5> <C-O>:tabn 5<CR>
+	map! <D-6> <C-O>:tabn 6<CR>
+	map! <D-7> <C-O>:tabn 7<CR>
+	map! <D-8> <C-O>:tabn 8<CR>
+	map! <D-9> <C-O>:tabn 9<CR>
 endif
  
 " Windows

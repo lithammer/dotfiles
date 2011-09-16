@@ -1,10 +1,10 @@
-export PATH=/opt/local/bin:/opt/local/sbin:$PATH							# MacPorts
-export PATH=~/.cabal/bin:$PATH												# Cabal (Haskell-platform)
-export PATH=/usr/local/mysql/bin:$PATH										# MySQL
-export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH	# Homebrew
-export PATH=/usr/local/share/aclocal:$PATH									# Homebrew .m4 macros
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH                            # MacPorts
+export PATH=~/.cabal/bin:$PATH                                              # Cabal (Haskell-platform)
+export PATH=/usr/local/mysql/bin:$PATH                                      # MySQL
+export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH    # Homebrew
+export PATH=/usr/local/share/aclocal:$PATH                                  # Homebrew .m4 macros
 
-export EDITOR=/usr/local/bin/vim
+export EDITOR=vim
 #export LC_ALL=en_GB.UTF-8
 export LANG=en_GB.UTF-8
 

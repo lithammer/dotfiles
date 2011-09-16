@@ -20,6 +20,8 @@ And this for Pyflakes:
 	$ git submodule init
 	$ git submodule update
 
+Run `BundleInstall!` to update plugins (note the exclamation mark)
+
 ## OS X
 
 	$ ln -s ~/.bashrc ~/.profile

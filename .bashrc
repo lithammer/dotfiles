@@ -11,6 +11,8 @@ export LANG=en_GB.UTF-8
 # Files to ignore when auto-completing
 export FIGNORE=.pyc:.o:.git:.svn
 
+export HISTCONTROL=ignoredups
+
 # Add colors, line-numbers, case-insensitive search and
 # excludes .svn/.git dirs from search result to grep
 export GREP_OPTIONS="-Iin --color --exclude=*\.{svn,git}*"

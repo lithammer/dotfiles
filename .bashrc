@@ -5,10 +5,15 @@ export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH	# Homeb
 export PATH=/usr/local/share/aclocal:$PATH									# Homebrew .m4 macros
 
 export EDITOR=/usr/local/bin/vim
-export LC_ALL=en_GB.UTF-8
+#export LC_ALL=en_GB.UTF-8
+export LANG=en_GB.UTF-8
 
 # Files to ignore when auto-completing
 export FIGNORE=.pyc:.o:.git:.svn
+
+# Add colors, line-numbers, case-insensitive search and
+# excludes .svn/.git dirs from search result to grep
+export GREP_OPTIONS="-Iin --color --exclude=*\.{svn,git}*"
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 
@@ -18,7 +23,6 @@ alias ll="ls -lGF"
 alias lsa="ls -alGF"
 alias ..="cd .."
 alias ...="cd .. ; cd .."
-alias grep="grep --color=always"
 alias untar="tar xvzf"
 
 # Quick access to .[g]vimrc

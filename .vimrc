@@ -39,40 +39,44 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-" Let Vundle manage Vundle
-" required!
+" Required!
 Bundle 'gmarik/vundle'
 
-" Original Github repos
+" Dependencies for Snipmate (sigh!)
+Bundle 'MarcWeber/vim-addon-mw-utils'
+Bundle 'tomtom/tlib_vim'
+
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-rails'
 Bundle 'scrooloose/nerdcommenter'
-let NERDCreateDefaultMappings=0
 Bundle 'scrooloose/nerdtree'
-let NERDTreeIgnore=['\.pyc$']
-let g:netrw_hide=1
-let g:netrw_list_hide='^\..*,\.pyc$'
-let NERDTreeMouseMode=1				" Single click for everything
 Bundle 'fs111/pydoc.vim'
-Bundle 'sontek/rope-vim'
-Bundle 'kevinw/pyflakes-vim'
-let g:pyflakes_use_quickfix = 0
-Bundle 'sjl/gundo.vim'
-Bundle 'wincent/Command-T'
-let g:CommandTMatchWindowAtTop=1
 Bundle 'ap/vim-css-color'
-
-" Required dependencies for Snipmate (sigh)
-Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'tomtom/tlib_vim'
 Bundle 'honza/snipmate-snippets'
-
 Bundle 'garbas/vim-snipmate'
-
-" vim-scripts repos
 Bundle 'AutoComplPop'
-let g:acp_completeoptPreview=1
 Bundle 'ZoomWin'
+
+if has("python")
+	Bundle 'kevinw/pyflakes-vim'
+	Bundle 'sjl/gundo.vim'
+	Bundle 'sontek/rope-vim'
+endif
+
+if has("ruby")
+	Bundle 'wincent/Command-T'
+endif
+
+" Plugin variables
+let NERDCreateDefaultMappings=0              " Don't create default NERDCommenter keymappings
+let NERDTreeIgnore=['\.pyc$']                " Browser skiplist
+let NERDTreeMouseMode=1                      " Single click for everything
+let g:pyflakes_use_quickfix = 0
+let g:CommandTMatchWindowAtTop=1
+let g:acp_completeoptPreview=1
+
+let g:netrw_hide=1
+let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
@@ -83,17 +87,6 @@ Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
 Bundle 'lemon256'
 Bundle 'jpo/vim-railscasts-theme'
-
-" Brief help
-"
-" :BundleInstall  - install bundles (won't update installed)
-" :BundleInstall! - update if installed
-"
-" :Bundles foo    - search for foo
-" :Bundles! foo   - refresh cached list and search for foo
-"
-" :BundleClean    - confirm removal of unused bundles
-" :BundleClean!   - remove without confirmation
 
 " +---------------------------------------------------------------------------+
 " | Shortcuts                                                                 |
@@ -180,7 +173,7 @@ let g:molokai_original=1
 set background=dark
 
 if has("gui_running")
-	colorscheme solarized
+	"colorscheme solarized
 	"colorscheme ir_black
 	"colorscheme molokai
 	"colorscheme robokai
@@ -191,7 +184,7 @@ if has("gui_running")
 
 	" Installed manually:
 
-	"colorscheme hunch-dark
+	colorscheme hunch-dark
 	"colorscheme hunch-dark-dimmed
 else
 	colorscheme solarized
@@ -438,12 +431,17 @@ EOL
 endif
 
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
-autocmd FileType python set tabstop=4 textwidth=79
+autocmd FileType python set expandtab tabstop=4 textwidth=79
 
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |
 " |                      (GUI stuff goes in gvimrc)                           |
 " +---------------------------------------------------------------------------+
+
+if has("gui")
+	set guioptions-=m  " Remove menu bar
+	set guioptions-=T  " Remove toolbar
+endif
 
 if has("gui_macvim")
     " Fullscreen takes up entire screen

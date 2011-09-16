@@ -15,7 +15,9 @@ export FIGNORE=.pyc:.o:.git:.svn
 # excludes .svn/.git dirs from search result to grep
 export GREP_OPTIONS="-Iin --color --exclude=*\.{svn,git}*"
 
-export PYTHONSTARTUP=$HOME/.pythonrc.py
+if [ -e ~/.pythonrc.py ]; then
+	export PYTHONSTARTUP=$HOME/.pythonrc.py
+fi
 
 alias l="ls"
 alias ls="ls -GF"

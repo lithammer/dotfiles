@@ -15,7 +15,7 @@ export HISTCONTROL=ignoredups
 
 # Add colors, line-numbers, case-insensitive search and
 # excludes .svn/.git dirs from search result to grep
-export GREP_OPTIONS="-Iin --color --exclude=*\.{svn,git}*"
+alias grep="-Iin --color --exclude=*\.{svn,git}*"
 
 if [ -e ~/.pythonrc.py ]; then
 	export PYTHONSTARTUP=$HOME/.pythonrc.py

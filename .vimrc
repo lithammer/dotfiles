@@ -21,8 +21,8 @@
 " |                                                                           |
 " |   ,s = search and replace word under cursor                               |
 " |                                                                           |
-" |   :call Tabstyle_tabs() = set tab to real tabs                            |
-" |   :call Tabstyle_spaces() = set tab to 4 spaces                           |
+" |   :call Tabstyle_tabs = set tab to real tabs                              |
+" |   :call Tabstyle_spaces(2) = set tab to 2 spaces                          |
 " |                                                                           |
 " |                                                                           |
 " |                                                                           |
@@ -222,8 +222,13 @@ endif
 set nowrap
 set linebreak
 
+set showmatch
+
 " Minimal number of screen lines to keep above and below the cursor
 set scrolloff=5
+set sidescroll=5
+
+set title
 
 " Allow backspacing over everything in insert mode
 set backspace=indent,eol,start

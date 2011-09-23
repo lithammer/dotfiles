@@ -71,7 +71,7 @@ endif
 let NERDCreateDefaultMappings=0              " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore=['\.pyc$']                " Browser skiplist
 let NERDTreeMouseMode=1                      " Single click for everything
-let g:pyflakes_use_quickfix = 0
+let g:pyflakes_use_quickfix = 0              " Don't let pyflakes use the quickfix window
 let g:CommandTMatchWindowAtTop=1
 let g:acp_completeoptPreview=1
 
@@ -87,73 +87,6 @@ Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
 Bundle 'lemon256'
 Bundle 'jpo/vim-railscasts-theme'
-
-" +---------------------------------------------------------------------------+
-" | Shortcuts                                                                 |
-" +---------------------------------------------------------------------------+
-
-let mapleader = ","
-
-" For fast typers ^^
-command W w
-command Q q
-
-" Search and replace the word under cursor
-nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
-
-" Toggle invisible characters
-noremap <Leader>i :set list!<CR>
-
-" Fast switching between paste modes
-set pastetoggle=<Leader>v
-
-" ,<Space> to clear search highlight
-nnoremap <Leader><Space> :nohl<CR>
-
-" Opens an edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>e
-map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-
-" Opens a tab edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>t
-map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-" <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
-" it in a `pdf` subfolder and opens Preview (OS X only)
-function! MarkdownToPdf()
-	execute ":w"
-	let path = expand('%:p:h')
-	let filepath = expand('%')
-	silent execute "!mkdir -p ".path."/pdf/"
-	execute "!markdown2pdf --xetex ".filepath." -o ".path."/pdf/".@%
-	silent execute "!open ".path."/pdf/".expand('%:t:r').".pdf"
-endfunction
-autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR>
-
-" Go to previous file
-map <Leader>p <C-^>
-
-" Maps autocomplete to tab
-imap <Tab> <C-N>
-
-" NERDTree
-noremap <Leader>n :NERDTreeToggle<CR>
-
-" NERDCommenter
-map <Leader>c :call NERDComment(0, "toggle")<CR>
-
-" ZoomWin
-map <Leader>z <C-w>o<CR>
-
-" CommandT
-map <Leader>f :CommandT<CR>
-
-" Rope
-map <Leader>j :RopeGotoDefinition<CR>
-map <Leader>r :RopeRename<CR>
-
-" Load the Gundo window
-map <leader>g :GundoToggle<CR>
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
@@ -202,39 +135,131 @@ else
 	"colorscheme tomorrow-night-eighties
 endif
 
-set number
-set ruler
-set nobomb " BOM sucks
-set encoding=utf-8
-
 " Extended matching for the % command, good for HTML/XML tags
 runtime macros/matchit.vim
 
-" Improves redrawing for newer computers
+" Improves redrawing
 set ttyfast
+set number                  " Show line numbers
+set ruler                   " Show the cursor position all the time
+set nobomb                  " Don't append a Byte-order Mark (BOM)
+set encoding=utf-8
+set title                   " Show title in console title bar
+set mouse=a                 " Enable mouse in all modes
+set clipboard=unnamed       " Enable copy/paste between vim and system clipboard
 
-" Set encryption for Vim to blowfish and change some
+set shiftround              " Rounds indent to a multiple of shiftwidth
+set nowrap                  " Don't wrap text
+set linebreak               " Don't wrap text in the middle of a word
+set showmatch               " Briefly jump to a paren once it's balanced
+set matchpairs+=<:>         " Show matching <>
+set cursorline              " Highlight cursor line
+set backspace=2             " Allow backspacing over autoindent, EOL, and BOL
+set scrolloff=5             " Keep 5 context lines above and below the cursor
+
+set laststatus=2            " Always show statusline
+set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w=%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
+
+set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
+
+set hlsearch                " Highlight searches by default
+set incsearch               " Shows search results as you type
+set ignorecase              " Case insensitive search by default
+set smartcase               " Case sensitive search if the search string contains uppercase
+set gdefault                " Assume the /g flag when search and replacing
+set suffixes+=.pyc,.pyo     " Don't autocomplete these filetypes
+
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set smarttab
+
+function! Tabstyle_tabs()
+    set noexpandtab
+endfunction
+
+function! Tabstyle_spaces()
+    set expandtab
+endfunction
+
+call Tabstyle_tabs()
+"call Tabstyle_spaces()
+
+" Set encryption for Vim to blowfish
 if version >= 700
 	set cryptmethod=blowfish
 endif
 
-" Line wrapping
-set nowrap
-set linebreak
+" Tries to emulate tab behavior for buffers
+" Use :tab sball
+" to open a new tab for every buffer
+set switchbuf=usetab,newtab
 
-set showmatch
+" Directories for swp files
+silent execute '!mkdir -p $HOME/.vim/backup'
+set directory=$HOME/.vim/backup
+set nobackup
 
-" Minimal number of screen lines to keep above and below the cursor
-set scrolloff=5
-set sidescroll=5
+" Tab completion
+set wildmenu
+set wildmode=full
+set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc
+set completeopt=menuone,longest,preview
 
-set title
+" +---------------------------------------------------------------------------+
+" | Remaps & Shortcuts                                                        |
+" +---------------------------------------------------------------------------+
 
-" Allow backspacing over everything in insert mode
-set backspace=indent,eol,start
+let mapleader = ","
 
-" Whitespace stuff (tip, :retab)
-set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
+" For fast typers ^^
+command! W :w
+command! Q :q
+
+" Search and replace the word under cursor
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+
+" Toggle invisible characters
+noremap <Leader>i :set list!<CR>
+
+" Fast switching between paste modes
+set pastetoggle=<Leader>v
+
+" ,<Space> to clear search highlight
+nnoremap <Leader><Space> :nohl<CR>
+
+" Opens an edit command with the path of the currently edited file filled in
+" Normal mode: <Leader>e
+map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
+
+" Opens a tab edit command with the path of the currently edited file filled in
+" Normal mode: <Leader>t
+map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+
+" Go to previous file
+map <Leader>p <C-^>
+
+" NERDTree
+noremap <Leader>n :NERDTreeToggle<CR>
+
+" NERDCommenter
+map <Leader>c :call NERDComment(0, "toggle")<CR>
+
+" ZoomWin
+map <Leader>z <C-w>o<CR>
+
+" CommandT
+map <Leader>f :CommandT<CR>
+
+" Rope
+map <Leader>j :RopeGotoDefinition<CR>
+map <Leader>r :RopeRename<CR>
+
+" Load the Gundo window
+map <leader>g :GundoToggle<CR>
+
+" Set working directory
+nnoremap <Leader>. :lcd %:p:h<CR>
 
 " Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
 " Toggle with <Leader>l
@@ -249,89 +274,25 @@ nnoremap <silent> <Leader>l
       \   let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
       \ endif<CR>
 
-" Show matching <> (html mainly) as well
-set matchpairs+=<:>
-
-" Searching
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
-" Assume the /g flag on :s substitutions to replace all matches in a line
-set gdefault
-
-" Let cursor move past the last char in <C-v> mode
-set virtualedit=block
-
-" Highlight cursor line
-set cursorline
-
-" Status bar
-set laststatus=2
-set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w
-set statusline+=%=
-set statusline+=[%{strlen(&ft)?&ft:'none'}, " Filetype
-set statusline+=\ %{&encoding},             " Encoding
-"set statusline+=\ %{&fileencoding},        " File encoding
-set statusline+=\ %{&fileformat}]\          " File format
-
-" Enable mouse usage (all modes)
-set mouse=a
-
-" Set to auto read when a file is changed from the outside
-set autoread
-
-" Enables copy/pasting between vim and system clipboard
-set clipboard=unnamed
-
-" Tries to emulate tab behavior for buffers
-" Use :tab sball
-" to open a new tab for every buffer
-set switchbuf=usetab,newtab
-
-" Directories for swp files
-silent execute '!mkdir -p $HOME/.vim/backup'
-set directory=$HOME/.vim/backup
-set nobackup
-set writebackup
-
-" Tab completion
-set wildmenu
-set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc
-set wildchar=<Tab>
-" Don't autocomplete these filetypes
-set suffixes+=.pyc,.pyo 
-set completeopt=menuone,longest,preview
-
-" +---------------------------------------------------------------------------+
-" | Tabs and spaces                                                           |
-" +---------------------------------------------------------------------------+
-
-" Rounds indent to a multiple of shiftwidth
-set shiftround
-
-function! Tabstyle_tabs()
-    set shiftwidth=4
-    set tabstop=4
-    set softtabstop=4
-    set noexpandtab
+" <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
+" it in a `pdf` subfolder and opens Preview (OS X only)
+function! MarkdownToPdf()
+	execute ":w"
+	let path = expand('%:p:h')
+	let filepath = expand('%')
+	silent execute "!mkdir -p ".path."/pdf/"
+	execute "!markdown2pdf --xetex ".filepath." -o ".path."/pdf/".@%
+	silent execute "!open ".path."/pdf/".expand('%:t:r').".pdf"
 endfunction
-
-function! Tabstyle_spaces()
-    set shiftwidth=4
-    set tabstop=4
-    set softtabstop=4
-    set expandtab
-endfunction
-
-call Tabstyle_tabs()
-"call Tabstyle_spaces(4)
-"call Tabstyle_spaces(2)
+autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR>
 
 " +---------------------------------------------------------------------------+
 " | Auto commands                                                             |
 " +---------------------------------------------------------------------------+
+
+" Disable the colorcolumn when switching modes.  Make sure this is the
+" first autocmd for the filetype here
+autocmd FileType * setlocal colorcolumn=0
 
 function s:setupWrapping()
     set wrap
@@ -345,6 +306,13 @@ function s:setupMarkup()
 	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
 endfunction
 
+" md, markdown, and mk are markdown and define buffer-local preview
+autocmd BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
+autocmd BufRead,BufNewFile *.md set filetype=markdown
+
+" Enable wrapping for txt files
+autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+
 " make files uses real tabs
 autocmd FileType make set noexpandtab
 
@@ -353,13 +321,6 @@ autocmd BufRead,BufNewFile *.osql set filetype=sql
 
 " Thorfile, Rakefile, Vagrantfile and Gemfile are Ruby
 autocmd BufRead,BufNewFile {Gemfile,Rakefile,Vagrantfile,Thorfile,config.ru} set filetype=ruby
-
-" md, markdown, and mk are markdown and define buffer-local preview
-autocmd BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
-autocmd BufRead,BufNewFile *.md set filetype=markdown
-
-" Enable wrapping for txt files
-autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 
 " When editing a file, always jump to the last known cursor position.
 autocmd BufReadPost *
@@ -373,27 +334,24 @@ autocmd FileChangedShell *
     \ echo 'File has been changed outside of vim.' |
     \ echohl None
 
-" Outputs a small warning when opening a file that contains tab characters
+" Outputs a small warning when opening a Python file that contains tab characters
 function! WarnTabs()
     let save_cursor = getpos('.')
     if searchpos('\t') != [0,0]
         echohl WarningMsg |
-        \ echo "Warning, this file contains tabs." |
+        \ echo 'Warning, this file contains tabs.' |
         \ echohl None
     endif
     call setpos('.', save_cursor)
 endfunction
-autocmd BufReadPost * call WarnTabs()
-
-" Set working directory
-nnoremap <Leader>. :lcd %:p:h<CR>
+autocmd BufReadPost *.py call WarnTabs()
 
 " Enable omnicompletion, <C-X> <C-O> to omnicomplete
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType java setlocal omnifunc=javacomplete#Complete 
+autocmd FileType java set omnifunc=javacomplete#Complete 
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete

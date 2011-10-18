@@ -54,7 +54,9 @@ Bundle 'fs111/pydoc.vim'
 Bundle 'ap/vim-css-color'
 Bundle 'honza/snipmate-snippets'
 Bundle 'garbas/vim-snipmate'
-Bundle 'AutoComplPop'
+Bundle 'vim-pandoc/vim-pandoc'
+"Bundle 'AutoComplPop'
+Bundle 'Shougo/neocomplcache'
 Bundle 'ZoomWin'
 
 if has("python")
@@ -71,9 +73,13 @@ endif
 let NERDCreateDefaultMappings=0              " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore=['\.pyc$']                " Browser skiplist
 let NERDTreeMouseMode=1                      " Single click for everything
-let g:pyflakes_use_quickfix = 0              " Don't let pyflakes use the quickfix window
+let g:pyflakes_use_quickfix=0                " Don't let pyflakes use the quickfix window
 let g:CommandTMatchWindowAtTop=1
 let g:acp_completeoptPreview=1
+let g:neocomplcache_enable_at_startup=1
+let g:neocomplcache_enable_smart_case=1
+let g:neocomplcache_enable_auto_select=1     " AutoComplPop behaviour
+let g:neocomplcache_enable_auto_delimiter=1
 
 let g:netrw_hide=1
 let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
@@ -95,7 +101,7 @@ Bundle 'jpo/vim-railscasts-theme'
 filetype plugin indent on
 syntax on
 
-set t_Co=256		" Enable 256 colors
+set t_Co=256		              " Enable 256 colors
 
 " Used by the Solarized theme if the terminal isn't using Solarized colors
 let g:solarized_termcolors=256
@@ -120,19 +126,20 @@ if has("gui_running")
 	colorscheme hunch-dark
 	"colorscheme hunch-dark-dimmed
 else
-	colorscheme solarized
+	"colorscheme solarized
 	"colorscheme ir_black
 	"colorscheme molokai
 	"colorscheme robokai
 	"colorscheme neverland
 	"colorscheme neverland2
-	"colorscheme diablo3
+	colorscheme diablo3
 	"colorscheme lemon256 " Requires Solarized terminal colors as well
 	
 	" Installed manually:
 
 	"colorscheme tomorrow-night
 	"colorscheme tomorrow-night-eighties
+	"colorscheme lucius
 endif
 
 " Extended matching for the % command, good for HTML/XML tags
@@ -158,7 +165,7 @@ set backspace=2             " Allow backspacing over autoindent, EOL, and BOL
 set scrolloff=5             " Keep 5 context lines above and below the cursor
 
 set laststatus=2            " Always show statusline
-set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w=%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
+set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
 
 set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
 
@@ -190,7 +197,7 @@ if version >= 700
 	set cryptmethod=blowfish
 endif
 
-" Tries to emulate tab behavior for buffers
+" Tries to emulate tab behaviour for buffers
 " Use :tab sball
 " to open a new tab for every buffer
 set switchbuf=usetab,newtab
@@ -203,7 +210,7 @@ set nobackup
 " Tab completion
 set wildmenu
 set wildmode=full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc
+set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,*.pyc,*.beam
 set completeopt=menuone,longest,preview
 
 " +---------------------------------------------------------------------------+
@@ -274,17 +281,18 @@ nnoremap <silent> <Leader>l
       \   let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
       \ endif<CR>
 
-" <Leader>m to compile open markdown file to PDF using markdown2pdf and puts
-" it in a `pdf` subfolder and opens Preview (OS X only)
-function! MarkdownToPdf()
-	execute ":w"
+" <Leader>m to convert markdown files to html and open them in the background
+function! MarkdownToHtml()
+	execute ':w'
 	let path = expand('%:p:h')
 	let filepath = expand('%')
-	silent execute "!mkdir -p ".path."/pdf/"
-	execute "!markdown2pdf --xetex ".filepath." -o ".path."/pdf/".@%
-	silent execute "!open ".path."/pdf/".expand('%:t:r').".pdf"
+	let filename = expand('%:t:r')
+	silent execute '!mkdir -p '.path.'/html/'
+	execute '!pandoc -s --offline --html5 '.filepath.' -o '.path.'/html/'.filename.'.html'
+	silent execute '!open -g '.path.'/html/'.filename.".html"
 endfunction
-autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR>
+
+autocmd FileType markdown map <Leader>m call MarkdownToHtml() <CR><CR>
 
 " +---------------------------------------------------------------------------+
 " | Auto commands                                                             |
@@ -294,33 +302,22 @@ autocmd FileType markdown map <Leader>m :call MarkdownToPdf() <CR><CR>
 " first autocmd for the filetype here
 autocmd FileType * setlocal colorcolumn=0
 
-function s:setupWrapping()
-    set wrap
-    set wrapmargin=2
-    set textwidth=72
-endfunction
-
-function s:setupMarkup()
-    call s:setupWrapping()
+function! ColorColumn()
 	set colorcolumn=+1
 	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
 endfunction
 
-" md, markdown, and mk are markdown and define buffer-local preview
-autocmd BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
-autocmd BufRead,BufNewFile *.md set filetype=markdown
+" Use pandoc syntax for markdown files
+autocmd BufRead,BufNewFile *.md set filetype=pandoc
+autocmd FileType pandoc call ColorColumn()
+autocmd FileType pandoc set wrap wrapmargin=2 textwidth=72
 
 " Enable wrapping for txt files
-autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+autocmd BufRead,BufNewFile *.txt call ColorColumn()
+autocmd BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=72
 
 " make files uses real tabs
 autocmd FileType make set noexpandtab
-
-" Display osql as sql
-autocmd BufRead,BufNewFile *.osql set filetype=sql
-
-" Thorfile, Rakefile, Vagrantfile and Gemfile are Ruby
-autocmd BufRead,BufNewFile {Gemfile,Rakefile,Vagrantfile,Thorfile,config.ru} set filetype=ruby
 
 " When editing a file, always jump to the last known cursor position.
 autocmd BufReadPost *
@@ -347,14 +344,14 @@ endfunction
 autocmd BufReadPost *.py call WarnTabs()
 
 " Enable omnicompletion, <C-X> <C-O> to omnicomplete
-autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType java set omnifunc=javacomplete#Complete 
-autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-autocmd FileType c set omnifunc=ccomplete#Complete
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType java setlocal omnifunc=javacomplete#Complete 
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
+autocmd FileType c setlocal omnifunc=ccomplete#Complete
 
 " Enables :make to compile, or validate, certain filetypes
 " (use :cn & :cp to jump between errors)
@@ -413,7 +410,7 @@ if has("gui_macvim")
     " Command-Return for fullscreen
     macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
 
-	" MacVIM shift+arrow-keys behavior (required in .vimrc)
+	" MacVIM shift+arrow-keys behaviour (required in .vimrc)
 	"let macvim_hig_shift_movement = 1
 
     " Command-][ to increase/decrease indentation

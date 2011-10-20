@@ -78,8 +78,7 @@ let g:CommandTMatchWindowAtTop=1
 let g:acp_completeoptPreview=1
 let g:neocomplcache_enable_at_startup=1
 let g:neocomplcache_enable_smart_case=1
-let g:neocomplcache_enable_auto_select=1     " AutoComplPop behaviour
-let g:neocomplcache_enable_auto_delimiter=1
+"let g:neocomplcache_enable_auto_select=1     " AutoComplPop behaviour
 
 let g:netrw_hide=1
 let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
@@ -265,6 +264,17 @@ map <Leader>r :RopeRename<CR>
 " Load the Gundo window
 map <leader>g :GundoToggle<CR>
 
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+" <TAB>: completion.
+autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplcache#close_popup()
+inoremap <expr><C-e> neocomplcache#cancel_popup()
+
 " Set working directory
 nnoremap <Leader>. :lcd %:p:h<CR>
 
@@ -273,15 +283,17 @@ nnoremap <Leader>. :lcd %:p:h<CR>
 nnoremap <silent> <Leader>l
       \ :set nolist!<CR>:set nolist?<CR>
       \ :if exists('w:long_line_match') <Bar>
-      \   silent! call matchdelete(w:long_line_match) <Bar>
-      \   unlet w:long_line_match <Bar>
+      \     silent! call matchdelete(w:long_line_match) <Bar>
+      \     unlet w:long_line_match <Bar>
       \ elseif &textwidth > 0 <Bar>
-      \   let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1) <Bar>
+      \     let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1) <Bar>
       \ else <Bar>
-      \   let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
+      \     let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
       \ endif<CR>
 
-" <Leader>m to convert markdown files to html and open them in the background
+" <Leader>m to convert markdown files to html and open them in the background.
+" Use OS X's Print to PDF to export to PDF, or run this command:
+" $ cupsfilter file.html -o file.pdf -o media=A4
 function! MarkdownToHtml()
 	execute ':w'
 	let path = expand('%:p:h')
@@ -292,7 +304,7 @@ function! MarkdownToHtml()
 	silent execute '!open -g '.path.'/html/'.filename.".html"
 endfunction
 
-autocmd FileType markdown map <Leader>m call MarkdownToHtml() <CR><CR>
+autocmd FileType pandoc,markdown map <Leader>m :call MarkdownToHtml() <CR><CR>
 
 " +---------------------------------------------------------------------------+
 " | Auto commands                                                             |
@@ -313,7 +325,7 @@ autocmd FileType pandoc call ColorColumn()
 autocmd FileType pandoc set wrap wrapmargin=2 textwidth=72
 
 " Enable wrapping for txt files
-autocmd BufRead,BufNewFile *.txt call ColorColumn()
+"autocmd BufRead,BufNewFile *.txt call ColorColumn()
 autocmd BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=72
 
 " make files uses real tabs
@@ -344,6 +356,7 @@ endfunction
 autocmd BufReadPost *.py call WarnTabs()
 
 " Enable omnicompletion, <C-X> <C-O> to omnicomplete
+" These options are usually set by a filetype plugin
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -361,7 +374,7 @@ autocmd FileType java compiler javac
 
 if has("python")
 " Add PYTHONPATH to Vim path to enable 'gf'
-    python << EOL
+python << EOL
 import vim, os, sys
 for p in sys.path:
 	if os.path.isdir(p):
@@ -386,12 +399,12 @@ EOL
 	endfunction
 
 	command! RunPyBuffer call DoRunPyBuffer2()
-	map <Leader>m :RunPyBuffer<CR>
+	autocmd FileType python map <Leader>m :RunPyBuffer<CR>
 
 endif
 
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
-autocmd FileType python set expandtab tabstop=4 textwidth=79
+autocmd FileType python setlocal expandtab tabstop=4 textwidth=79
 
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |

@@ -45,15 +45,16 @@ Bundle 'gmarik/vundle'
 " Dependencies for Snipmate (sigh!)
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
+Bundle 'garbas/vim-snipmate'
+Bundle 'honza/snipmate-snippets'
 
+Bundle 'gregsexton/MatchTag'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-rails'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'fs111/pydoc.vim'
 Bundle 'ap/vim-css-color'
-Bundle 'honza/snipmate-snippets'
-Bundle 'garbas/vim-snipmate'
 Bundle 'vim-pandoc/vim-pandoc'
 "Bundle 'AutoComplPop'
 Bundle 'Shougo/neocomplcache'
@@ -92,6 +93,7 @@ Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
 Bundle 'lemon256'
 Bundle 'jpo/vim-railscasts-theme'
+Bundle 'github-theme'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
@@ -119,19 +121,20 @@ if has("gui_running")
 	"colorscheme neverland2
 	"colorscheme diablo3
 	"colorscheme railscasts
+	colorscheme github
 
 	" Installed manually:
 
-	colorscheme hunch-dark
+	"colorscheme hunch-dark
 	"colorscheme hunch-dark-dimmed
 else
-	"colorscheme solarized
+	colorscheme solarized
 	"colorscheme ir_black
 	"colorscheme molokai
 	"colorscheme robokai
 	"colorscheme neverland
 	"colorscheme neverland2
-	colorscheme diablo3
+	"colorscheme diablo3
 	"colorscheme lemon256 " Requires Solarized terminal colors as well
 	
 	" Installed manually:
@@ -222,6 +225,10 @@ let mapleader = ","
 command! W :w
 command! Q :q
 
+" For the times you forget to open files as root/sudo
+" Command: :w!!
+cmap w!! w !sudo tee % >/dev/null
+
 " Search and replace the word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
@@ -264,16 +271,19 @@ map <Leader>r :RopeRename<CR>
 " Load the Gundo window
 map <leader>g :GundoToggle<CR>
 
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+" Neocomplcache
+" <CR>: close popup and save indent
+inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
 " <TAB>: completion.
 autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" <C-h>, <BS>: close popup and delete backword char.
+" <C-h>, <BS>: close popup and delete backword char
 inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplcache#close_popup()
 inoremap <expr><C-e> neocomplcache#cancel_popup()
+" Plugin key-mappings (SnipMate)
+imap <C-k> <Plug>(neocomplcache_snippets_expand)
+smap <C-k> <Plug>(neocomplcache_snippets_expand)
 
 " Set working directory
 nnoremap <Leader>. :lcd %:p:h<CR>
@@ -320,13 +330,13 @@ function! ColorColumn()
 endfunction
 
 " Use pandoc syntax for markdown files
-autocmd BufRead,BufNewFile *.md set filetype=pandoc
+"autocmd BufRead,BufNewFile *.md set filetype=pandoc
 autocmd FileType pandoc call ColorColumn()
-autocmd FileType pandoc set wrap wrapmargin=2 textwidth=72
+autocmd FileType pandoc set wrap wrapmargin=2 textwidth=78
 
 " Enable wrapping for txt files
 "autocmd BufRead,BufNewFile *.txt call ColorColumn()
-autocmd BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=72
+autocmd BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=78
 
 " make files uses real tabs
 autocmd FileType make set noexpandtab

@@ -11,15 +11,15 @@ export LANG=en_GB.UTF-8
 # Files to ignore when auto-completing
 export FIGNORE=.pyc:.o:.git:.svn:.class:.beam
 
-export HISTCONTROL=ignoredups
+export HISTCONTROL=ignoredups:ignorespace
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
 
 # Add colors, line-numbers, case-insensitive search and
 # excludes .svn/.git dirs from search result to grep
 alias grep="grep -Iin --color --exclude=*\.{svn,git}*"
-
-#if [ -e ~/.pythonrc.py ]; then
-#	export PYTHONSTARTUP=$HOME/.pythonrc.py
-#fi
 
 alias l="ls"
 alias ls="ls -GF"
@@ -33,15 +33,7 @@ alias untar="tar xvzf"
 alias vimrc="$EDITOR ~/.vimrc"
 alias gvimrc="$EDITOR ~/.gvimrc"
 
-# Less Colors for Man Pages
-#export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
-#export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
-#export LESS_TERMCAP_me=$'\E[0m'           # end mode
-#export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
-#export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
-#export LESS_TERMCAP_ue=$'\E[0m'           # end underline
-#export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
-
+# Add colors to the man page
 man() {
 	env \
 		LESS_TERMCAP_mb=$(printf "\e[1;31m") \
@@ -87,9 +79,9 @@ branch_color () {
 	then
 		if git diff --quiet 2>/dev/null >&2
 		then
-			echo ${Green}
+			echo -ne ${Green}
 		else
-			echo ${Red}
+			echo -ne ${Red}
 		fi
 	else
 		return 0
@@ -117,7 +109,11 @@ parse_svn_repository_root() {
 	svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
 }
 
-source ~/.git-completion.bash
+# Mostly for the $__git_ps1 variable
+if [ -e ~/.git-completion.bash ]; then
+	source ~/.git-completion.bash
+fi
+
 # Prompt
 _PS1prefix="\[${LightGreen}\]>>> "
 _PS1user="\[${LightRed}\]\u\[${NoColor}\]"
@@ -129,7 +125,7 @@ export PS1="${_PS1prefix}${_PS1user}${_PS1meta1}${_PS1meta2git}${_PS1meta2svn}${
 
 # Set the window title
 alias _userpwd='/usr/bin/perl -e '"'"'use Cwd;my $d=cwd();my $h=$ENV{"HOME"};my $dl=length($d);my $hl=length($h);if(($dl>=$hl)&&($h==substr($d,$hl))){print "~".substr($d,$hl,$dl);}else{print $d;}'"'"
-export PROMPT_COMMAND='echo -ne "\033]0;`hostname -s`:`_userpwd`\007"'
+export PROMPT_COMMAND='echo -ne "\033]0;`hostname -s`: `_userpwd`\007"'
 
 # End rsms config
 

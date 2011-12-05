@@ -94,6 +94,7 @@ Bundle 'Diablo3'
 Bundle 'lemon256'
 Bundle 'jpo/vim-railscasts-theme'
 Bundle 'github-theme'
+Bundle 'Lucius'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |

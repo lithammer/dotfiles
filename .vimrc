@@ -47,6 +47,7 @@ Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'Shougo/neocomplcache'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'majutsushi/tagbar'
+Bundle 'hallettj/jslint.vim'
 
 if has("python")
 	Bundle 'kevinw/pyflakes-vim'
@@ -79,6 +80,7 @@ Bundle 'Diablo3'
 Bundle 'jpo/vim-railscasts-theme'
 Bundle 'github-theme'
 Bundle 'Lucius'
+Bundle 'ChrisKempson/Vim-Tomorrow-Theme'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
@@ -108,13 +110,14 @@ if has("gui_running")
 	"colorscheme railscasts
 	"colorscheme robokai
 	"colorscheme solarized
+	"colorscheme hemisu
+	"colorscheme Tomorrow-Night
+	"colorscheme Tomorrow-Night-Eighties
 
 	" Installed manually:
 
 	"colorscheme hunch-dark
 	"colorscheme hunch-dark-dimmed
-	"colorscheme tomorrow-night
-	"colorscheme tomorrow-night-eighties
 else
 	colorscheme diablo3
 	"colorscheme ir_black
@@ -124,11 +127,8 @@ else
 	"colorscheme neverland2
 	"colorscheme robokai
 	"colorscheme solarized
-	
-	" Installed manually:
-
-	"colorscheme tomorrow-night
-	"colorscheme tomorrow-night-eighties
+	"colorscheme Tomorrow-Night
+	"colorscheme Tomorrow-Night-Eighties
 endif
 
 " Extended matching for the % command, good for HTML/XML tags
@@ -168,7 +168,7 @@ set cursorline
 set backspace=indent,eol,start
 
 " Always show the statusline
-set laststatus=2            " Always show statusline
+set laststatus=2
 set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
 
 set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>

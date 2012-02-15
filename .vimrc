@@ -80,7 +80,7 @@ Bundle 'Diablo3'
 Bundle 'jpo/vim-railscasts-theme'
 Bundle 'github-theme'
 Bundle 'Lucius'
-Bundle 'ChrisKempson/Vim-Tomorrow-Theme'
+Bundle 'chriskempson/Vim-Tomorrow-Theme'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |

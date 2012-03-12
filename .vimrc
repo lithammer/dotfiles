@@ -40,21 +40,22 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
-Bundle 'fs111/pydoc.vim'
 Bundle 'ap/vim-css-color'
-Bundle 'vim-pandoc/vim-pandoc'
 "Bundle 'AutoComplPop'
 Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/neocomplcache-snippets-complete'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'majutsushi/tagbar'
+Bundle 'kien/ctrlp.vim'
+
+" Syntax / language plugins
+Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'fs111/pydoc.vim'
 Bundle 'hallettj/jslint.vim'
 
 if has("python")
+	Bundle 'nvie/vim-flake8'
 	Bundle 'kevinw/pyflakes-vim'
-endif
-
-if has("ruby")
-	Bundle 'wincent/Command-T'
 endif
 
 " Plugin variables
@@ -69,6 +70,8 @@ let g:Powerline_symbols = 'fancy'            " Custom font tokens
 
 let g:netrw_hide=1
 let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
+
+let $JS_CMD='node'                           " Hack for jslint to find interpreter
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
@@ -217,6 +220,7 @@ set suffixes+=.class,.pyc,.beam,jpe?g,.png,.gif
 " names
 set wildignore+=.svn,CVS,.git,.hg,*.swp,*.o,*.obj,*.rbc,*.class,*.pyc,*.beam,*jpe?g,*.png,*.gif
 set wildmenu
+set wildmode=list:longest,list:full
 set completeopt=menuone,longest,preview
 
 " +---------------------------------------------------------------------------+
@@ -253,9 +257,6 @@ noremap <Leader>n :NERDTreeToggle<CR>
 
 " Toggle comments (NERDComment)
 map <Leader>c :call NERDComment(0, 'toggle')<CR>
-
-" CommandT
-map <Leader>f :CommandT<CR>
 
 " Neocomplcache
 " <CR>: close popup and save indent

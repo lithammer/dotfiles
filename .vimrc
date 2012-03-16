@@ -45,13 +45,15 @@ Bundle 'ap/vim-css-color'
 Bundle 'Shougo/neocomplcache'
 Bundle 'Shougo/neocomplcache-snippets-complete'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'Lokaltog/vim-easymotion'
 Bundle 'majutsushi/tagbar'
 Bundle 'kien/ctrlp.vim'
+Bundle 'sjl/gundo.vim'
 
 " Syntax / language plugins
 Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'fs111/pydoc.vim'
-Bundle 'hallettj/jslint.vim'
+"Bundle 'hallettj/jslint.vim'
 
 if has("python")
 	Bundle 'nvie/vim-flake8'
@@ -83,7 +85,8 @@ Bundle 'Diablo3'
 Bundle 'jpo/vim-railscasts-theme'
 Bundle 'github-theme'
 Bundle 'Lucius'
-Bundle 'chriskempson/Vim-Tomorrow-Theme'
+Bundle 'chriskempson/vim-tomorrow-theme'
+Bundle 'noahfrederick/Hemisu'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
@@ -115,14 +118,16 @@ if has("gui_running")
 	"colorscheme solarized
 	"colorscheme hemisu
 	"colorscheme Tomorrow-Night
+	"colorscheme Tomorrow-Night-Bright
 	"colorscheme Tomorrow-Night-Eighties
+	"colorscheme Hemisu
 
 	" Installed manually:
 
 	"colorscheme hunch-dark
 	"colorscheme hunch-dark-dimmed
 else
-	colorscheme diablo3
+	"colorscheme diablo3
 	"colorscheme ir_black
 	"colorscheme lucius
 	"colorscheme molokai
@@ -131,7 +136,9 @@ else
 	"colorscheme robokai
 	"colorscheme solarized
 	"colorscheme Tomorrow-Night
+	"colorscheme Tomorrow-Night-Bright
 	"colorscheme Tomorrow-Night-Eighties
+	colorscheme Hemisu
 endif
 
 " Extended matching for the % command, good for HTML/XML tags
@@ -187,6 +194,10 @@ set smartcase
 " Assume the /g flag when search and replacing
 set gdefault
 
+" Indicates a fast terminal connection. More characters will be sent to the
+" screen for redrawing
+set ttyfast
+
 let g:tabwidth = 4
 
 exec 'set shiftwidth=' . g:tabwidth
@@ -203,22 +214,39 @@ set noexpandtab
 " Fast switching between paste modes
 set pastetoggle=<F5>
 
+" Directories for swp files
+silent execute '!mkdir -p $HOME/.vim/swap'
+silent execute '!mkdir -p $HOME/.vim/backup'
+set directory=$HOME/.vim/swap
+set backupdir=$HOME/.vim/backup
+set backup
+
 " Set encryption for Vim to blowfish
 if version >= 700
 	set cryptmethod=blowfish
 endif
 
-" Directories for swp files
-silent execute '!mkdir -p $HOME/.vim/swap'
-set directory=$HOME/.vim/swap
+function SetupEncryption()
+	set viminfo=
+	setlocal bufhidden=wipe
+	setlocal noswapfile
+	setlocal nobackup
+	setlocal nowritebackup
+	setlocal foldmethod=indent
+	setlocal foldlevel=0
+	setlocal foldclose=all
+	" move cursor over word and press 'e' to obfuscate/unobfuscate it
+	noremap e g?iw
+endfunction
 
+au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
 
 " Files with these suffixes get a lower priority when multiple files match a
 " wild card
 set suffixes+=.class,.pyc,.beam,jpe?g,.png,.gif
 " A file matching these patterns is ignored when completing file or directory
 " names
-set wildignore+=.svn,CVS,.git,.hg,*.swp,*.o,*.obj,*.rbc,*.class,*.pyc,*.beam,*jpe?g,*.png,*.gif
+set wildignore+=.svn,CVS,.git,.hg,*.swp,*.o,*.obj,*.rbc,*.class,*.pyc,*.beam,*jpe?g,*.png,*.gif,env
 set wildmenu
 set wildmode=list:longest,list:full
 set completeopt=menuone,longest,preview
@@ -257,6 +285,13 @@ noremap <Leader>n :NERDTreeToggle<CR>
 
 " Toggle comments (NERDComment)
 map <Leader>c :call NERDComment(0, 'toggle')<CR>
+
+" Load the Gundo window
+map <leader>g :GundoToggle<CR>
+
+" Rope (not installed atm)
+"map <Leader>j :RopeGotoDefinition<CR>
+"map <Leader>r :RopeRename<CR>
 
 " Neocomplcache
 " <CR>: close popup and save indent

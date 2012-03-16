@@ -120,7 +120,6 @@ if has("gui_running")
 	"colorscheme Tomorrow-Night
 	"colorscheme Tomorrow-Night-Bright
 	"colorscheme Tomorrow-Night-Eighties
-	"colorscheme Hemisu
 
 	" Installed manually:
 
@@ -138,7 +137,7 @@ else
 	"colorscheme Tomorrow-Night
 	"colorscheme Tomorrow-Night-Bright
 	"colorscheme Tomorrow-Night-Eighties
-	colorscheme Hemisu
+	colorscheme hemisu
 endif
 
 " Extended matching for the % command, good for HTML/XML tags

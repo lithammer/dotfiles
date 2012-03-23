@@ -38,7 +38,7 @@ Bundle 'honza/snipmate-snippets'
 Bundle 'gregsexton/MatchTag'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
-Bundle 'scrooloose/nerdcommenter'
+Bundle 'tomtom/tcomment_vim'
 Bundle 'scrooloose/nerdtree'
 Bundle 'ap/vim-css-color'
 "Bundle 'AutoComplPop'
@@ -87,6 +87,8 @@ Bundle 'github-theme'
 Bundle 'Lucius'
 Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
+Bundle 'nanotech/jellybeans.vim'
+Bundle 'sjl/badwolf'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
@@ -106,38 +108,25 @@ let g:molokai_original=1
 
 set background=dark
 
+"colorscheme diablo3
+"colorscheme github
+"colorscheme ir_black
+"colorscheme molokai
+"colorscheme neverland
+"colorscheme neverland2
+"colorscheme railscasts
+"colorscheme robokai
+"colorscheme solarized
+"colorscheme hemisu
+"colorscheme Tomorrow-Night
+colorscheme Tomorrow-Night-Bright
+"colorscheme Tomorrow-Night-Eighties
+"colorscheme badwolf
+"colorscheme jellybeans
+"colorscheme hunch-dark
+"colorscheme hunch-dark-dimmed
 if has("gui_running")
-	"colorscheme diablo3
 	colorscheme github
-	"colorscheme ir_black
-	"colorscheme molokai
-	"colorscheme neverland
-	"colorscheme neverland2
-	"colorscheme railscasts
-	"colorscheme robokai
-	"colorscheme solarized
-	"colorscheme hemisu
-	"colorscheme Tomorrow-Night
-	"colorscheme Tomorrow-Night-Bright
-	"colorscheme Tomorrow-Night-Eighties
-
-	" Installed manually:
-
-	"colorscheme hunch-dark
-	"colorscheme hunch-dark-dimmed
-else
-	"colorscheme diablo3
-	"colorscheme ir_black
-	"colorscheme lucius
-	"colorscheme molokai
-	"colorscheme neverland
-	"colorscheme neverland2
-	"colorscheme robokai
-	"colorscheme solarized
-	"colorscheme Tomorrow-Night
-	"colorscheme Tomorrow-Night-Bright
-	"colorscheme Tomorrow-Night-Eighties
-	colorscheme hemisu
 endif
 
 " Extended matching for the % command, good for HTML/XML tags
@@ -282,8 +271,8 @@ nnoremap <Leader>. :lcd %:p:h<CR>
 " Toggle NERDTree on/off
 noremap <Leader>n :NERDTreeToggle<CR>
 
-" Toggle comments (NERDComment)
-map <Leader>c :call NERDComment(0, 'toggle')<CR>
+" Toggle comments (TComment)
+map <Leader>c :TCommentInline<CR>
 
 " Load the Gundo window
 map <leader>g :GundoToggle<CR>

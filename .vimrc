@@ -70,6 +70,10 @@ let g:neocomplcache_enable_at_startup=1
 let g:neocomplcache_enable_smart_case=1
 let g:Powerline_symbols = 'fancy'            " Custom font tokens
 
+"let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
+let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
+let g:ctrlp_custom_ignore = '\.ctrlp$'       " Skip our custom root marker when searching
+
 let g:netrw_hide=1
 let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
 
@@ -119,10 +123,10 @@ set background=dark
 "colorscheme solarized
 "colorscheme hemisu
 "colorscheme Tomorrow-Night
-colorscheme Tomorrow-Night-Bright
+"colorscheme Tomorrow-Night-Bright
 "colorscheme Tomorrow-Night-Eighties
 "colorscheme badwolf
-"colorscheme jellybeans
+colorscheme jellybeans
 "colorscheme hunch-dark
 "colorscheme hunch-dark-dimmed
 if has("gui_running")

@@ -54,14 +54,8 @@ fi
 # excludes .svn/.git dirs from search result to grep
 alias grep="grep -Iin --color --exclude=*\.{svn,git}*"
 
-alias ls="ls -GF"
-alias l="ls -l"
-alias ll="ls -lGF"
-alias la="ls -alGF"
-alias ..="cd .."
-alias ...="cd .. ; cd .."
 alias untar="tar xvzf"
-alias pcat="pygmentize"
+alias pcat="pygmentize -O bg=dark"
 alias diff="colordiff"
 
 # Quick access to .[g]vimrc

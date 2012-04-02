@@ -1,12 +1,18 @@
+# Load ~/.extra, ~/.bash_prompt, ~/.exports, ~/.aliases and ~/.functions
+# ~/.extra can be used for settings you don’t want to commit
+for file in ~/.{extra,bash_prompt,exports,aliases,functions}; do
+	[ -r "$file" ] && source "$file"
+done
+unset file
+
 export PATH=~/.cabal/bin:$PATH                                              # Cabal (Haskell-platform)
-export PATH=/usr/local/mysql/bin:$PATH                                      # MySQL
 export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH    # Homebrew
 export PATH=/usr/local/share/aclocal:$PATH                                  # Homebrew .m4 macros
 export PATH=/usr/local/lib/node_modules:$PATH                               # Node.js
 
 export EDITOR=vim
-#export LC_ALL=en_GB.UTF-8
-export LANG=en_GB.UTF-8
+export LC_ALL=en_GB.UTF-8
+export LANG=en_GB
 
 # Files to ignore when auto-completing
 export FIGNORE=.pyc:.o:.git:.svn:.class:.beam
@@ -17,27 +23,41 @@ export HISTCONTROL=ignoredups:ignorespace
 export WORKON_HOME=$HOME/.virtualenvs
 
 # Virtualenwrapper settings
-if [ -e /usr/local/bin/virtualenvwrapper.sh ]; then
-	. /usr/local/bin/virtualenvwrapper.sh
-fi
+[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# Extended pattern matching
 shopt -s extglob
 
-if [ -e `brew --prefix`/etc/bash_completion ]; then
-	. `brew --prefix`/etc/bash_completion
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
+
+# Append to the Bash history file, rather than overwriting it
+shopt -s histappend
+
+# Autocorrect typos in path names when using `cd`
+shopt -s cdspell
+
+# Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
+[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2)" scp sftp ssh
+
+if [[ "$OSTYPE" =~ ^darwin ]]; then
+	[ -e `brew --prefix`/etc/bash_completion ] && . `brew --prefix`/etc/bash_completion
+else
+	[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 fi
 
 # Add colors, line-numbers, case-insensitive search and
 # excludes .svn/.git dirs from search result to grep
 alias grep="grep -Iin --color --exclude=*\.{svn,git}*"
 
-alias l="ls"
 alias ls="ls -GF"
+alias l="ls -l"
 alias ll="ls -lGF"
-alias lsa="ls -alGF"
+alias la="ls -alGF"
 alias ..="cd .."
 alias ...="cd .. ; cd .."
 alias untar="tar xvzf"
@@ -61,85 +81,61 @@ man() {
 			man "$@"
 }
 
-# Hacking PS1
-Black="$(tput setaf 0)"
-BlackBG="$(tput setab 0)"
-DarkGrey="$(tput bold ; tput setaf 0)"
-LightGrey="$(tput setaf 7)"
-LightGreyBG="$(tput setab 7)"
-White="$(tput bold ; tput setaf 7)"
-Red="$(tput setaf 1)"
-RedBG="$(tput setab 1)"
-LightRed="$(tput bold ; tput setaf 1)"
-Green="$(tput setaf 2)"
-GreenBG="$(tput setab 2)"
-LightGreen="$(tput bold ; tput setaf 2)"
-Brown="$(tput setaf 3)"
-BrownBG="$(tput setab 3)"
-Yellow="$(tput bold ; tput setaf 3)"
-Blue="$(tput setaf 4)"
-BlueBG="$(tput setab 4)"
-LightBlue="$(tput bold ; tput setaf 4)"
-Purple="$(tput setaf 5)"
-PurpleBG="$(tput setab 5)"
-Pink="$(tput bold ; tput setaf 5)"
-Cyan="$(tput setaf 6)"
-CyanBG="$(tput setab 6)"
-LightCyan="$(tput bold ; tput setaf 6)"
-NoColor="$(tput sgr0)" # No Color
+# @gf3’s Sexy Bash Prompt, inspired by “Extravagant Zsh Prompt”
+# Shamelessly copied from https://github.com/gf3/dotfiles
+# Screenshot: http://i.imgur.com/s0Blh.png
 
-# Colors branch based diff
-branch_color () {
-	if git rev-parse --git-dir >/dev/null 2>&1
-	then
-		if git diff --quiet 2>/dev/null >&2
-		then
-			echo -ne ${Green}
-		else
-			echo -ne ${Red}
-		fi
+if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+	export TERM=gnome-256color
+elif infocmp xterm-256color >/dev/null 2>&1; then
+	export TERM=xterm-256color
+fi
+
+if tput setaf 1 &> /dev/null; then
+	tput sgr0
+	if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+		MAGENTA=$(tput setaf 9)
+		ORANGE=$(tput setaf 172)
+		GREEN=$(tput setaf 190)
+		PURPLE=$(tput setaf 141)
+		WHITE=$(tput setaf 256)
+		YELLOW="$(tput setaf 3)"
 	else
-		return 0
+		MAGENTA=$(tput setaf 5)
+		ORANGE=$(tput setaf 4)
+		GREEN=$(tput setaf 2)
+		PURPLE=$(tput setaf 1)
+		WHITE=$(tput setaf 7)
+		YELLOW="$(tput setaf 3)"
 	fi
+	BOLD=$(tput bold)
+	RESET=$(tput sgr0)
+else
+	MAGENTA="\033[1;31m"
+	ORANGE="\033[1;33m"
+	GREEN="\033[1;32m"
+	PURPLE="\033[1;35m"
+	WHITE="\033[1;37m"
+	YELLOW='\e[1;33m'
+	BOLD=""
+	RESET="\033[m"
+fi
+
+# Disable virtualenvs PS1 prefix
+VIRTUAL_ENV_DISABLE_PROMPT=true
+
+function parse_virtualenv() {
+	echo "${VIRTUAL_ENV:+|${YELLOW}`basename ${VIRTUAL_ENV}`}"
 }
 
-# Git status for prompt
-function parse_git_dirty {
+function parse_git_dirty() {
 	[[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
 }
-function parse_git_branch {
-	git branch --no-color 2> /dev/null \
-	| sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
-}
-parse_svn_branch() {
-	parse_svn_url | sed -e 's#^'"$(parse_svn_repository_root)"'##g' | awk -F / '{print "(svn::"$1 "/" $2 ") "}'
-}
-parse_svn_url() {
-	svn info 2>/dev/null | sed -ne 's#^URL: ##p'
-}
-parse_svn_repository_root() {
-	svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
-}
 
-prompt_command () {
-	local rts=$?
-    local w=$(echo "${PWD/#$HOME/~}" | sed 's/.*\/\(.*\/.*\/.*\)$/\1/') # pwd max depth 3
-	# pwd max length L, prefix shortened pwd with m
-    local L=30 m='<'
-    [ ${#w} -gt $L ] && { local n=$((${#w} - $L + ${#m}))
-    local w="\[\033[0;32m\]${m}\[\033[0;37m\]${w:$n}\[\033[0m\]" ; } \
-    ||   local w="\[\033[0;37m\]${w}\[\033[0m\]"
-	# different colors for different return status
-    [ $rts -eq 0 ] && \
-    local p="\[\033[1;30m\]>\[\033[0;32m\]>\[\033[1;32m\]>\[\033[m\]" || \
-    local p="\[\033[1;30m\]>\[\033[0;31m\]>\[\033[1;31m\]>\[\033[m\]"
-	local venv="${VIRTUAL_ENV:+(\[${Yellow}\]`basename ${VIRTUAL_ENV}`\[${NoColor}\]) }"
-	local git="$(__git_ps1 "[\[$(branch_color)\]%s\[${NoColor}\]] ")"
-    PS1="${venv}${git}${_PS1meta2svn}${w} ${p} "
+function parse_git_branch() {
+	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
 }
-PROMPT_COMMAND=prompt_command
+PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h\[$WHITE\]\$(parse_virtualenv) \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
 
 # Local changes
-if [ -e ~/.bashrc.local ]; then
-	. ~/.bashrc.local
-fi
+[ -e ~/.bashrc.local ] && . ~/.bashrc.local

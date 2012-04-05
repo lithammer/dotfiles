@@ -70,9 +70,13 @@ let g:neocomplcache_enable_at_startup=1
 let g:neocomplcache_enable_smart_case=1
 let g:Powerline_symbols = 'fancy'            " Custom font tokens
 
-"let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
+"let g:ctrlp_working_path_mode = 0           " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
-let g:ctrlp_custom_ignore = '\.ctrlp$'       " Skip our custom root marker when searching
+" Skip our custom root marker when searching
+let g:ctrlp_custom_ignore = {
+	\ 'dir': '\node_modules$\|env$',
+	\ 'file': '\.ctrlp$',
+	\ }
 
 let g:netrw_hide=1
 let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
@@ -125,8 +129,8 @@ set background=dark
 "colorscheme Tomorrow-Night
 "colorscheme Tomorrow-Night-Bright
 "colorscheme Tomorrow-Night-Eighties
-"colorscheme badwolf
-colorscheme jellybeans
+colorscheme badwolf
+"colorscheme jellybeans
 "colorscheme hunch-dark
 "colorscheme hunch-dark-dimmed
 if has("gui_running")
@@ -144,15 +148,23 @@ set encoding=utf-8
 " Don't append a Byte-order Mark (BOM)
 set nobomb
 
+" Set the window title to 'titlestring'
+set title
+
 " Enable mouse in all modes
 set mouse=a
 " Enable copy/paste between vim and system clipboard
 set clipboard=unnamed
 
+" Change delete lines character in diffs, vert is default
+set fillchars=diff:⣿,vert:│
+
 " Don't wrap text
 set nowrap
 " Dont't wrap text in the middle of a word
 set linebreak
+" String to put at the start of lines that have been wrapped
+set showbreak=↪
 " The minimum number of columns to scroll horizontally
 set sidescroll=5
 " Minimum number of screen lines to keep above and below the cursor
@@ -173,7 +185,7 @@ set backspace=indent,eol,start
 set laststatus=2
 set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
 
-set listchars=tab:▸\ ,trail:.,eol:¬,precedes:<,extends:>
+set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
 
 " Highlight searches
 set hlsearch
@@ -206,12 +218,38 @@ set noexpandtab
 " Fast switching between paste modes
 set pastetoggle=<F5>
 
-" Directories for swp files
+" Directory for swap files
 silent execute '!mkdir -p $HOME/.vim/swap'
-silent execute '!mkdir -p $HOME/.vim/backup'
 set directory=$HOME/.vim/swap
+
+" Directory for backup files
+silent execute '!mkdir -p $HOME/.vim/backup'
 set backupdir=$HOME/.vim/backup
-set backup
+
+" Persistent undo history
+silent execute '!mkdir -p $HOME/.vim/undo'
+set undodir=$HOME/.vim/undo
+set undofile
+
+au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
+
+" Ignore these when file completing
+set wildignore+=.svn,CVS,.git,.hg            " Version control
+set wildignore+=*.aux,*.out,*.toc            " LaTeX intermediate files
+set wildignore+=*.swp                        " Vim swap files
+set wildignore+=*.o,*.obj,*.exe,*.dll        " Compiled object files
+set wildignore+=*.pyc                        " Python byte code
+set wildignore+=*.luac                       " Lua byte code
+set wildignore+=*.beam                       " Compiled Erlang files
+set wildignore+=*.class                      " Compiled Java files
+set wildignore+=*jpe?g,*.png,*.gif,*.bmp     " Images
+set wildignore+=env,node_modules             " Virtualenv and Node.js folders
+set wildignore+=lib,libs                     " Library folders
+set wildignore+=*.DS_Store                   " OS X files
+
+set wildmenu
+set wildmode=list:longest,list:full
+set completeopt=menuone,longest,preview
 
 " Set encryption for Vim to blowfish
 if version >= 700
@@ -230,18 +268,6 @@ function SetupEncryption()
 	" move cursor over word and press 'e' to obfuscate/unobfuscate it
 	noremap e g?iw
 endfunction
-
-au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
-
-" Files with these suffixes get a lower priority when multiple files match a
-" wild card
-set suffixes+=.class,.pyc,.beam,jpe?g,.png,.gif
-" A file matching these patterns is ignored when completing file or directory
-" names
-set wildignore+=.svn,CVS,.git,.hg,*.swp,*.o,*.obj,*.rbc,*.class,*.pyc,*.beam,*jpe?g,*.png,*.gif,env
-set wildmenu
-set wildmode=list:longest,list:full
-set completeopt=menuone,longest,preview
 
 " +---------------------------------------------------------------------------+
 " | Script templates                                                          |
@@ -276,7 +302,7 @@ nnoremap <Leader>. :lcd %:p:h<CR>
 noremap <Leader>n :NERDTreeToggle<CR>
 
 " Toggle comments (TComment)
-map <Leader>c :TCommentInline<CR>
+map <Leader>c :TComment<CR>
 
 " Load the Gundo window
 map <leader>g :GundoToggle<CR>
@@ -289,16 +315,17 @@ map <leader>g :GundoToggle<CR>
 " <CR>: close popup and save indent
 inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
 " <TAB>: completion.
-autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" <C-h>, <BS>: close popup and delete backword char
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" <BS>: close popup and delete backword char
 inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
-inoremap <expr><C-e> neocomplcache#cancel_popup()
 " Plugin key-mappings (SnipMate)
 imap <C-k> <Plug>(neocomplcache_snippets_expand)
 smap <C-k> <Plug>(neocomplcache_snippets_expand)
-
+" Don't display popup while navigating
+inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
@@ -316,54 +343,63 @@ nnoremap <silent> <Leader>l
       \     let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
       \ endif<CR>
 
-" <Leader>m to convert markdown files to html and open them in the background.
-" Use OS X's Print to PDF to export to PDF, or run this command:
-" $ cupsfilter file.html -o file.pdf -o media=A4
-function! MarkdownToHtml()
-	execute ':w'
-	let path = expand('%:p:h')
-	let filepath = expand('%')
-	let filename = expand('%:t:r')
-	silent execute '!mkdir -p '.path.'/html/'
-	execute '!pandoc -s --offline --html5 '.filepath.' -o '.path.'/html/'.filename.'.html'
-	silent execute '!open -g '.path.'/html/'.filename.".html"
-endfunction
-
-autocmd FileType pandoc,markdown map <Leader>m :call MarkdownToHtml() <CR><CR>
-
 " +---------------------------------------------------------------------------+
 " | Auto commands                                                             |
 " +---------------------------------------------------------------------------+
 
-" Disable the colorcolumn when switching modes. Make sure this is the
-" first autocmd for the filetype here
-autocmd FileType * setlocal colorcolumn=0
+" Only show cursorline in the current window and in normal mode.
+augroup cline
+	au!
+	au WinLeave * set nocursorline
+	au WinEnter * set cursorline
+	au InsertEnter * set nocursorline
+	au InsertLeave * set cursorline
+augroup END
+
+" Only show colorcolumn in the current window.
+augroup ccol
+    au!
+    au WinLeave * setlocal colorcolumn=0
+    au WinEnter * setlocal colorcolumn=+1
+augroup END
+
+augroup trailing
+    au!
+    au InsertEnter * :set listchars-=trail:⌴
+    au InsertLeave * :set listchars+=trail:⌴
+augroup END
 
 function! ColorColumn()
 	set colorcolumn=+1
 	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
 endfunction
 
-autocmd FileType pandoc call ColorColumn()
-autocmd FileType pandoc set wrap wrapmargin=2 textwidth=78
+au FileType pandoc call ColorColumn()
+au FileType pandoc set wrap wrapmargin=2 textwidth=78
 
 " Enable wrapping for txt files
-autocmd BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=78
+au BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=78
 
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
-autocmd FileType python setlocal expandtab tabstop=4 shiftwidth=4 textwidth=79
+au FileType python setlocal expandtab tabstop=4 shiftwidth=4 textwidth=79
 
 " Ruby uses 2 spaces for indentation
-autocmd FileType ruby setlocal expandtab tabstop=2 shiftwidth=2
+au FileType ruby setlocal expandtab tabstop=2 shiftwidth=2
+
+" Resize splits when the window is resized
+au VimResized * :wincmd =
+
+" Highlight VCS conflict markers
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " When editing a file, always jump to the last known cursor position.
-autocmd BufReadPost *
+au BufReadPost *
 	\ if line("'\"") > 0 && line("'\"") <= line("$") |
 	\     execute "normal g`\"" |
 	\ endif
 
 " Helps if you have to use another editor on the same file
-autocmd FileChangedShell *
+au FileChangedShell *
     \ echohl WarningMsg |
     \ echo 'File has been changed outside of Vim.' |
     \ echohl None
@@ -378,7 +414,7 @@ function! WarnTabs()
     endif
     call setpos('.', save_cursor)
 endfunction
-autocmd BufReadPost *.py call WarnTabs()
+au BufReadPost *.py call WarnTabs()
 
 if has("python")
 " Add the virtualenv's site-packages to vim path

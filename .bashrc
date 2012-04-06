@@ -50,18 +50,6 @@ else
 	[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 fi
 
-# Add colors, line-numbers, case-insensitive search and
-# excludes .svn/.git dirs from search result to grep
-alias grep="grep -Iin --color --exclude=*\.{svn,git}*"
-
-alias untar="tar xvzf"
-alias pcat="pygmentize -O bg=dark"
-alias diff="colordiff"
-
-# Quick access to .[g]vimrc
-alias vimrc="$EDITOR ~/.vimrc"
-alias gvimrc="$EDITOR ~/.gvimrc"
-
 # Add colors to the man page
 man() {
 	env \

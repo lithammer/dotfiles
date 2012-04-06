@@ -17,23 +17,23 @@ else
 fi
 export LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
 
-# List in long format
-alias l='ls -l'
+# ls shortcuts
+alias l='ls -l'               # List in long format
+alias lsd='ls -l | grep "^d"' # List only directories
+alias la='ls -lA'             # List all in long format, except . and ..
+alias lx='ls -lBX'            # Sort by extension
+alias lz='ls -lrS'            # Sort by size
+alias lt='ls -lrt'            # Sort by date
 
-# List only directories
-alias lsd='ls -l | grep "^d"'
+# Easy unpacking
+alias untar="tar xvzf"
 
-# List all in long format, except . and ..
-alias la='ls -lA'
+# Colorized cat
+[ -x `which pygmentize` ] && alias pcat="pygmentize -O bg=dark"
 
-# Sort by extension
-alias lx='ls -lBX'
-
-# Sort by size
-alias lz='ls -lrS'
-
-# Sort by date
-alias lt='ls -lrt'
+# Quick access to .[g]vimrc
+alias vimrc="$EDITOR ~/.vimrc"
+alias gvimrc="$EDITOR ~/.gvimrc"
 
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
@@ -49,13 +49,11 @@ alias du='du -c -h'
 alias du1='du -d 1'
 
 # Add colors, line-numbers, case-insensitive search and
-# # excludes .svn/.git dirs from search result to grep
-alias grep="grep -Iin --color --exclude=*\.{svn,git}*"
+# excludes .svn/.git dirs from search result to grep
+alias grep='grep -Iin --color --exclude="*\.{svn,git}*"'
 
 # Colorize diff
-if [ -x /usr/local/bin/colordiff ]; then
-	alias diff='colordiff'
-fi
+[ -x `which colordiff` ] && alias diff='colordiff'
 
 alias openports='netstat --all --numeric --programs --inet --inet6'
 
@@ -107,11 +105,6 @@ alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && k
 # URL-encode strings
 alias urlencode='python -c "import sys, urllib as ul; print(ul.quote_plus(sys.argv[1]));"'
 
-# Disable Spotlight
-alias spotoff="sudo mdutil -a -i off"
-# Enable Spotlight
-alias spoton="sudo mdutil -a -i on"
-
 # PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
 alias plistbuddy="/usr/libexec/PlistBuddy"
 
@@ -119,3 +112,5 @@ alias plistbuddy="/usr/libexec/PlistBuddy"
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
 	alias "$method"="lwp-request -m '$method'"
 done
+
+# vim: set ft=sh:

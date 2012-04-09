@@ -67,8 +67,6 @@ let g:ctrlp_custom_ignore = {
 	\ 'file': '\.ctrlp$',
 	\ }
 
-let $JS_CMD='node'                           " Hack for jslint to find interpreter
-
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'robokai'

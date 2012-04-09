@@ -32,8 +32,8 @@ alias untar="tar xvzf"
 [ -x `which pygmentize` ] && alias pcat="pygmentize -O bg=dark"
 
 # Quick access to .[g]vimrc
-alias vimrc="$EDITOR ~/.vimrc"
-alias gvimrc="$EDITOR ~/.gvimrc"
+alias vimrc="vim ~/.vimrc"
+alias gvimrc="vim ~/.gvimrc"
 
 # Enable aliases to be sudo’ed
 alias sudo='sudo '

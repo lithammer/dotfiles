@@ -34,10 +34,10 @@ Bundle 'Shougo/neocomplcache'
 Bundle 'SirVer/ultisnips'
 Bundle 'ap/vim-css-color'
 Bundle 'ervandew/supertab'
-Bundle 'fs111/pydoc.vim'
 Bundle 'gregsexton/MatchTag'
 "Bundle 'honza/snipmate-snippets'
 Bundle 'kien/ctrlp.vim'
+Bundle 'klen/python-mode'
 Bundle 'majutsushi/tagbar'
 "Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
@@ -58,6 +58,33 @@ let g:Powerline_symbols = 'fancy'            " Custom font tokens
 let g:UltiSnipsJumpForwardTrigger='<Tab>'
 let g:neocomplcache_enable_at_startup=1
 let g:neocomplcache_enable_smart_case=1
+
+let g:pymode_doc = 1                         " Load show documentation plugin
+let g:pymode_doc_key = 'K'                   " Key for show python documentation
+let g:pymode_run = 1                         " Load run code plugin
+let g:pymode_run_key = '<Leader>r'           " Key for run python code
+let g:pymode_lint = 0                        " Disable pylint code plugin
+let g:pymode_rope = 1                        " Load rope plugin
+let g:pymode_rope_auto_project = 1           " Auto create and open ropeproject
+let g:pymode_rope_enable_autoimport = 1      " Enable autoimport
+let g:pymode_rope_autoimport_generate = 1    " Auto generate global cache
+let g:pymode_rope_autoimport_underlineds = 0
+let g:pymode_rope_codeassist_maxfixes = 10
+let g:pymode_rope_sorted_completions = 1
+let g:pymode_rope_extended_complete = 1
+let g:pymode_rope_autoimport_modules = ["os","shutil","datetime"]
+let g:pymode_rope_confirm_saving = 1
+let g:pymode_rope_global_prefix = "<C-x>p"
+let g:pymode_rope_local_prefix = "<C-c>r"
+let g:pymode_rope_vim_completion = 1
+let g:pymode_rope_guess_project = 1
+let g:pymode_rope_goto_def_newwin = 0
+let g:pymode_rope_always_show_complete_menu = 0
+let g:pymode_folding = 0                     " Disable python folding
+let g:pymode_motion = 1                      " Enable python objects and motion
+let g:pymode_virtualenv = 1                  " Auto fix vim python paths if virtualenv enabled
+let g:pymode_breakpoint = 0                  " Disable breakpoints plugin
+
 
 "let g:ctrlp_working_path_mode = 0           " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers

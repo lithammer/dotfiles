@@ -4,16 +4,13 @@
 " |                                                                           |
 " | Some highlights:                                                          |
 " |   ,n = toggle NERDTree off and on                                         |
-" |   ,c = comment block/line with NERDComment                                |
+" |   ,c = comment block/line with TComment                                   |
 " |                                                                           |
-" |   ,f = CommandT shortcut                                                  |
 " |   ,p = go to previous file                                                |
 " |                                                                           |
 " |   ,i = toggle invisibles                                                  |
 " |   ,v = toggle paste mode on/off                                           |
 " |   ,<Space> = clear search highlight                                       |
-" |                                                                           |
-" |   ,m = compile markdown file to HTML                                      |
 " |                                                                           |
 " |   ,s = search and replace word under cursor                               |
 " |                                                                           |
@@ -29,46 +26,38 @@ call vundle#rc()
 " Required!
 Bundle 'gmarik/vundle'
 
-" Dependencies for Snipmate (sigh!)
-Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'tomtom/tlib_vim'
-Bundle 'garbas/vim-snipmate'
-Bundle 'honza/snipmate-snippets'
-
-Bundle 'gregsexton/MatchTag'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-surround'
-Bundle 'tomtom/tcomment_vim'
-Bundle 'scrooloose/nerdtree'
-Bundle 'ap/vim-css-color'
 "Bundle 'AutoComplPop'
-Bundle 'Shougo/neocomplcache'
-Bundle 'Shougo/neocomplcache-snippets-complete'
-Bundle 'Lokaltog/vim-powerline'
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'majutsushi/tagbar'
-Bundle 'kien/ctrlp.vim'
-Bundle 'sjl/gundo.vim'
-
-" Syntax / language plugins
-Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'Shougo/neocomplcache'
+"Bundle 'Shougo/neocomplcache-snippets-complete'
+Bundle 'SirVer/ultisnips'
+Bundle 'ap/vim-css-color'
+Bundle 'ervandew/supertab'
 Bundle 'fs111/pydoc.vim'
-"Bundle 'hallettj/jslint.vim'
-
-if has("python")
-	Bundle 'nvie/vim-flake8'
-	Bundle 'kevinw/pyflakes-vim'
-endif
+Bundle 'gregsexton/MatchTag'
+"Bundle 'honza/snipmate-snippets'
+Bundle 'kien/ctrlp.vim'
+Bundle 'majutsushi/tagbar'
+"Bundle 'scrooloose/nerdcommenter'
+Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/syntastic'
+Bundle 'sjl/gundo.vim'
+Bundle 'tomtom/tcomment_vim'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-surround'
+Bundle 'vim-pandoc/vim-pandoc'
 
 " Plugin variables
 let NERDCreateDefaultMappings=0              " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore=['\.pyc$']                " Browser skiplist
 let NERDTreeMouseMode=1                      " Single click for everything
-let g:pyflakes_use_quickfix=0                " Don't let pyflakes use the quickfix window
 let g:CommandTMatchWindowAtTop=1
+let g:Powerline_symbols = 'fancy'            " Custom font tokens
+let g:UltiSnipsJumpForwardTrigger='<Tab>'
 let g:neocomplcache_enable_at_startup=1
 let g:neocomplcache_enable_smart_case=1
-let g:Powerline_symbols = 'fancy'            " Custom font tokens
 
 "let g:ctrlp_working_path_mode = 0           " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
@@ -77,9 +66,6 @@ let g:ctrlp_custom_ignore = {
 	\ 'dir': '\node_modules$\|env$',
 	\ 'file': '\.ctrlp$',
 	\ }
-
-let g:netrw_hide=1
-let g:netrw_list_hide='^\..*,\.pyc$'         " Comma separated list for hiding files
 
 let $JS_CMD='node'                           " Hack for jslint to find interpreter
 
@@ -116,24 +102,25 @@ let g:molokai_original=1
 
 set background=dark
 
+"colorscheme Tomorrow-Night
+"colorscheme Tomorrow-Night-Bright
+"colorscheme Tomorrow-Night-Eighties
+"colorscheme badwolf
 "colorscheme diablo3
 "colorscheme github
+"colorscheme hemisu
+"colorscheme hunch-dark
+"colorscheme hunch-dark-dimmed
 "colorscheme ir_black
+"colorscheme jellybeans
+colorscheme lucius
 "colorscheme molokai
 "colorscheme neverland
 "colorscheme neverland2
 "colorscheme railscasts
 "colorscheme robokai
 "colorscheme solarized
-"colorscheme hemisu
-"colorscheme Tomorrow-Night
-"colorscheme Tomorrow-Night-Bright
-"colorscheme Tomorrow-Night-Eighties
-colorscheme badwolf
-"colorscheme jellybeans
-"colorscheme hunch-dark
-"colorscheme hunch-dark-dimmed
-if has("gui_running")
+if has('gui_running')
 	colorscheme github
 endif
 
@@ -273,14 +260,14 @@ endfunction
 " | Script templates                                                          |
 " +---------------------------------------------------------------------------+
 
-au BufNewFile *.sh  so ~/.vim/templates/tpl.sh
-au BufNewFile *.py  so ~/.vim/templates/tpl.py
+au BufNewFile *.sh so ~/.vim/templates/tpl.sh
+au BufNewFile *.py so ~/.vim/templates/tpl.py
 
 " +---------------------------------------------------------------------------+
 " | Remaps & Shortcuts                                                        |
 " +---------------------------------------------------------------------------+
 
-let mapleader = ","
+let mapleader = ','
 
 " For the times you forget to open files as root/sudo
 " Command: :w!!
@@ -289,7 +276,7 @@ cmap w!! %!sudo tee > /dev/null %
 " Search and replace the word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
-" ,<Space> to clear search highlight
+" <Leader><Space> to clear search highlight
 nnoremap <Leader><Space> :nohl<CR>
 
 " Go to previous file
@@ -305,7 +292,7 @@ noremap <Leader>n :NERDTreeToggle<CR>
 map <Leader>c :TComment<CR>
 
 " Load the Gundo window
-map <leader>g :GundoToggle<CR>
+map <Leader>g :GundoToggle<CR>
 
 " Rope (not installed atm)
 "map <Leader>j :RopeGotoDefinition<CR>
@@ -314,18 +301,24 @@ map <leader>g :GundoToggle<CR>
 " Neocomplcache
 " <CR>: close popup and save indent
 inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
-" <TAB>: completion.
-au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" <BS>: close popup and delete backword char
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+
+"" <Tab>: completion.
+"au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"au VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
+
 " Plugin key-mappings (SnipMate)
-imap <C-k> <Plug>(neocomplcache_snippets_expand)
-smap <C-k> <Plug>(neocomplcache_snippets_expand)
-" Don't display popup while navigating
+"imap <C-k> <Plug>(neocomplcache_snippets_expand)
+"smap <C-k> <Plug>(neocomplcache_snippets_expand)
+
+" Don't display popup while navigating and deleting
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
 inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
 inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
 inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+
+" SuperTab like snippets behavior.
+"imap <expr><Tab> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<Tab>"
 
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
@@ -370,7 +363,7 @@ augroup trailing
 augroup END
 
 function! ColorColumn()
-	set colorcolumn=+1
+	setlocal colorcolumn=+1
 	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
 endfunction
 

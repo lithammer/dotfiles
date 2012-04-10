@@ -34,6 +34,7 @@ Bundle 'Shougo/neocomplcache'
 Bundle 'SirVer/ultisnips'
 Bundle 'ap/vim-css-color'
 Bundle 'ervandew/supertab'
+Bundle 'fs111/pydoc.vim'
 Bundle 'gregsexton/MatchTag'
 "Bundle 'honza/snipmate-snippets'
 Bundle 'kien/ctrlp.vim'
@@ -50,41 +51,54 @@ Bundle 'tpope/vim-surround'
 Bundle 'vim-pandoc/vim-pandoc'
 
 " Plugin variables
-let NERDCreateDefaultMappings=0              " Don't create default NERDCommenter keymappings
-let NERDTreeIgnore=['\.pyc$']                " Browser skiplist
-let NERDTreeMouseMode=1                      " Single click for everything
-let g:CommandTMatchWindowAtTop=1
-let g:Powerline_symbols = 'fancy'            " Custom font tokens
-let g:UltiSnipsJumpForwardTrigger='<Tab>'
-let g:neocomplcache_enable_at_startup=1
-let g:neocomplcache_enable_smart_case=1
+let NERDCreateDefaultMappings = 0             " Don't create default NERDCommenter keymappings
+let NERDTreeIgnore = ['\.pyc$']               " Browser skiplist
+let NERDTreeMouseMode = 1                     " Single click for everything
+let g:syntastic_enable_signs = 1
+let g:syntastic_enable_balloons = 1
+let g:syntastic_check_on_open = 1
+let g:CommandTMatchWindowAtTop = 1
+let g:Powerline_symbols  =  'fancy'           " Custom font tokens
+let g:UltiSnipsJumpForwardTrigger = '<Tab>'
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_smart_case = 1
 
-let g:pymode_doc = 1                         " Load show documentation plugin
-let g:pymode_doc_key = 'K'                   " Key for show python documentation
-let g:pymode_run = 1                         " Load run code plugin
+let g:pymode_doc = 0                         " Load show documentation plugin
+let g:pymode_run = 0                         " Load run code plugin
 let g:pymode_run_key = '<Leader>r'           " Key for run python code
 let g:pymode_lint = 0                        " Disable pylint code plugin
+
 let g:pymode_rope = 1                        " Load rope plugin
 let g:pymode_rope_auto_project = 1           " Auto create and open ropeproject
 let g:pymode_rope_enable_autoimport = 1      " Enable autoimport
 let g:pymode_rope_autoimport_generate = 1    " Auto generate global cache
 let g:pymode_rope_autoimport_underlineds = 0
-let g:pymode_rope_codeassist_maxfixes = 10
-let g:pymode_rope_sorted_completions = 1
 let g:pymode_rope_extended_complete = 1
 let g:pymode_rope_autoimport_modules = ["os","shutil","datetime"]
 let g:pymode_rope_confirm_saving = 1
-let g:pymode_rope_global_prefix = "<C-x>p"
-let g:pymode_rope_local_prefix = "<C-c>r"
-let g:pymode_rope_vim_completion = 1
+let g:pymode_rope_vim_completion = 0
 let g:pymode_rope_guess_project = 1
 let g:pymode_rope_goto_def_newwin = 0
 let g:pymode_rope_always_show_complete_menu = 0
+
 let g:pymode_folding = 0                     " Disable python folding
-let g:pymode_motion = 1                      " Enable python objects and motion
+let g:pymode_motion = 0                      " Disable python objects and motion
 let g:pymode_virtualenv = 1                  " Auto fix vim python paths if virtualenv enabled
 let g:pymode_breakpoint = 0                  " Disable breakpoints plugin
+let g:pymode_utils_whitespaces = 0           " Disable autoremove unused whitespaces
 
+let g:pymode_syntax = 1                      " Enable pymode's custom syntax highlighting
+let g:pymode_syntax_all = 0                  " Don't enable all python highlightings
+let g:pymode_syntax_print_as_function = 0    " Highlight 'print' as function
+let g:pymode_syntax_indent_errors = 1        " Highlight indentation errors
+let g:pymode_syntax_space_errors = 1         " Highlight trailing spaces
+let g:pymode_syntax_string_formatting = 1    " Highlight string formatting
+let g:pymode_syntax_string_format = 1        " Highlight str.format syntax
+let g:pymode_syntax_string_templates = 1     " Highlight string.Template syntax
+let g:pymode_syntax_doctests = 1             " Highlight doc-tests
+let g:pymode_syntax_builtin_objs = 1         " Highlight builtin objects (__doc__, self, etc)
+let g:pymode_syntax_builtin_funcs = 1        " Highlight builtin functions
+let g:pymode_syntax_highlight_exceptions = 1 " Highlight exceptions
 
 "let g:ctrlp_working_path_mode = 0           " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
@@ -131,14 +145,14 @@ set background=dark
 "colorscheme Tomorrow-Night-Bright
 "colorscheme Tomorrow-Night-Eighties
 "colorscheme badwolf
-"colorscheme diablo3
+colorscheme diablo3
 "colorscheme github
 "colorscheme hemisu
 "colorscheme hunch-dark
 "colorscheme hunch-dark-dimmed
 "colorscheme ir_black
 "colorscheme jellybeans
-colorscheme lucius
+"colorscheme lucius
 "colorscheme molokai
 "colorscheme neverland
 "colorscheme neverland2
@@ -320,7 +334,7 @@ map <Leader>c :TComment<CR>
 map <Leader>g :GundoToggle<CR>
 
 " Rope (not installed atm)
-"map <Leader>j :RopeGotoDefinition<CR>
+map <Leader>j :RopeGotoDefinition<CR>
 "map <Leader>r :RopeRename<CR>
 
 " Neocomplcache

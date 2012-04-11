@@ -5,10 +5,12 @@ for file in ~/.{extra,bash_prompt,exports,aliases,functions}; do
 done
 unset file
 
-export PATH=~/.cabal/bin:$PATH                                              # Cabal (Haskell-platform)
-export PATH=/usr/local/share/python:/usr/local/bin:/usr/local/sbin:$PATH    # Homebrew
-export PATH=/usr/local/share/aclocal:$PATH                                  # Homebrew .m4 macros
-export PATH=/usr/local/lib/node_modules:$PATH                               # Node.js
+if [[ "$OSTYPE" =~ ^darwin ]]; then
+	# Put /usr/local/bin at the front, not the end
+	export PATH=/usr/local/bin:$PATH
+	# Cabal (Haskell-Platform)
+	export PATH=$HOME/.cabal/bin:$PATH
+fi
 
 export EDITOR=vim
 export LC_ALL=en_GB.UTF-8

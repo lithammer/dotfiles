@@ -30,7 +30,6 @@ Bundle 'gmarik/vundle'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'Shougo/neocomplcache'
-"Bundle 'Shougo/neocomplcache-snippets-complete'
 Bundle 'SirVer/ultisnips'
 Bundle 'ap/vim-css-color'
 Bundle 'ervandew/supertab'
@@ -51,21 +50,21 @@ Bundle 'tpope/vim-surround'
 Bundle 'vim-pandoc/vim-pandoc'
 
 " Plugin variables
-let NERDCreateDefaultMappings = 0             " Don't create default NERDCommenter keymappings
-let NERDTreeIgnore = ['\.pyc$']               " Browser skiplist
-let NERDTreeMouseMode = 1                     " Single click for everything
+let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
+let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
+let NERDTreeMouseMode = 1                    " Single click for everything
 let g:syntastic_enable_signs = 1
 let g:syntastic_enable_balloons = 1
+let g:syntastic_echo_current_error = 1
 let g:syntastic_check_on_open = 1
-let g:CommandTMatchWindowAtTop = 1
-let g:Powerline_symbols  =  'fancy'           " Custom font tokens
+let g:Powerline_symbols  = 'fancy'           " Custom font tokens
 let g:UltiSnipsJumpForwardTrigger = '<Tab>'
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
+let g:SuperTabDefaultCompletionType = 'context'
 
-let g:pymode_doc = 0                         " Load show documentation plugin
+let g:pymode_doc = 0                         " Don't load show documentation plugin
 let g:pymode_run = 0                         " Load run code plugin
-let g:pymode_run_key = '<Leader>r'           " Key for run python code
 let g:pymode_lint = 0                        " Disable pylint code plugin
 
 let g:pymode_rope = 1                        " Load rope plugin
@@ -74,7 +73,6 @@ let g:pymode_rope_enable_autoimport = 1      " Enable autoimport
 let g:pymode_rope_autoimport_generate = 1    " Auto generate global cache
 let g:pymode_rope_autoimport_underlineds = 0
 let g:pymode_rope_extended_complete = 1
-let g:pymode_rope_autoimport_modules = ["os","shutil","datetime"]
 let g:pymode_rope_confirm_saving = 1
 let g:pymode_rope_vim_completion = 0
 let g:pymode_rope_guess_project = 1
@@ -89,7 +87,7 @@ let g:pymode_utils_whitespaces = 0           " Disable autoremove unused whitesp
 
 let g:pymode_syntax = 1                      " Enable pymode's custom syntax highlighting
 let g:pymode_syntax_all = 0                  " Don't enable all python highlightings
-let g:pymode_syntax_print_as_function = 0    " Highlight 'print' as function
+let g:pymode_syntax_print_as_function = 1    " Highlight 'print' as function
 let g:pymode_syntax_indent_errors = 1        " Highlight indentation errors
 let g:pymode_syntax_space_errors = 1         " Highlight trailing spaces
 let g:pymode_syntax_string_formatting = 1    " Highlight string formatting
@@ -100,11 +98,11 @@ let g:pymode_syntax_builtin_objs = 1         " Highlight builtin objects (__doc_
 let g:pymode_syntax_builtin_funcs = 1        " Highlight builtin functions
 let g:pymode_syntax_highlight_exceptions = 1 " Highlight exceptions
 
-"let g:ctrlp_working_path_mode = 0           " 0 - don't manage working directory.
+let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
 " Skip our custom root marker when searching
 let g:ctrlp_custom_ignore = {
-	\ 'dir': '\node_modules$\|env$',
+	\ 'dir': '\.ropeproject$\|node_modules$\|env$',
 	\ 'file': '\.ctrlp$',
 	\ }
 
@@ -160,7 +158,8 @@ colorscheme diablo3
 "colorscheme robokai
 "colorscheme solarized
 if has('gui_running')
-	colorscheme github
+	set background=light
+	colorscheme hemisu
 endif
 
 " Extended matching for the % command, good for HTML/XML tags
@@ -180,7 +179,10 @@ set title
 " Enable mouse in all modes
 set mouse=a
 " Enable copy/paste between vim and system clipboard
-set clipboard=unnamed
+"set clipboard=unnamed
+noremap y "*y
+noremap yy "*Y
+noremap Y "*y$
 
 " Change delete lines character in diffs, vert is default
 set fillchars=diff:⣿,vert:│
@@ -413,7 +415,21 @@ au FileType pandoc set wrap wrapmargin=2 textwidth=78
 au BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=78
 
 " Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
-au FileType python setlocal expandtab tabstop=4 shiftwidth=4 textwidth=79
+function! SetupPython()
+	setlocal cinwords=if,elif,else,for,while,try,except,finally,def,class
+	setlocal cindent
+	setlocal tabstop=4
+	setlocal softtabstop=4
+	setlocal shiftwidth=4
+	setlocal shiftround
+	setlocal smartindent
+	setlocal smarttab
+	setlocal expandtab
+	setlocal textwidth=80
+	" Don't autowrap text based on 'textwidth'
+	setlocal formatoptions-=t
+endfunction
+au FileType python call SetupPython()
 
 " Ruby uses 2 spaces for indentation
 au FileType ruby setlocal expandtab tabstop=2 shiftwidth=2

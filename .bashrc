@@ -8,6 +8,8 @@ unset file
 if [[ "$OSTYPE" =~ ^darwin ]]; then
 	# Put /usr/local/bin at the front, not the end
 	export PATH=/usr/local/bin:$PATH
+	# Homebrew installs Python distribute here, needed for easy_install/pip
+	export PATH=/usr/local/share/python:/usr/local/share/python3:$PATH
 	# Cabal (Haskell-Platform)
 	export PATH=$HOME/.cabal/bin:$PATH
 fi

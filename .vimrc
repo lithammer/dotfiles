@@ -49,6 +49,8 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'vim-pandoc/vim-pandoc'
 
+Bundle 'nginx.vim'
+
 " Plugin variables
 let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
@@ -100,7 +102,7 @@ let g:pymode_syntax_builtin_objs = 1         " Highlight builtin objects (__doc_
 let g:pymode_syntax_builtin_funcs = 1        " Highlight builtin functions
 let g:pymode_syntax_highlight_exceptions = 1 " Highlight exceptions
 
-let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
+"let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
 " Skip our custom root marker when searching
 let g:ctrlp_custom_ignore = {
@@ -142,9 +144,9 @@ set background=dark
 
 "colorscheme Tomorrow-Night
 "colorscheme Tomorrow-Night-Bright
-"colorscheme Tomorrow-Night-Eighties
+colorscheme Tomorrow-Night-Eighties
 "colorscheme badwolf
-colorscheme diablo3
+"colorscheme diablo3
 "colorscheme github
 "colorscheme hemisu
 "colorscheme hunch-dark
@@ -254,7 +256,7 @@ au BufNewFile *.sh so ~/.vim/templates/tpl.sh
 au BufNewFile *.py so ~/.vim/templates/tpl.py
 
 " +---------------------------------------------------------------------------+
-" | Remaps & Shortcuts                                                        |
+" | Mappings                                                                  |
 " +---------------------------------------------------------------------------+
 
 let mapleader = ','
@@ -264,9 +266,8 @@ noremap y "*y
 noremap yy "*Y
 noremap Y "*y$
 
-" For the times you forget to open files as root/sudo
-" Command: :w!!
-cmap w!! %!sudo tee > /dev/null %
+" Don't move on *
+nnoremap * *<C-o>
 
 " Search and replace the word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
@@ -279,34 +280,6 @@ map <Leader>p <C-^>
 
 " Set working directory
 nnoremap <Leader>. :lcd %:p:h<CR>
-
-" Toggle NERDTree on/off
-noremap <Leader>n :NERDTreeToggle<CR>
-
-" Toggle comments (TComment)
-map <Leader>c :TComment<CR>
-
-" Load the Gundo window
-map <Leader>g :GundoToggle<CR>
-
-" Rope (not installed atm)
-map <Leader>j :RopeGotoDefinition<CR>
-"map <Leader>r :RopeRename<CR>
-
-"" Neocomplcache
-" <CR>: close popup and save indent
-inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
-
-"" <Tab>: completion.
-"au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-"au VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
-
-" Don't display popup while navigating and backspacing
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
@@ -323,6 +296,32 @@ nnoremap <silent> <Leader>l
       \ else <Bar>
       \     let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
       \ endif<CR>
+
+" Toggle NERDTree on/off
+noremap <Leader>n :NERDTreeToggle<CR>
+
+" Toggle comments (TComment)
+map <Leader>c :TComment<CR>
+
+" Load the Gundo window
+map <Leader>g :GundoToggle<CR>
+
+" Rope (not installed atm)
+map <Leader>j :RopeGotoDefinition<CR>
+"map <Leader>r :RopeRename<CR>
+
+" Neocomplcache
+" <Tab>: completion.
+"au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"au VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
+
+" Don't display popup while navigating, backspacing and linebreaking
+inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
 " +---------------------------------------------------------------------------+
 " | Auto commands                                                             |
@@ -360,10 +359,21 @@ au VimResized * :wincmd =
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
+" Visual Mode */# from Scrooloose
+function! s:VSetSearch()
+	let temp = @@
+	norm! gvy
+	let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+	let @@ = temp
+endfunction
+
+vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
+vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
+
 " When editing a file, always jump to the last known cursor position.
 au BufReadPost *
 	\ if line("'\"") > 0 && line("'\"") <= line("$") |
-	\     execute "normal g`\"" |
+	\     execute 'normal! g`"zvzz' |
 	\ endif
 
 " Helps if you have to use another editor on the same file
@@ -420,6 +430,11 @@ function! SetupRuby()
 	setlocal shiftwidth=2
 endfunction
 au FileType ruby call SetupRuby()
+
+" Set filetype for nginx config files
+au BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
+au BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
+au BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
 
 " Using python-mode's virtualenv module
 

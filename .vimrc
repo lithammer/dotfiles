@@ -4,12 +4,13 @@
 " |                                                                           |
 " | Some highlights:                                                          |
 " |   ,n = toggle NERDTree off and on                                         |
-" |   ,c = comment block/line with TComment                                   |
+" |   ,g = toggle Gundo off and on                                            |
+" |   ,c = comment block/line                                                 |
 " |                                                                           |
 " |   ,p = go to previous file                                                |
 " |                                                                           |
 " |   ,i = toggle invisibles                                                  |
-" |   ,v = toggle paste mode on/off                                           |
+" |   <F5> = toggle paste mode on/off                                         |
 " |   ,<Space> = clear search highlight                                       |
 " |                                                                           |
 " |   ,s = search and replace word under cursor                               |
@@ -26,7 +27,6 @@ call vundle#rc()
 " Required!
 Bundle 'gmarik/vundle'
 
-"Bundle 'AutoComplPop'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'Shougo/neocomplcache'
@@ -35,7 +35,6 @@ Bundle 'ap/vim-css-color'
 Bundle 'ervandew/supertab'
 Bundle 'fs111/pydoc.vim'
 Bundle 'gregsexton/MatchTag'
-"Bundle 'honza/snipmate-snippets'
 Bundle 'kien/ctrlp.vim'
 Bundle 'klen/python-mode'
 Bundle 'majutsushi/tagbar'
@@ -55,8 +54,8 @@ Bundle 'nginx.vim'
 let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let NERDTreeMouseMode = 1                    " Single click for everything
-let g:molokai_original=1                     " Use original Monokai background color
-let g:solarized_termcolors=256               " Use 256 colors in terminal (instead of 16)
+let g:molokai_original = 1                   " Use original Monokai background color
+let g:solarized_termcolors = 256             " Use 256 colors in terminal (instead of 16)
 let g:syntastic_enable_signs = 1
 let g:syntastic_enable_balloons = 1
 let g:syntastic_echo_current_error = 1
@@ -66,6 +65,7 @@ let g:UltiSnipsJumpForwardTrigger = '<Tab>'
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 let g:SuperTabDefaultCompletionType = 'context'
+let g:SuperTabContextDefaultCompletionType = '<C-n>'
 
 let g:pymode_doc = 0                         " Don't load show documentation plugin
 let g:pymode_run = 0                         " Load run code plugin
@@ -112,18 +112,18 @@ let g:ctrlp_custom_ignore = {
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'robokai'
-Bundle 'tomasr/molokai'
-Bundle 'wgibbs/vim-irblack'
-Bundle 'trapd00r/neverland-vim-theme'
+"Bundle 'robokai'
+"Bundle 'tomasr/molokai'
+"Bundle 'wgibbs/vim-irblack'
+"Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
-Bundle 'jpo/vim-railscasts-theme'
-Bundle 'github-theme'
+"Bundle 'jpo/vim-railscasts-theme'
+"Bundle 'github-theme'
 Bundle 'Lucius'
-Bundle 'chriskempson/vim-tomorrow-theme'
+"Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
-Bundle 'sjl/badwolf'
+"Bundle 'sjl/badwolf'
 
 " +---------------------------------------------------------------------------+
 " | Basic settings                                                            |
@@ -142,24 +142,7 @@ syntax on
 set t_Co=256
 set background=dark
 
-"colorscheme Tomorrow-Night
-"colorscheme Tomorrow-Night-Bright
-colorscheme Tomorrow-Night-Eighties
-"colorscheme badwolf
-"colorscheme diablo3
-"colorscheme github
-"colorscheme hemisu
-"colorscheme hunch-dark
-"colorscheme hunch-dark-dimmed
-"colorscheme ir_black
-"colorscheme jellybeans
-"colorscheme lucius
-"colorscheme molokai
-"colorscheme neverland
-"colorscheme neverland2
-"colorscheme railscasts
-"colorscheme robokai
-"colorscheme solarized
+colorscheme solarized
 if has('gui_running')
 	set background=light
 	colorscheme hemisu
@@ -172,6 +155,7 @@ set title
 set mouse=a
 "set clipboard=unnamed
 set fillchars=diff:⣿,vert:│
+"set fillchars=diff:░,vert:│
 set nowrap
 set linebreak
 set showbreak=↪
@@ -285,17 +269,19 @@ nnoremap <Leader>. :lcd %:p:h<CR>
 noremap <Leader>i :set list!<CR>
 
 " Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
-" Toggle with <Leader>l
-nnoremap <silent> <Leader>l
-      \ :set nolist!<CR>:set nolist?<CR>
-      \ :if exists('w:long_line_match') <Bar>
-      \     silent! call matchdelete(w:long_line_match) <Bar>
-      \     unlet w:long_line_match <Bar>
-      \ elseif &textwidth > 0 <Bar>
-      \     let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1) <Bar>
-      \ else <Bar>
-      \     let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1) <Bar>
-      \ endif<CR>
+function! HighlightProblemLines()
+	set nolist!
+	set nolist?
+	if exists('w:long_line_match')
+		silent! call matchdelete(w:long_line_match)
+		unlet w:long_line_match
+	elseif &textwidth > 0
+		let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1)
+	else
+		let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1)
+	endif
+endfunction
+nnoremap <silent> <Leader>l :call HighlightProblemLines()<CR>
 
 " Toggle NERDTree on/off
 noremap <Leader>n :NERDTreeToggle<CR>
@@ -371,10 +357,14 @@ vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
 vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
 
 " When editing a file, always jump to the last known cursor position.
-au BufReadPost *
-	\ if line("'\"") > 0 && line("'\"") <= line("$") |
-	\     execute 'normal! g`"zvzz' |
-	\ endif
+autocmd BufReadPost * call SetCursorPosition()
+function! SetCursorPosition()
+	if &filetype !~ 'svn\|commit\c'
+		if line("'\"") > 0 && line("'\"") <= line("$") |
+			execute 'normal! g`"zvzz' |
+		endif
+	end
+endfunction
 
 " Helps if you have to use another editor on the same file
 au FileChangedShell *
@@ -382,18 +372,11 @@ au FileChangedShell *
     \ echo 'File has been changed outside of Vim.' |
     \ echohl None
 
-" Outputs a small warning when opening a file that contains tab characters
-function! WarnTabs()
-    let save_cursor = getpos('.')
-    if searchpos('\t') != [0,0]
-        echohl WarningMsg |
-        \ echo 'Warning, this file contains tabs.' |
-        \ echohl None
-    endif
-    call setpos('.', save_cursor)
-endfunction
-au BufReadPost *.{py,rb} call WarnTabs()
+" +---------------------------------------------------------------------------+
+" | Filetype specific                                                         |
+" +---------------------------------------------------------------------------+
 
+" Pandoc (Markdown)
 function! SetupPandoc()
 	setlocal wrap
 	setlocal wrapmargin=2
@@ -403,10 +386,17 @@ function! SetupPandoc()
 endfunction
 au FileType pandoc call SetupPandoc()
 
-" Enable wrapping for txt files
-au BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=78
+" Plain text
+function! SetupPlainText()
+	setlocal wrap
+	setlocal wrapmargin=2
+	setlocal textwidth=80
+	" Autowrap text based on 'textwidth'
+	setlocal formatoptions+=t
+endfunction
+au FileType text call SetupPlainText()
 
-" Make python follow PEP8 ( http://www.python.org/dev/peps/pep-0008/ )
+" Python, PEP8: http://www.python.org/dev/peps/pep-0008/
 function! SetupPython()
 	setlocal cinwords=if,elif,else,for,while,try,except,finally,def,class
 	setlocal cindent
@@ -423,7 +413,7 @@ function! SetupPython()
 endfunction
 au FileType python call SetupPython()
 
-" Ruby uses 2 spaces for indentation
+" Ruby
 function! SetupRuby()
 	setlocal expandtab
 	setlocal tabstop=2
@@ -431,24 +421,22 @@ function! SetupRuby()
 endfunction
 au FileType ruby call SetupRuby()
 
-" Set filetype for nginx config files
+" Nginx config files
 au BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
 au BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
 au BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
 
-" Using python-mode's virtualenv module
-
-" if has("python")
-" " Add the virtualenv's site-packages to vim path
-" py << EOF
-" import os.path, sys, vim
-" if 'VIRTUAL_ENV' in os.environ:
-" 	project_base_dir = os.environ['VIRTUAL_ENV']
-" 	sys.path.insert(0, project_base_dir)
-" 	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-" 	execfile(activate_this, dict(__file__=activate_this))
-" EOF
-" endif
+" Warn if there's tabs in space indenting languages
+function! WarnTabs()
+    let save_cursor = getpos('.')
+    if searchpos('\t') != [0,0]
+        echohl WarningMsg |
+        \ echo 'Warning, this file contains tabs.' |
+        \ echohl None
+    endif
+    call setpos('.', save_cursor)
+endfunction
+au BufReadPost *.{py,rb} call WarnTabs()
 
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |

@@ -111,7 +111,7 @@ fi
 VIRTUAL_ENV_DISABLE_PROMPT=true
 
 function parse_virtualenv() {
-	echo "${VIRTUAL_ENV:+|${YELLOW}`basename ${VIRTUAL_ENV}`}"
+	echo "${VIRTUAL_ENV:+`basename ${VIRTUAL_ENV}` }"
 }
 
 function parse_git_dirty() {
@@ -121,7 +121,7 @@ function parse_git_dirty() {
 function parse_git_branch() {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
 }
-PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h\[$WHITE\]\$(parse_virtualenv) \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
+PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h\[$WHITE\] in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\[$YELLOW\]\$(parse_virtualenv)\[$WHITE\]\$ \[$RESET\]"
 
 # Local changes
 [ -e ~/.bashrc.local ] && . ~/.bashrc.local

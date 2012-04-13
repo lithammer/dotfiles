@@ -53,6 +53,8 @@ Bundle 'vim-pandoc/vim-pandoc'
 let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let NERDTreeMouseMode = 1                    " Single click for everything
+let g:molokai_original=1                     " Use original Monokai background color
+let g:solarized_termcolors=256               " Use 256 colors in terminal (instead of 16)
 let g:syntastic_enable_signs = 1
 let g:syntastic_enable_balloons = 1
 let g:syntastic_echo_current_error = 1
@@ -125,18 +127,17 @@ Bundle 'sjl/badwolf'
 " | Basic settings                                                            |
 " +---------------------------------------------------------------------------+
 
+"""
+" Put the cursor on a keyword and press 'K' to get information about it!
+"
+
 filetype plugin indent on
 
+" Extended matching for the % command, good for HTML/XML tags
+runtime macros/matchit.vim
+
 syntax on
-" Enable 256 colors
 set t_Co=256
-
-" Used by the Solarized theme if the terminal isn't using Solarized colors
-let g:solarized_termcolors=256
-
-" To show original monokai background color
-let g:molokai_original=1
-
 set background=dark
 
 "colorscheme Tomorrow-Night
@@ -162,95 +163,46 @@ if has('gui_running')
 	colorscheme hemisu
 endif
 
-" Extended matching for the % command, good for HTML/XML tags
-runtime macros/matchit.vim
-
-" Show line numbers
 set number
-
-" Sets the character encoding used inside Vim
 set encoding=utf-8
-" Don't append a Byte-order Mark (BOM)
 set nobomb
-
-" Set the window title to 'titlestring'
 set title
-
-" Enable mouse in all modes
 set mouse=a
-" Enable copy/paste between vim and system clipboard
 "set clipboard=unnamed
-noremap y "*y
-noremap yy "*Y
-noremap Y "*y$
-
-" Change delete lines character in diffs, vert is default
 set fillchars=diff:⣿,vert:│
-
-" Don't wrap text
 set nowrap
-" Dont't wrap text in the middle of a word
 set linebreak
-" String to put at the start of lines that have been wrapped
 set showbreak=↪
-" The minimum number of columns to scroll horizontally
 set sidescroll=5
-" Minimum number of screen lines to keep above and below the cursor
 set scrolloff=5
-
-" When a bracket is inserted, briefly jump to the matching one.
 set showmatch
-" Also display matching <tag> tags (useful for HTML-like languages)
 set matchpairs+=<:>
-
-" Highlights the current cursor line
 set cursorline
-
-" Allows backspacing over autoindent, line breaks and the start of insert 
 set backspace=indent,eol,start
-
-" Always show the statusline
 set laststatus=2
 set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
-
 set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
-
-" Highlight searches
 set hlsearch
-" Shows search results as you type
 set incsearch
-" Case insensitive search
 set ignorecase
-" Use case sensitive search if the search string contains uppercase
 set smartcase
-" Assume the /g flag when search and replacing
 set gdefault
-
-" Indicates a fast terminal connection. More characters will be sent to the
-" screen for redrawing
 set ttyfast
+set pastetoggle=<F5>
 
 let g:tabwidth = 4
-
 exec 'set shiftwidth=' . g:tabwidth
 exec 'set softtabstop=' . g:tabwidth
 exec 'set tabstop=' . g:tabwidth
 set smarttab
 set shiftround
 
-" Use tabs
 set noexpandtab
-" Use spaces
 "set expandtab
 
-" Fast switching between paste modes
-set pastetoggle=<F5>
-
-" Directory for swap files
 silent execute '!mkdir -p $HOME/.vim/swap'
 set directory=$HOME/.vim/swap
 
-" Directory for backup files
 silent execute '!mkdir -p $HOME/.vim/backup'
 set backupdir=$HOME/.vim/backup
 
@@ -259,9 +211,6 @@ silent execute '!mkdir -p $HOME/.vim/undo'
 set undodir=$HOME/.vim/undo
 set undofile
 
-au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
-
-" Ignore these when file completing
 set wildignore+=.svn,CVS,.git,.hg            " Version control
 set wildignore+=*.aux,*.out,*.toc            " LaTeX intermediate files
 set wildignore+=*.swp                        " Vim swap files
@@ -279,7 +228,6 @@ set wildmenu
 set wildmode=list:longest,list:full
 set completeopt=menuone,longest,preview
 
-" Set encryption for Vim to blowfish
 if version >= 700
 	set cryptmethod=blowfish
 endif
@@ -296,6 +244,7 @@ function SetupEncryption()
 	" move cursor over word and press 'e' to obfuscate/unobfuscate it
 	noremap e g?iw
 endfunction
+au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
 
 " +---------------------------------------------------------------------------+
 " | Script templates                                                          |
@@ -309,6 +258,11 @@ au BufNewFile *.py so ~/.vim/templates/tpl.py
 " +---------------------------------------------------------------------------+
 
 let mapleader = ','
+
+" Yank to system clipboard as well
+noremap y "*y
+noremap yy "*Y
+noremap Y "*y$
 
 " For the times you forget to open files as root/sudo
 " Command: :w!!
@@ -339,7 +293,7 @@ map <Leader>g :GundoToggle<CR>
 map <Leader>j :RopeGotoDefinition<CR>
 "map <Leader>r :RopeRename<CR>
 
-" Neocomplcache
+"" Neocomplcache
 " <CR>: close popup and save indent
 inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
 
@@ -347,19 +301,12 @@ inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
 "au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 "au VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
 
-" Plugin key-mappings (SnipMate)
-"imap <C-k> <Plug>(neocomplcache_snippets_expand)
-"smap <C-k> <Plug>(neocomplcache_snippets_expand)
-
-" Don't display popup while navigating and deleting
+" Don't display popup while navigating and backspacing
 inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
 inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
 inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
 inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-
-" SuperTab like snippets behavior.
-"imap <expr><Tab> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<Tab>"
 
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
@@ -391,25 +338,60 @@ augroup cline
 augroup END
 
 " Only show colorcolumn in the current window.
-augroup ccol
-    au!
-    au WinLeave * setlocal colorcolumn=0
-    au WinEnter * setlocal colorcolumn=+1
-augroup END
+"augroup ccol
+"    au!
+"    au WinLeave * setlocal colorcolumn=0
+"    au WinEnter * setlocal colorcolumn=+1
+"augroup END
 
+" Don't show trailing whitespaces in insert mode
 augroup trailing
     au!
     au InsertEnter * :set listchars-=trail:⌴
     au InsertLeave * :set listchars+=trail:⌴
 augroup END
 
-function! ColorColumn()
-	setlocal colorcolumn=+1
-	highlight ColorColumn ctermbg=black ctermfg=white guibg=darkgrey guifg=white
-endfunction
+" Press K to get documentation about a Vim keyword
+au FileType vim setlocal keywordprg=:help
 
-au FileType pandoc call ColorColumn()
-au FileType pandoc set wrap wrapmargin=2 textwidth=78
+" Resize splits when the window is resized
+au VimResized * :wincmd =
+
+" Highlight VCS conflict markers
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+
+" When editing a file, always jump to the last known cursor position.
+au BufReadPost *
+	\ if line("'\"") > 0 && line("'\"") <= line("$") |
+	\     execute "normal g`\"" |
+	\ endif
+
+" Helps if you have to use another editor on the same file
+au FileChangedShell *
+    \ echohl WarningMsg |
+    \ echo 'File has been changed outside of Vim.' |
+    \ echohl None
+
+" Outputs a small warning when opening a file that contains tab characters
+function! WarnTabs()
+    let save_cursor = getpos('.')
+    if searchpos('\t') != [0,0]
+        echohl WarningMsg |
+        \ echo 'Warning, this file contains tabs.' |
+        \ echohl None
+    endif
+    call setpos('.', save_cursor)
+endfunction
+au BufReadPost *.{py,rb} call WarnTabs()
+
+function! SetupPandoc()
+	setlocal wrap
+	setlocal wrapmargin=2
+	setlocal textwidth=80
+	" Autowrap text based on 'textwidth'
+	setlocal formatoptions+=t
+endfunction
+au FileType pandoc call SetupPandoc()
 
 " Enable wrapping for txt files
 au BufRead,BufNewFile *.txt set wrap wrapmargin=2 textwidth=78
@@ -432,49 +414,26 @@ endfunction
 au FileType python call SetupPython()
 
 " Ruby uses 2 spaces for indentation
-au FileType ruby setlocal expandtab tabstop=2 shiftwidth=2
-
-" Resize splits when the window is resized
-au VimResized * :wincmd =
-
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-
-" When editing a file, always jump to the last known cursor position.
-au BufReadPost *
-	\ if line("'\"") > 0 && line("'\"") <= line("$") |
-	\     execute "normal g`\"" |
-	\ endif
-
-" Helps if you have to use another editor on the same file
-au FileChangedShell *
-    \ echohl WarningMsg |
-    \ echo 'File has been changed outside of Vim.' |
-    \ echohl None
-
-" Outputs a small warning when opening a Python file that contains tab characters
-function! WarnTabs()
-    let save_cursor = getpos('.')
-    if searchpos('\t') != [0,0]
-        echohl WarningMsg |
-        \ echo 'Warning, this file contains tabs.' |
-        \ echohl None
-    endif
-    call setpos('.', save_cursor)
+function! SetupRuby()
+	setlocal expandtab
+	setlocal tabstop=2
+	setlocal shiftwidth=2
 endfunction
-au BufReadPost *.py call WarnTabs()
+au FileType ruby call SetupRuby()
 
-if has("python")
-" Add the virtualenv's site-packages to vim path
-py << EOF
-import os.path, sys, vim
-if 'VIRTUAL_ENV' in os.environ:
-	project_base_dir = os.environ['VIRTUAL_ENV']
-	sys.path.insert(0, project_base_dir)
-	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-	execfile(activate_this, dict(__file__=activate_this))
-EOF
-endif
+" Using python-mode's virtualenv module
+
+" if has("python")
+" " Add the virtualenv's site-packages to vim path
+" py << EOF
+" import os.path, sys, vim
+" if 'VIRTUAL_ENV' in os.environ:
+" 	project_base_dir = os.environ['VIRTUAL_ENV']
+" 	sys.path.insert(0, project_base_dir)
+" 	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+" 	execfile(activate_this, dict(__file__=activate_this))
+" EOF
+" endif
 
 " +---------------------------------------------------------------------------+
 " |                             OS Specific                                   |
@@ -493,12 +452,8 @@ if has("gui_macvim")
     " Command-Return for fullscreen
     macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
 
-	" MacVIM shift+arrow-keys behaviour (required in .vimrc)
+	" MacVIM shift+arrow-keys behaviour
 	"let macvim_hig_shift_movement = 1
-
-    " Command-][ to increase/decrease indentation
-    vmap <D-]> >gv
-    vmap <D-[> <gv
 	
 	" Map tab switch to cmd-<number>
 	map <D-1> :tabn 1<CR>

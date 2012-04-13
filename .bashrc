@@ -27,7 +27,11 @@ export HISTCONTROL=ignoredups:ignorespace
 export WORKON_HOME=$HOME/.virtualenvs
 
 # Virtualenwrapper settings
-[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
+if [[ "$OSTYPE" =~ ^darwin ]]; then
+	[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
+else
+	[ -e /usr/bin/virtualenvwrapper.sh ] && . /usr/bin/virtualenvwrapper.sh
+fi
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -44,9 +48,6 @@ shopt -s histappend
 
 # Autocorrect typos in path names when using `cd`
 shopt -s cdspell
-
-# Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2)" scp sftp ssh
 
 if [[ "$OSTYPE" =~ ^darwin ]]; then
 	[ -e `brew --prefix`/etc/bash_completion ] && . `brew --prefix`/etc/bash_completion

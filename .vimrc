@@ -1,6 +1,5 @@
 " +---------------------------------------------------------------------------+
 " |                            VIM Settings                                   |
-" |                   (see gvimrc for gui vim settings)                       |
 " |                                                                           |
 " | Some highlights:                                                          |
 " |   ,n = toggle NERDTree off and on                                         |
@@ -47,10 +46,14 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'kana/vim-smartinput'
 
 Bundle 'nginx.vim'
+Bundle 'othree/html5.vim'
+Bundle 'pangloss/vim-javascript'
 
-" Plugin variables
+" Plugin variables -----------------------------------------------------------
+
 let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let NERDTreeMouseMode = 1                    " Single click for everything
@@ -125,13 +128,9 @@ Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
 "Bundle 'sjl/badwolf'
 
-" +---------------------------------------------------------------------------+
-" | Basic settings                                                            |
-" +---------------------------------------------------------------------------+
+" Basic options --------------------------------------------------------------
 
-"""
 " Put the cursor on a keyword and press 'K' to get information about it!
-"
 
 filetype plugin indent on
 
@@ -148,33 +147,38 @@ if has('gui_running')
 	colorscheme hemisu
 endif
 
-set number
 set encoding=utf-8
 set nobomb
-set title
-set mouse=a
-"set clipboard=unnamed
-set fillchars=diff:⣿,vert:│
-"set fillchars=diff:░,vert:│
+
+set autoindent
+set formatoptions+=n
+
+set gdefault
+set hlsearch
+set ignorecase
+set incsearch
+
 set nowrap
 set linebreak
-set showbreak=↪
-set sidescroll=5
-set scrolloff=5
-set showmatch
-set matchpairs+=<:>
-set cursorline
-set backspace=indent,eol,start
-set laststatus=2
-set statusline=\ [%l,%c\ %P]\ %m%f\ %r%h%w%=[%{strlen(&ft)?&ft:'none'},\ %{&encoding},\ %{&fileformat}]\ 
 set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
-set gdefault
+set showbreak=↪
+
+set backspace=indent,eol,start
+"set clipboard=unnamed
+set cursorline
+set fillchars=diff:⣿,vert:│
+set laststatus=2
+set lazyredraw
 set ttyfast
+set matchpairs+=<:>
+set mouse=a
+set number
 set pastetoggle=<F5>
+set scrolloff=5
+set sidescroll=5
+set showmatch
+set smartcase
+set title
 
 let g:tabwidth = 4
 exec 'set shiftwidth=' . g:tabwidth
@@ -182,7 +186,6 @@ exec 'set softtabstop=' . g:tabwidth
 exec 'set tabstop=' . g:tabwidth
 set smarttab
 set shiftround
-
 set noexpandtab
 "set expandtab
 
@@ -218,30 +221,7 @@ if version >= 700
 	set cryptmethod=blowfish
 endif
 
-function SetupEncryption()
-	set viminfo=
-	setlocal bufhidden=wipe
-	setlocal noswapfile
-	setlocal nobackup
-	setlocal nowritebackup
-	setlocal foldmethod=indent
-	setlocal foldlevel=0
-	setlocal foldclose=all
-	" move cursor over word and press 'e' to obfuscate/unobfuscate it
-	noremap e g?iw
-endfunction
-au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
-
-" +---------------------------------------------------------------------------+
-" | Script templates                                                          |
-" +---------------------------------------------------------------------------+
-
-au BufNewFile *.sh so ~/.vim/templates/tpl.sh
-au BufNewFile *.py so ~/.vim/templates/tpl.py
-
-" +---------------------------------------------------------------------------+
-" | Mappings                                                                  |
-" +---------------------------------------------------------------------------+
+" Mappings -------------------------------------------------------------------
 
 let mapleader = ','
 
@@ -309,11 +289,9 @@ inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
 inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
 inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
-" +---------------------------------------------------------------------------+
-" | Auto commands                                                             |
-" +---------------------------------------------------------------------------+
+" Auto commands --------------------------------------------------------------
 
-" Only show cursorline in the current window and in normal mode.
+" Only show cursorline in the current window and in normal mode
 augroup cline
 	au!
 	au WinLeave * set nocursorline
@@ -322,7 +300,7 @@ augroup cline
 	au InsertLeave * set cursorline
 augroup END
 
-" Only show colorcolumn in the current window.
+" Only show colorcolumn in the current window
 "augroup ccol
 "    au!
 "    au WinLeave * setlocal colorcolumn=0
@@ -337,7 +315,7 @@ augroup trailing
 augroup END
 
 " Press K to get documentation about a Vim keyword
-au FileType vim setlocal keywordprg=:help
+au FileType vim,help setlocal keywordprg=:help
 
 " Resize splits when the window is resized
 au VimResized * :wincmd =
@@ -372,9 +350,26 @@ au FileChangedShell *
     \ echo 'File has been changed outside of Vim.' |
     \ echohl None
 
-" +---------------------------------------------------------------------------+
-" | Filetype specific                                                         |
-" +---------------------------------------------------------------------------+
+" Filetype specific ----------------------------------------------------------
+
+" Script templates
+au BufNewFile *.sh so ~/.vim/templates/tpl.sh
+au BufNewFile *.py so ~/.vim/templates/tpl.py
+
+" Encrypted files
+function SetupEncryption()
+	set viminfo=
+	setlocal bufhidden=wipe
+	setlocal noswapfile
+	setlocal nobackup
+	setlocal nowritebackup
+	setlocal foldmethod=indent
+	setlocal foldlevel=0
+	setlocal foldclose=all
+	" move cursor over word and press 'e' to obfuscate/unobfuscate it
+	noremap e g?iw
+endfunction
+au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
 
 " Pandoc (Markdown)
 function! SetupPandoc()
@@ -421,6 +416,10 @@ function! SetupRuby()
 endfunction
 au FileType ruby call SetupRuby()
 
+" The g:lisp_rainbow option provides 10 levels of individual colorization for
+" the parentheses and backquoted parentheses.
+let g:lisp_rainbow = 1
+
 " Nginx config files
 au BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
 au BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
@@ -438,17 +437,16 @@ function! WarnTabs()
 endfunction
 au BufReadPost *.{py,rb} call WarnTabs()
 
-" +---------------------------------------------------------------------------+
-" |                             OS Specific                                   |
-" |                      (GUI stuff goes in gvimrc)                           |
-" +---------------------------------------------------------------------------+
+" OS specific ----------------------------------------------------------------
 
-if has("gui")
+" General GUI options
+if has('gui')
 	set guioptions-=m  " Remove menu bar
 	set guioptions-=T  " Remove toolbar
 endif
 
-if has("gui_macvim")
+" OS X
+if has('gui_macvim')
     " Fullscreen takes up entire screen
 	set fuoptions=maxhorz,maxvert
 
@@ -480,13 +478,10 @@ if has("gui_macvim")
 endif
  
 " Windows
-if has("gui_win32")
-  "" 
+if has('gui_win32')
+	" ...
 endif
 
-" +---------------------------------------------------------------------------+ 
-" |                               Host specific                               |
-" +---------------------------------------------------------------------------+
-if filereadable(expand("~/.vimrc.local"))
-  source ~/.vimrc.local
+if filereadable(expand('~/.vimrc.local'))
+	source ~/.vimrc.local
 endif

@@ -45,12 +45,14 @@ Bundle 'tomtom/tcomment_vim'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
-Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'kana/vim-smartinput'
 
-Bundle 'nginx.vim'
-Bundle 'othree/html5.vim'
+" Filetype specific
 Bundle 'pangloss/vim-javascript'
+Bundle 'othree/html5.vim'
+Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'nginx.vim'
 
 " Plugin variables -----------------------------------------------------------
 

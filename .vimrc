@@ -51,6 +51,8 @@ Bundle 'kana/vim-smartinput'
 " Filetype specific
 Bundle 'pangloss/vim-javascript'
 Bundle 'othree/html5.vim'
+Bundle 'hail2u/vim-css3-syntax'
+"Bundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
 Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'nginx.vim'
 

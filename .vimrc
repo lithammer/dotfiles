@@ -46,7 +46,6 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'michaeljsmith/vim-indent-object'
-Bundle 'kana/vim-smartinput'
 
 " Filetype specific
 Bundle 'pangloss/vim-javascript'

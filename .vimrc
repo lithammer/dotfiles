@@ -1,29 +1,32 @@
-" +---------------------------------------------------------------------------+
-" |                            VIM Settings                                   |
-" |                                                                           |
-" | Some highlights:                                                          |
-" |   ,n = toggle NERDTree off and on                                         |
-" |   ,g = toggle Gundo off and on                                            |
-" |   ,c = comment block/line                                                 |
-" |                                                                           |
-" |   ,p = go to previous file                                                |
-" |                                                                           |
-" |   ,i = toggle invisibles                                                  |
-" |   <F5> = toggle paste mode on/off                                         |
-" |   ,<Space> = clear search highlight                                       |
-" |                                                                           |
-" |   ,s = search and replace word under cursor                               |
-" |                                                                           |
-" |                                                                           |
-" | Put machine/user specific settings in ~/.vimrc.local                      |
-" +---------------------------------------------------------------------------+
+" ┌──────────────────────────────────────────────────────────────────────────┐
+" │                                                                          │
+" │                            Vim Settings                                  │
+" │                                                                          │
+" │ Some highlights:                                                         │
+" │   ,n = toggle NERDTree off and on                                        │
+" │   ,g = toggle Gundo off and on                                           │
+" │   ,c = comment block/line                                                │
+" │                                                                          │
+" │   ,p = go to previous file                                               │
+" │    K = look for help under cursor                                        │
+" │                                                                          │
+" │   ,i = toggle invisibles                                                 │
+" │   <F5> = toggle paste mode on/off                                        │
+" │   ,<Space> = clear search highlight                                      │
+" │                                                                          │
+" │   ,s = search and replace word under cursor                              │
+" │                                                                          │
+" │                                                                          │
+" │ Put machine/user specific settings in ~/.vimrc.local                     │
+" │                                                                          │
+" └──────────────────────────────────────────────────────────────────────────┘
 
+" Vundle
 filetype off
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-" Required!
 Bundle 'gmarik/vundle'
 
 Bundle 'Lokaltog/vim-easymotion'
@@ -42,6 +45,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'sjl/gundo.vim'
 Bundle 'tomtom/tcomment_vim'
+Bundle 'gregsexton/gitv'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
@@ -55,7 +59,8 @@ Bundle 'hail2u/vim-css3-syntax'
 Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'nginx.vim'
 
-" Plugin variables -----------------------------------------------------------
+" Plugin variables
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
@@ -72,6 +77,7 @@ let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
+let g:Gitv_OpenHorizontal = 'auto'
 
 let g:pymode_doc = 0                         " Don't load show documentation plugin
 let g:pymode_run = 0                         " Load run code plugin
@@ -131,7 +137,8 @@ Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
 "Bundle 'sjl/badwolf'
 
-" Basic options --------------------------------------------------------------
+" Basic options
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Put the cursor on a keyword and press 'K' to get information about it!
 
@@ -224,7 +231,8 @@ if version >= 700
 	set cryptmethod=blowfish
 endif
 
-" Mappings -------------------------------------------------------------------
+" Mappings
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 let mapleader = ','
 
@@ -292,7 +300,8 @@ inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
 inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
 inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
-" Auto commands --------------------------------------------------------------
+" Auto commands
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Only show cursorline in the current window and in normal mode
 augroup cline
@@ -353,7 +362,8 @@ au FileChangedShell *
     \ echo 'File has been changed outside of Vim.' |
     \ echohl None
 
-" Filetype specific ----------------------------------------------------------
+" Filetype specific
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Script templates
 au BufNewFile *.sh so ~/.vim/templates/tpl.sh
@@ -378,7 +388,7 @@ au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
 function! SetupPandoc()
 	setlocal wrap
 	setlocal wrapmargin=2
-	setlocal textwidth=80
+	setlocal textwidth=79
 	" Autowrap text based on 'textwidth'
 	setlocal formatoptions+=t
 endfunction
@@ -388,7 +398,7 @@ au FileType pandoc call SetupPandoc()
 function! SetupPlainText()
 	setlocal wrap
 	setlocal wrapmargin=2
-	setlocal textwidth=80
+	setlocal textwidth=79
 	" Autowrap text based on 'textwidth'
 	setlocal formatoptions+=t
 endfunction
@@ -405,7 +415,7 @@ function! SetupPython()
 	setlocal smartindent
 	setlocal smarttab
 	setlocal expandtab
-	setlocal textwidth=80
+	setlocal textwidth=79
 	" Don't autowrap text based on 'textwidth'
 	setlocal formatoptions-=t
 endfunction
@@ -440,7 +450,8 @@ function! WarnTabs()
 endfunction
 au BufReadPost *.{py,rb} call WarnTabs()
 
-" OS specific ----------------------------------------------------------------
+" OS specific
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " General GUI options
 if has('gui')

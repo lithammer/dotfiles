@@ -82,6 +82,9 @@ let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
 let g:Gitv_OpenHorizontal = 'auto'
 
+let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
+let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
+
 let g:pymode_doc = 0                         " Don't load show documentation plugin
 let g:pymode_run = 0                         " Load run code plugin
 let g:pymode_lint = 0                        " Disable pylint code plugin
@@ -123,6 +126,13 @@ let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
 let g:ctrlp_custom_ignore = {
 	\ 'dir': '\.ropeproject$\|node_modules$\|env$',
 	\ 'file': '\.ctrlp$',
+	\ }
+
+let g:ctrlp_user_command = {
+	\ 'types': {
+		\ 1: ['.git/', 'cd %s && git ls-files'],
+		\ },
+	\ 'fallback': 'find %s -type f'
 	\ }
 
 " Color schemes
@@ -221,7 +231,8 @@ set wildignore+=*.pyc                        " Python byte code
 set wildignore+=*.luac                       " Lua byte code
 set wildignore+=*.beam                       " Compiled Erlang files
 set wildignore+=*.class                      " Compiled Java files
-set wildignore+=*jpe?g,*.png,*.gif,*.bmp     " Images
+set wildignore+=*.jpe?g,*.png,*.gif,*.bmp    " Images
+set wildignore+=*.ico
 set wildignore+=env,node_modules             " Virtualenv and Node.js folders
 set wildignore+=lib,libs                     " Library folders
 set wildignore+=*.DS_Store                   " OS X files

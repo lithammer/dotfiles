@@ -120,19 +120,15 @@ let g:pymode_syntax_builtin_objs = 1         " Highlight builtin objects (__doc_
 let g:pymode_syntax_builtin_funcs = 1        " Highlight builtin functions
 let g:pymode_syntax_highlight_exceptions = 1 " Highlight exceptions
 
+" Adds a trailing whitespace notification to the statusline
+call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
+
 "let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
 " Skip our custom root marker when searching
 let g:ctrlp_custom_ignore = {
 	\ 'dir': '\.ropeproject$\|node_modules$\|env$',
 	\ 'file': '\.ctrlp$',
-	\ }
-
-let g:ctrlp_user_command = {
-	\ 'types': {
-		\ 1: ['.git/', 'cd %s && git ls-files'],
-		\ },
-	\ 'fallback': 'find %s -type f'
 	\ }
 
 " Color schemes
@@ -293,6 +289,9 @@ noremap <Leader>n :NERDTreeToggle<CR>
 
 " Toggle comments (TComment)
 map <Leader>c :TComment<CR>
+
+" Toggle Tagbar
+nmap <Leader>t :TagbarToggle<CR>
 
 " Load the Gundo window
 map <Leader>g :GundoToggle<CR>

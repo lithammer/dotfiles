@@ -9,7 +9,7 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
 	# Put /usr/local/bin at the front, not the end
 	export PATH=/usr/local/bin:$PATH
 	# Homebrew installs Python distribute here, needed for easy_install/pip
-	export PATH=/usr/local/share/python:/usr/local/share/python3:$PATH
+	#export PATH=/usr/local/share/python:/usr/local/share/python3:$PATH
 	# Cabal (Haskell-Platform)
 	export PATH=$HOME/.cabal/bin:$PATH
 fi
@@ -48,6 +48,13 @@ shopt -s histappend
 
 # Autocorrect typos in path names when using `cd`
 shopt -s cdspell
+
+# Enable some Bash 4 features when possible:
+# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+# * Recursive globbing, e.g. `echo **/*.txt`
+for option in autocd globstar; do
+	shopt -s "$option" 2> /dev/null
+done
 
 if [[ "$OSTYPE" =~ ^darwin ]]; then
 	[ -e `brew --prefix`/etc/bash_completion ] && . `brew --prefix`/etc/bash_completion
@@ -122,7 +129,8 @@ function parse_git_dirty() {
 function parse_git_branch() {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
 }
-PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h\[$WHITE\] in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\[$YELLOW\]\$(parse_virtualenv)\[$WHITE\]\$ \[$RESET\]"
+export PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h\[$WHITE\] in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\[$YELLOW\]\$(parse_virtualenv)\[$WHITE\]\$ \[$RESET\]"
+export PS2="\[$ORANGE\]→ \[$RESET\]"
 
 # Local changes
 [ -e ~/.bashrc.local ] && . ~/.bashrc.local

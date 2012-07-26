@@ -47,6 +47,9 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'michaeljsmith/vim-indent-object'
+Bundle 'mattn/zencoding-vim'
+
+Bundle 'AutoTag'
 
 if has('python')
 	Bundle 'SirVer/ultisnips'
@@ -128,23 +131,23 @@ let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
 " Skip our custom root marker when searching
 let g:ctrlp_custom_ignore = {
 	\ 'dir': '\.ropeproject$\|node_modules$\|env$',
-	\ 'file': '\.ctrlp$',
+	\ 'file': '\.ctrlp$\|\.png$\|\.jpeg$\|\.jpg$\|\.gif$',
 	\ }
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
 "Bundle 'robokai'
-"Bundle 'tomasr/molokai'
+Bundle 'tomasr/molokai'
 "Bundle 'wgibbs/vim-irblack'
 "Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
 "Bundle 'jpo/vim-railscasts-theme'
 "Bundle 'github-theme'
 Bundle 'Lucius'
-"Bundle 'chriskempson/vim-tomorrow-theme'
+Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
-"Bundle 'sjl/badwolf'
+Bundle 'sjl/badwolf'
 
 " Basic options
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +166,7 @@ set background=dark
 colorscheme solarized
 if has('gui_running')
 	set background=light
-	colorscheme hemisu
+	colorscheme smyck
 endif
 
 set encoding=utf-8
@@ -194,7 +197,7 @@ set mouse=a
 set number
 set pastetoggle=<F5>
 set scrolloff=5
-set sidescroll=5
+set sidescroll=10
 set showmatch
 set smartcase
 set title
@@ -288,7 +291,7 @@ nnoremap <silent> <Leader>l :call HighlightProblemLines()<CR>
 noremap <Leader>n :NERDTreeToggle<CR>
 
 " Toggle comments (TComment)
-map <Leader>c :TComment<CR>
+map <Leader>c :TCommentInline<CR>
 
 " Toggle Tagbar
 nmap <Leader>t :TagbarToggle<CR>
@@ -327,16 +330,16 @@ augroup END
 
 " Only show colorcolumn in the current window
 "augroup ccol
-"    au!
-"    au WinLeave * setlocal colorcolumn=0
-"    au WinEnter * setlocal colorcolumn=+1
+"	au!
+"	au WinLeave * setlocal colorcolumn=0
+"	au WinEnter * setlocal colorcolumn=+1
 "augroup END
 
 " Don't show trailing whitespaces in insert mode
 augroup trailing
-    au!
-    au InsertEnter * :set listchars-=trail:⌴
-    au InsertLeave * :set listchars+=trail:⌴
+	au!
+	au InsertEnter * :set listchars-=trail:⌴
+	au InsertLeave * :set listchars+=trail:⌴
 augroup END
 
 " Press K to get documentation about a Vim keyword
@@ -371,9 +374,9 @@ endfunction
 
 " Helps if you have to use another editor on the same file
 au FileChangedShell *
-    \ echohl WarningMsg |
-    \ echo 'File has been changed outside of Vim.' |
-    \ echohl None
+	\ echohl WarningMsg |
+	\ echo 'File has been changed outside of Vim.' |
+	\ echohl None
 
 " Filetype specific
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -453,13 +456,13 @@ au BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
 
 " Warn if there's tabs in space indenting languages
 function! WarnTabs()
-    let save_cursor = getpos('.')
-    if searchpos('\t') != [0,0]
-        echohl WarningMsg |
-        \ echo 'Warning, this file contains tabs.' |
-        \ echohl None
-    endif
-    call setpos('.', save_cursor)
+	let save_cursor = getpos('.')
+	if searchpos('\t') != [0,0]
+		echohl WarningMsg |
+		\ echo 'Warning, this file contains tabs.' |
+		\ echohl None
+	endif
+	call setpos('.', save_cursor)
 endfunction
 au BufReadPost *.{py,rb} call WarnTabs()
 
@@ -474,11 +477,11 @@ endif
 
 " OS X
 if has('gui_macvim')
-    " Fullscreen takes up entire screen
+	" Fullscreen takes up entire screen
 	set fuoptions=maxhorz,maxvert
 
-    " Command-Return for fullscreen
-    macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
+	" Command-Return for fullscreen
+	macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
 
 	" MacVIM shift+arrow-keys behaviour
 	"let macvim_hig_shift_movement = 1

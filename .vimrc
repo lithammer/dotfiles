@@ -163,10 +163,13 @@ syntax on
 set t_Co=256
 set background=dark
 
-colorscheme solarized
+" Don't try to highlight lines longer than 800 characters.
+set synmaxcol=800
+
+colorscheme Tomorrow-Night
 if has('gui_running')
 	set background=light
-	colorscheme smyck
+	colorscheme badwolf
 endif
 
 set encoding=utf-8
@@ -186,7 +189,7 @@ set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
 set showbreak=↪
 
 set backspace=indent,eol,start
-"set clipboard=unnamed
+set clipboard=unnamed
 set cursorline
 set fillchars=diff:⣿,vert:│
 set laststatus=2
@@ -223,7 +226,7 @@ set undodir=$HOME/.vim/undo
 set undofile
 
 set wildignore+=.svn,CVS,.git,.hg            " Version control
-set wildignore+=*.aux,*.out,*.toc            " LaTeX intermediate files
+set wildignore+=*.aux,*.out                  " LaTeX intermediate files
 set wildignore+=*.swp                        " Vim swap files
 set wildignore+=*.o,*.obj,*.exe,*.dll        " Compiled object files
 set wildignore+=*.pyc                        " Python byte code
@@ -250,9 +253,9 @@ endif
 let mapleader = ','
 
 " Yank to system clipboard as well
-noremap y "*y
-noremap yy "*Y
-noremap Y "*y$
+" noremap y "*y
+" noremap yy "*Y
+" noremap Y "*y$
 
 " Don't move on *
 nnoremap * *<C-o>

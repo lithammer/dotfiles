@@ -168,7 +168,6 @@ set synmaxcol=800
 
 colorscheme Tomorrow-Night
 if has('gui_running')
-	set background=light
 	colorscheme badwolf
 endif
 

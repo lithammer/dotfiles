@@ -166,7 +166,7 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme Tomorrow-Night
+colorscheme smyck
 if has('gui_running')
 	colorscheme badwolf
 endif
@@ -188,9 +188,9 @@ set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
 set showbreak=↪
 
 set backspace=indent,eol,start
-set clipboard=unnamed
+"set clipboard=unnamed
 set cursorline
-set fillchars=diff:⣿,vert:│
+set fillchars=diff:⣿,vert:│,stl:\ ,stlnc:\
 set laststatus=2
 set lazyredraw
 set ttyfast
@@ -252,9 +252,9 @@ endif
 let mapleader = ','
 
 " Yank to system clipboard as well
-" noremap y "*y
-" noremap yy "*Y
-" noremap Y "*y$
+noremap y "*y
+noremap yy "*Y
+noremap Y "*y$
 
 " Don't move on *
 nnoremap * *<C-o>
@@ -487,7 +487,7 @@ if has('gui_macvim')
 
 	" MacVIM shift+arrow-keys behaviour
 	"let macvim_hig_shift_movement = 1
-	
+
 	" Map tab switch to cmd-<number>
 	map <D-1> :tabn 1<CR>
 	map <D-2> :tabn 2<CR>
@@ -508,7 +508,7 @@ if has('gui_macvim')
 	map! <D-8> <C-O>:tabn 8<CR>
 	map! <D-9> <C-O>:tabn 9<CR>
 endif
- 
+
 " Windows
 if has('gui_win32')
 	" ...

@@ -31,6 +31,7 @@ Bundle 'gmarik/vundle'
 
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
+"Bundle 'Lokaltog/TagHighlight'
 Bundle 'Shougo/neocomplcache'
 Bundle 'ap/vim-css-color'
 Bundle 'ervandew/supertab'
@@ -77,6 +78,7 @@ let g:syntastic_enable_signs = 1
 let g:syntastic_enable_balloons = 1
 let g:syntastic_echo_current_error = 1
 let g:syntastic_check_on_open = 1
+let g:syntastic_python_checker_args='--ignore=E501'
 let g:Powerline_symbols  = 'fancy'           " Custom font tokens
 let g:UltiSnipsJumpForwardTrigger = '<Tab>'
 let g:neocomplcache_enable_at_startup = 1
@@ -148,6 +150,7 @@ Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
 Bundle 'sjl/badwolf'
+Bundle 'w0ng/vim-hybrid'
 
 " Basic options
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -166,7 +169,7 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme smyck
+colorscheme solarized
 if has('gui_running')
 	colorscheme badwolf
 endif
@@ -185,12 +188,13 @@ set incsearch
 set nowrap
 set linebreak
 set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
-set showbreak=↪
+set showbreak=\ \ ↪
 
 set backspace=indent,eol,start
 "set clipboard=unnamed
 set cursorline
-set fillchars=diff:⣿,vert:│,stl:\ ,stlnc:\
+" set fillchars=diff:⣿,vert:│,stl:\ ,stlnc:\ 
+set fillchars=diff:░,vert:│,stl:\ ,stlnc:\ 
 set laststatus=2
 set lazyredraw
 set ttyfast
@@ -293,7 +297,7 @@ nnoremap <silent> <Leader>l :call HighlightProblemLines()<CR>
 noremap <Leader>n :NERDTreeToggle<CR>
 
 " Toggle comments (TComment)
-map <Leader>c :TCommentInline<CR>
+map <Leader>c :TComment<CR>
 
 " Toggle Tagbar
 nmap <Leader>t :TagbarToggle<CR>

@@ -49,6 +49,8 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'mattn/zencoding-vim'
+Bundle 'dbext.vim'
+Bundle 'mileszs/ack.vim'
 
 Bundle 'AutoTag'
 
@@ -65,6 +67,8 @@ Bundle 'hail2u/vim-css3-syntax'
 "Bundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
 Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'nginx.vim'
+Bundle 'VimClojure'
+Bundle 'davidhalter/jedi-vim'
 
 " Plugin variables
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,13 +76,14 @@ Bundle 'nginx.vim'
 let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let NERDTreeMouseMode = 1                    " Single click for everything
+let vimclojure#ParenRainbow = 1
 let g:molokai_original = 1                   " Use original Monokai background color
 let g:solarized_termcolors = 256             " Use 256 colors in terminal (instead of 16)
 let g:syntastic_enable_signs = 1
 let g:syntastic_enable_balloons = 1
 let g:syntastic_echo_current_error = 1
 let g:syntastic_check_on_open = 1
-let g:syntastic_python_checker_args='--ignore=E501'
+let g:syntastic_python_checker_args='--ignore=E501,E128'
 let g:Powerline_symbols  = 'fancy'           " Custom font tokens
 let g:UltiSnipsJumpForwardTrigger = '<Tab>'
 let g:neocomplcache_enable_at_startup = 1
@@ -86,6 +91,9 @@ let g:neocomplcache_enable_smart_case = 1
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
 let g:Gitv_OpenHorizontal = 'auto'
+let g:pandoc_no_folding = 1                  " Don't fold Markdown documents
+let g:jedi#popup_on_dot = 0                  " Don't automatically start autocomplete,
+                                             " conflicts with neocomplcache
 
 let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
 let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
@@ -140,7 +148,7 @@ let g:ctrlp_custom_ignore = {
 Bundle 'altercation/vim-colors-solarized'
 "Bundle 'robokai'
 Bundle 'tomasr/molokai'
-"Bundle 'wgibbs/vim-irblack'
+Bundle 'wgibbs/vim-irblack'
 "Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
 "Bundle 'jpo/vim-railscasts-theme'
@@ -171,7 +179,7 @@ set synmaxcol=800
 
 colorscheme solarized
 if has('gui_running')
-	colorscheme badwolf
+	colorscheme molokai
 endif
 
 set encoding=utf-8
@@ -193,8 +201,7 @@ set showbreak=\ \ ↪
 set backspace=indent,eol,start
 "set clipboard=unnamed
 set cursorline
-" set fillchars=diff:⣿,vert:│,stl:\ ,stlnc:\ 
-set fillchars=diff:░,vert:│,stl:\ ,stlnc:\ 
+set fillchars=stl:\ ,stlnc:\ ,diff:⣿,vert:│
 set laststatus=2
 set lazyredraw
 set ttyfast

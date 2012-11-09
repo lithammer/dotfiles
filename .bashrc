@@ -10,8 +10,12 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
 	export PATH=/usr/local/bin:$PATH
 	# Homebrew installs Python distribute here, needed for easy_install/pip
 	export PATH=$PATH:/usr/local/share/python:/usr/local/share/python3
+	# Add RVM to PATH for scripting
+	export PATH=$PATH:$HOME/.rvm/bin
 	# Cabal (Haskell-Platform)
 	export PATH=$HOME/.cabal/bin:$PATH
+	# Node.js npm
+	export PATH=/usr/local/share/npm/bin:$PATH
 fi
 
 export EDITOR=vim
@@ -28,10 +32,13 @@ export WORKON_HOME=$HOME/.virtualenvs
 
 # Virtualenwrapper settings
 if [[ "$OSTYPE" =~ ^darwin ]]; then
-	[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
+	[ -e /usr/local/bin/virtualenvwrapper_lazy.sh ] && . /usr/local/bin/virtualenvwrapper_lazy.sh
 else
-	[ -e /usr/bin/virtualenvwrapper.sh ] && . /usr/bin/virtualenvwrapper.sh
+	[ -e /usr/bin/virtualenvwrapper_lazy.sh ] && . /usr/bin/virtualenvwrapper_lazy.sh
 fi
+
+# This loads RVM into a shell session.
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.

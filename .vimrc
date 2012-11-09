@@ -62,6 +62,8 @@ endif
 
 " Filetype specific
 Bundle 'pangloss/vim-javascript'
+Bundle 'reinh/jquery-autocomplete'
+Bundle 'jQuery'
 Bundle 'othree/html5.vim'
 Bundle 'hail2u/vim-css3-syntax'
 "Bundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
@@ -153,7 +155,7 @@ Bundle 'wgibbs/vim-irblack'
 Bundle 'Diablo3'
 "Bundle 'jpo/vim-railscasts-theme'
 "Bundle 'github-theme'
-Bundle 'Lucius'
+Bundle 'jonathanfilip/vim-lucius'
 Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
@@ -179,7 +181,7 @@ set synmaxcol=800
 
 colorscheme solarized
 if has('gui_running')
-	colorscheme molokai
+	colorscheme lucius
 endif
 
 set encoding=utf-8
@@ -466,6 +468,10 @@ let g:lisp_rainbow = 1
 au BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
 au BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
 au BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
+
+" Use syntax file jquery for javascript
+"au BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
+au BufRead,BufNewFile *.js set ft=javascript syntax=jquery
 
 " Warn if there's tabs in space indenting languages
 function! WarnTabs()

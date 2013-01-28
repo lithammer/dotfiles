@@ -1,6 +1,7 @@
-set guifont=Inconsolata:h12
+"set guifont=Inconsolata:h12
 "set guifont=AndaleMono:h10
 "set guifont=Monaco:h10
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
 
 "set noantialias
 

@@ -1,5 +1,42 @@
 [color]
 	ui = true
+[color "branch"]
+	current = green bold
+	local = green
+	remote = yellow
+
+[color "diff"]
+	frag = magenta
+	meta = yellow
+	new = green
+	old = red
+
+[color "status"]
+	added = green reverse
+	changed = yellow reverse
+	untracked = red reverse
 [user]
 	name = Peter Renström
 	email = renstrom.peter@gmail.com
+[core]
+	autocrlf = input
+	editor = vim
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
+[alias]
+	#l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	l  = log --pretty=custom -n 20
+	g  = log --graph --pretty=custom
+	s = status
+	c = commit --untracked-files=no -v
+	co = checkout
+[push]
+	default = simple
+[pretty]
+    # Custom log output
+    custom = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
+    #                     │        │            │            │  author name ┘
+    #                     │        │            │            └─ message
+    #                     │        │            └─ date (relative)
+    #                     │        └─ decorations (branch, heads or tags)
+    #                     └─ hash (abbreviated)

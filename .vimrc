@@ -30,8 +30,8 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'Lokaltog/vim-powerline'
-"Bundle 'Lokaltog/TagHighlight'
+"Bundle 'Lokaltog/vim-powerline'
+Bundle 'Lokaltog/powerline'
 Bundle 'Shougo/neocomplcache'
 Bundle 'ap/vim-css-color'
 Bundle 'ervandew/supertab'
@@ -39,7 +39,6 @@ Bundle 'fs111/pydoc.vim'
 Bundle 'gregsexton/MatchTag'
 Bundle 'kien/ctrlp.vim'
 Bundle 'majutsushi/tagbar'
-"Bundle 'scrooloose/nerdcommenter'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'tomtom/tcomment_vim'
@@ -49,7 +48,6 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'mattn/zencoding-vim'
-Bundle 'dbext.vim'
 Bundle 'mileszs/ack.vim'
 
 Bundle 'AutoTag'
@@ -67,9 +65,10 @@ Bundle 'jQuery'
 Bundle 'othree/html5.vim'
 Bundle 'hail2u/vim-css3-syntax'
 "Bundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
+Bundle 'groenewege/vim-less'
 Bundle 'vim-pandoc/vim-pandoc'
 Bundle 'nginx.vim'
-Bundle 'VimClojure'
+"Bundle 'VimClojure'
 Bundle 'davidhalter/jedi-vim'
 
 " Plugin variables
@@ -86,7 +85,7 @@ let g:syntastic_enable_balloons = 1
 let g:syntastic_echo_current_error = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_python_checker_args='--ignore=E501,E128'
-let g:Powerline_symbols  = 'fancy'           " Custom font tokens
+" let g:Powerline_symbols = 'fancy'            " Custom font tokens
 let g:UltiSnipsJumpForwardTrigger = '<Tab>'
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
@@ -135,8 +134,8 @@ let g:pymode_syntax_builtin_objs = 1         " Highlight builtin objects (__doc_
 let g:pymode_syntax_builtin_funcs = 1        " Highlight builtin functions
 let g:pymode_syntax_highlight_exceptions = 1 " Highlight exceptions
 
-" Adds a trailing whitespace notification to the statusline
-call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
+" Load Powerline
+source ~/.vim/bundle/powerline/powerline/bindings/vim/plugin/source_plugin.vim
 
 "let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
 let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
@@ -162,7 +161,7 @@ Bundle 'nanotech/jellybeans.vim'
 Bundle 'sjl/badwolf'
 Bundle 'w0ng/vim-hybrid'
 
-" Basic options
+" BASIC OPTIONS
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Put the cursor on a keyword and press 'K' to get information about it!
@@ -179,63 +178,77 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme solarized
+colorscheme hybrid
 if has('gui_running')
-	colorscheme lucius
+	colorscheme solarized
 endif
 
-set encoding=utf-8
-set nobomb
-
-set autoindent
-set formatoptions+=n
-
-set gdefault
-set hlsearch
-set ignorecase
-set incsearch
-
-set nowrap
-set linebreak
-set listchars=tab:▸\ ,trail:.,eol:¬,precedes:❮,extends:❯
-set showbreak=\ \ ↪
-
-set backspace=indent,eol,start
+set encoding=utf-8 nobomb     " Use UTF-8 without BOM
+set autoindent                " Copy the indent from the current line when
+                              " starting a new line
+set formatoptions+=n          " When formatting text, recognize numbered lists
+set formatoptions-=r          " Don't insert current comment leader after
+                              " hitting <Enter> in Insert mode
+set cpoptions+=$              " When making a change, don't redisplay the line
+                              " and instead put a '$' sign at the end of the
+							  " changed text
+set gdefault                  " :substitute flag 'g' is on by default
+set hlsearch                  " Enable search highlighting
+set ignorecase                " Ignore case in search patterns
+set smartcase                 " Override the 'ignorecase' option if the search
+                              " pattern contains uppercase characters
+set incsearch                 " Highlight dynamically as a search pattern is
+                              " being typed
+set nowrap                    " Don't wrap lines
+set linebreak                 " Wrap long lines at a character in 'breakat'
+                              " rather than at the last character that fits
+							  " on the screen
+set listchars=tab:▸\          " ┐
+set listchars+=trail:.        " │ Use custom symbols to
+set listchars+=eol:¬          " │ represent invisible characters
+set listchars+=precedes:❮     " │
+set listchars+=extends:❯      " ┘
+set showbreak=\ \ ↪           " Start character for wrapped lines
+set backspace=2               " Allow backspace everywhere
 "set clipboard=unnamed
-set cursorline
-set fillchars=stl:\ ,stlnc:\ ,diff:⣿,vert:│
-set laststatus=2
-set lazyredraw
-set ttyfast
-set matchpairs+=<:>
-set mouse=a
-set number
-set pastetoggle=<F5>
-set scrolloff=5
-set sidescroll=10
-set showmatch
-set smartcase
-set title
-
-let g:tabwidth = 4
-exec 'set shiftwidth=' . g:tabwidth
-exec 'set softtabstop=' . g:tabwidth
-exec 'set tabstop=' . g:tabwidth
-set smarttab
-set shiftround
-set noexpandtab
-"set expandtab
-
-silent execute '!mkdir -p $HOME/.vim/swap'
-set directory=$HOME/.vim/swap
-
-silent execute '!mkdir -p $HOME/.vim/backup'
-set backupdir=$HOME/.vim/backup
-
-" Persistent undo history
-silent execute '!mkdir -p $HOME/.vim/undo'
-set undodir=$HOME/.vim/undo
-set undofile
+"set cursorline                " Highlight the current line
+set fillchars=stl:\           " ┐
+set fillchars+=stlnc:\        " │ Characters to fill the statuslines
+set fillchars+=diff:⣿         " │ and vertical separators.
+set fillchars+=vert:│         " ┘
+set laststatus=2              " Always show the status line
+set shortmess=aAItW           " Avoid all the hit-enter prompts
+set lazyredraw                " Don't redraw screen while executing macros,
+                              " registers and other commands that have not
+							  " been typed
+set ttyfast                   " Enable fast terminal connection (more characters
+                              " will be send to the screen for redrawing)
+set matchpairs+=<:>           " Match HTML tags with the '%' command
+set mouse=a                   " Enable mouse in all modes
+set number                    " Show the line number
+set pastetoggle=<F5>          " <F5> to toggle between 'paste' and 'nopaste' mode
+set scrolloff=5               " When the page starts to scroll, keep the cursor
+                              " 5 lines below the top and 5 lines above the
+                              " bottom of the screen
+set sidescroll=10             " The minimal number of columns to
+                              " scroll horizontally
+set report=0                  " Always report the number of lines changed
+set showmatch                 " When a bracket is inserted, briefly jump
+                              " to the matching one
+set title                     " Set the title of the window to 'titlestring'
+set shiftwidth=4              " ┐
+set softtabstop=4             " │ Global <Tab> settings
+set tabstop=4                 " ┘
+set smarttab                  " A <Tab> in front of a line inserts blanks
+                              " according to 'shiftwidth'. 'tabstop' or
+							  " 'softtabstop' is used in other places
+set shiftround                " Round indent to multiple of 'shiftwidth'
+set noexpandtab               " Use tabs (not spaces)
+"set expandtab                 " Use spaces (not tabs)
+set directory=~/.vim/swaps    " Directory for swap files
+set backupdir=~/.vim/backups  " Directory for backup files
+set undodir=~/.vim/undos      " Directory for undo files
+set undofile                  " Automatically save undo history
 
 set wildignore+=.svn,CVS,.git,.hg            " Version control
 set wildignore+=*.aux,*.out                  " LaTeX intermediate files
@@ -250,18 +263,21 @@ set wildignore+=*.ico
 set wildignore+=env,node_modules             " Virtualenv and Node.js folders
 set wildignore+=lib,libs                     " Library folders
 set wildignore+=*.DS_Store                   " OS X files
-
-set wildmenu
-set wildmode=list:longest,list:full
-set completeopt=menuone,longest,preview
-
-if version >= 700
+set wildmenu                                 " Enable command-line completion in an enhanced
+                                             " mode (by hitting <TAB> in command mode, it will
+                                             " show the possible matches just above the command
+                                             " line with the first match highlighted)
+set wildmode=list:longest,list:full          " When more than one match, list all matches and
+                                             " complete till longest common string.
+set completeopt=menuone,preview              " Show popup when there's one or more matches
+if version >= 703
 	set cryptmethod=blowfish
 endif
 
-" Mappings
+" MAPPINGS
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+" Use a different mapleader (default is '\')
 let mapleader = ','
 
 " Yank to system clipboard as well
@@ -273,7 +289,7 @@ noremap Y "*y$
 nnoremap * *<C-o>
 
 " Search and replace the word under cursor
-nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+nnoremap <Leader>* :%s/\<<C-r><C-w>\>/
 
 " <Leader><Space> to clear search highlight
 nnoremap <Leader><Space> :nohl<CR>
@@ -286,6 +302,22 @@ nnoremap <Leader>. :lcd %:p:h<CR>
 
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
+
+" Strip whitespace
+function! StripWhitespaces()
+    " Save last search and cursor position
+    let searchHistory = @/
+    let cursorLine = line(".")
+    let cursorColumn = col(".")
+
+    " Strip trailing whitespaces
+    %s/\s\+$//e
+
+    " Restore previous search history and cursor position
+    let @/ = searchHistory
+    call cursor(cursorLine, cursorColumn)
+endfunction
+nnoremap <Leader>ss :call StripWhitespaces()<CR>
 
 " Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
 function! HighlightProblemLines()
@@ -314,14 +346,10 @@ nmap <Leader>t :TagbarToggle<CR>
 " Load the Gundo window
 map <Leader>g :GundoToggle<CR>
 
-" Rope (not installed atm)
-map <Leader>j :RopeGotoDefinition<CR>
-"map <Leader>r :RopeRename<CR>
-
 " Neocomplcache
 " <Tab>: completion.
-"au VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-"au VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
+"autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"autocmd VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
 
 " Don't display popup while navigating, backspacing and linebreaking
 inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
@@ -331,37 +359,37 @@ inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
 inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
 inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
-" Auto commands
+" AUTO COMMANDS
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Only show cursorline in the current window and in normal mode
 augroup cline
 	au!
-	au WinLeave * set nocursorline
-	au WinEnter * set cursorline
-	au InsertEnter * set nocursorline
-	au InsertLeave * set cursorline
+	autocmd WinLeave * set nocursorline
+	autocmd WinEnter * set cursorline
+	autocmd InsertEnter * set nocursorline
+	autocmd InsertLeave * set cursorline
 augroup END
 
 " Only show colorcolumn in the current window
 "augroup ccol
 "	au!
-"	au WinLeave * setlocal colorcolumn=0
-"	au WinEnter * setlocal colorcolumn=+1
+"	autocmd WinLeave * setlocal colorcolumn=0
+"	autocmd WinEnter * setlocal colorcolumn=+1
 "augroup END
 
 " Don't show trailing whitespaces in insert mode
 augroup trailing
 	au!
-	au InsertEnter * :set listchars-=trail:⌴
-	au InsertLeave * :set listchars+=trail:⌴
+	autocmd InsertEnter * :set listchars-=trail:⌴
+	autocmd InsertLeave * :set listchars+=trail:⌴
 augroup END
 
 " Press K to get documentation about a Vim keyword
-au FileType vim,help setlocal keywordprg=:help
+autocmd FileType vim,help setlocal keywordprg=:help
 
 " Resize splits when the window is resized
-au VimResized * :wincmd =
+autocmd VimResized * :wincmd =
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
@@ -373,7 +401,6 @@ function! s:VSetSearch()
 	let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
 	let @@ = temp
 endfunction
-
 vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
 vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
 
@@ -388,17 +415,17 @@ function! SetCursorPosition()
 endfunction
 
 " Helps if you have to use another editor on the same file
-au FileChangedShell *
+autocmd FileChangedShell *
 	\ echohl WarningMsg |
 	\ echo 'File has been changed outside of Vim.' |
 	\ echohl None
 
-" Filetype specific
+" FILETYPE SETTINGS
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Script templates
-au BufNewFile *.sh so ~/.vim/templates/tpl.sh
-au BufNewFile *.py so ~/.vim/templates/tpl.py
+autocmd BufNewFile *.sh so ~/.vim/templates/tpl.sh
+autocmd BufNewFile *.py so ~/.vim/templates/tpl.py
 
 " Encrypted files
 function SetupEncryption()
@@ -413,7 +440,7 @@ function SetupEncryption()
 	" move cursor over word and press 'e' to obfuscate/unobfuscate it
 	noremap e g?iw
 endfunction
-au BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
+autocmd BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
 
 " Pandoc (Markdown)
 function! SetupPandoc()
@@ -423,7 +450,7 @@ function! SetupPandoc()
 	" Autowrap text based on 'textwidth'
 	setlocal formatoptions+=t
 endfunction
-au FileType pandoc call SetupPandoc()
+autocmd FileType pandoc call SetupPandoc()
 
 " Plain text
 function! SetupPlainText()
@@ -433,7 +460,7 @@ function! SetupPlainText()
 	" Autowrap text based on 'textwidth'
 	setlocal formatoptions+=t
 endfunction
-au FileType text call SetupPlainText()
+autocmd FileType text call SetupPlainText()
 
 " Python, PEP8: http://www.python.org/dev/peps/pep-0008/
 function! SetupPython()
@@ -450,7 +477,7 @@ function! SetupPython()
 	" Don't autowrap text based on 'textwidth'
 	setlocal formatoptions-=t
 endfunction
-au FileType python call SetupPython()
+autocmd FileType python call SetupPython()
 
 " Ruby
 function! SetupRuby()
@@ -458,20 +485,23 @@ function! SetupRuby()
 	setlocal tabstop=2
 	setlocal shiftwidth=2
 endfunction
-au FileType ruby call SetupRuby()
+autocmd FileType ruby call SetupRuby()
 
 " The g:lisp_rainbow option provides 10 levels of individual colorization for
 " the parentheses and backquoted parentheses.
 let g:lisp_rainbow = 1
 
 " Nginx config files
-au BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
-au BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
-au BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
+autocmd BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
+autocmd BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
+autocmd BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
+
+" Automatically compile LESS files on save
+"autocmd BufWritePost *.less !lessc % > $(echo % | sed 's/\.less$/\.css/')
 
 " Use syntax file jquery for javascript
-"au BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
-au BufRead,BufNewFile *.js set ft=javascript syntax=jquery
+autocmd BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
+" autocmd BufRead,BufNewFile *.js set ft=javascript syntax=jquery
 
 " Warn if there's tabs in space indenting languages
 function! WarnTabs()
@@ -483,9 +513,9 @@ function! WarnTabs()
 	endif
 	call setpos('.', save_cursor)
 endfunction
-au BufReadPost *.{py,rb} call WarnTabs()
+autocmd BufReadPost *.{py,rb} call WarnTabs()
 
-" OS specific
+" OS SPECIFIC
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " General GUI options
@@ -531,6 +561,7 @@ if has('gui_win32')
 	" ...
 endif
 
-if filereadable(expand('~/.vimrc.local'))
+" Local settings
+if filereadable(glob('~/.vimrc.local'))
 	source ~/.vimrc.local
 endif

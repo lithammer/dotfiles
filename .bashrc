@@ -6,6 +6,7 @@ done
 unset file
 
 if [[ "$OSTYPE" =~ ^darwin ]]; then
+	export PATH=/usr/local/sbin:$PATH
 	# Put /usr/local/bin at the front, not the end
 	export PATH=/usr/local/bin:$PATH
 	# Homebrew installs Python distribute here, needed for easy_install/pip
@@ -18,31 +19,57 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
 	export PATH=/usr/local/share/npm/bin:$PATH
 fi
 
-export EDITOR=vim
-export LC_ALL=en_US.UTF-8
-export LANG=en_US
+
+# Make vim the default editor
+export EDITOR="vim"
+
+# Ignore commands that start with spaces and duplicates
+export HISTCONTROL=ignoreboth
+
+# Increase the maximum number of lines contained in the history file
+# (default value is 500)
+export HISTFILESIZE=5000
+
+# Don't add certain commands to the history file
+export HISTIGNORE="&:[bf]g:c:clear:exit:q:ll:ls -l:pwd:* --help"
+
+# Increase the maximum number of commands to remember in the command history
+# (default value is 500)
+export HISTSIZE=5000
+
+# Prefer US English and use UTF-8 encoding
+export LANG="en_US"
+export LC_ALL="en_US.UTF-8"
+
+# Don't clear the screen after quitting a man page
+export MANPAGER="less -X"
+
+# Make new shells get the history lines from all previous
+# shells instead of the default "last window closed" history
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 # Files to ignore when auto-completing
-export FIGNORE=.pyc:.o:.git:.svn:.class:.beam
-
-export HISTCONTROL=ignoredups:ignorespace
+export FIGNORE=.pyc:.o:.class:.beam
 
 # Virtualenwrapper directory
 export WORKON_HOME=$HOME/.virtualenvs
 
 # Virtualenwrapper settings
 if [[ "$OSTYPE" =~ ^darwin ]]; then
-	[ -e /usr/local/bin/virtualenvwrapper_lazy.sh ] && . /usr/local/bin/virtualenvwrapper_lazy.sh
+	[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
 else
-	[ -e /usr/bin/virtualenvwrapper_lazy.sh ] && . /usr/bin/virtualenvwrapper_lazy.sh
+	[ -e /usr/bin/virtualenvwrapper.sh ] && . /usr/bin/virtualenvwrapper.sh
 fi
 
 # This loads RVM into a shell session.
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
-# check the window size after each command and, if necessary,
+# Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# Include filenames beginning with a "." in the filename expansion
+shopt -s dotglob
 
 # Extended pattern matching
 shopt -s extglob
@@ -53,8 +80,15 @@ shopt -s nocaseglob
 # Append to the Bash history file, rather than overwriting it
 shopt -s histappend
 
-# Autocorrect typos in path names when using `cd`
+# Autocorrect typos in path names when using `cd` command
 shopt -s cdspell
+
+# Save all lines of a multiple-line command in the same history entry
+shopt -s cmdhist
+
+# Do not attempt to search the PATH for possible
+# completions when completion is attempted on an empty line
+shopt -s no_empty_cmd_completion
 
 # Enable some Bash 4 features when possible:
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
@@ -100,7 +134,7 @@ if tput setaf 1 &> /dev/null; then
 		GREEN=$(tput setaf 82)
 		YELLOW=$(tput setaf 226)
 		PURPLE=$(tput setaf 141)
-		WHITE=$(tput setaf 256)
+		WHITE=$(tput setaf 0)
 	else
 		MAGENTA=$(tput setaf 5)
 		ORANGE=$(tput setaf 4)
@@ -134,63 +168,87 @@ export RESET
 # Disable virtualenvs PS1 prefix
 VIRTUAL_ENV_DISABLE_PROMPT=true
 
-function parse_virtualenv() {
-	echo "${VIRTUAL_ENV:+`basename ${VIRTUAL_ENV}` }"
+function prompt_virtualenv() {
+	printf "${VIRTUAL_ENV:+ as ${YELLOW}`basename ${VIRTUAL_ENV}`}"
 }
 
-# Detect whether the current directory is a git repository.
-function is_git_repository {
-	git branch > /dev/null 2>&1
+is_git_repo() {
+    git rev-parse --is-inside-work-tree &> /dev/null
 }
 
-# Determine the branch/state information for this git repository.
-function get_git_branch_name() {
+get_git_branch() {
+    local branch_name
+
+    # Get the short symbolic ref
+    branch_name=$(command git symbolic-ref --quiet --short HEAD 2> /dev/null) ||
+    # If HEAD isn't a symbolic ref, get the short SHA
+    branch_name=$(command git rev-parse --short HEAD 2> /dev/null) ||
+    # Otherwise, just give up
+    branch_name="(unknown)"
+
+    echo $branch_name
+}
+
+# Git status information
+function prompt_git() {
+    local git_info git_state state_color git_status uc us ut st
+
+    if ! is_git_repo; then
+        return 1
+    fi
+
+    git_info=$(get_git_branch)
+
+    # The following checks can print a character if a condition matches.
+    # By default, only a dirty branch will show a star.
+    # If you want more info in your prompt, just assign a character to it below.
+    # Keep in mind that the checks are not exclusive, all 4 could be true.
+    #
+    # Check for uncommitted changes in the index
+    if ! `command git diff --quiet --ignore-submodules --cached`; then
+        uc="+" # Suggestion: "+"
+    fi
+
+    # Check for unstaged changes
+    if ! `command git diff-files --quiet --ignore-submodules --`; then
+        us="*" # Suggestion: "*"
+    fi
+
+    # Check for untracked files
+    if [ -n "$(command git ls-files --others --exclude-standard)" ]; then
+        ut="" # Suggestion: "?"
+    fi
+
+    # Check for stashed files
+    if `command git rev-parse --verify refs/stash &>/dev/null`; then
+        st="$" # Suggestion: "$"
+    fi
+
+    # Now we combine all possible symbols to make the "state" string
+    # If you followed the suggestions and all cases match it would say: "+*?$"
+    git_state=$uc$us$ut$st
+
+    # Combine the branch name and state information
+    if [[ $git_state ]]; then
+        git_info="$git_info$git_state"
+    fi
+
 	# Capture the output of the "git status" command.
 	git_status="$(git status 2> /dev/null)"
 
 	# Set color based on clean/staged/dirty.
 	if [[ ${git_status} =~ "working directory clean" ]]; then
-		local_state="${GREEN}"
+		state_color="${GREEN}"
 	elif [[ ${git_status} =~ "Changes to be committed" ]]; then
-		local_state="${YELLOW}"
+		state_color="${YELLOW}"
 	else
-		local_state="${MAGENTA}"
+		state_color="${MAGENTA}"
 	fi
 
-	# Set arrow icon based on status against remote.
-	remote_pattern="# Your branch is (.*) of"
-	if [[ ${git_status} =~ ${remote_pattern} ]]; then
-		if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
-			remote_state="[↑]"
-		else
-			remote_state="[↓]"
-		fi
-	else
-		remote_state=""
-	fi
-	diverge_pattern="# Your branch and (.*) have diverged"
-	if [[ ${git_status} =~ ${diverge_pattern} ]]; then
-		remote_state="[↕]"
-	fi
-
-	# Get the name of the branch.
-	branch_pattern="^# On branch ([^${IFS}]*)"
-	if [[ ${git_status} =~ ${branch_pattern} ]]; then
-		branch_name=${BASH_REMATCH[1]}
-	fi
-
-	# Set the final branch string.
-	echo "${WHITE} on ${local_state}${branch_name}${remote_state} "
+    printf " on ${state_color}${git_info}"
 }
 
-function get_branch_name() {
-	if is_git_repository ; then
-		echo $(get_git_branch_name)
-	fi
-	echo ""
-}
-
-export PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\H\[$WHITE\] in \[$PURPLE\]\w\$(get_branch_name)\n\[$YELLOW\]\$(parse_virtualenv)\[$WHITE\]\$ \[$RESET\]"
+export PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$PURPLE\]\w\[$WHITE\]\$(prompt_git)\[$WHITE\]\$(prompt_virtualenv)\[$WHITE\]\n\$ \[$RESET\]"
 export PS2="\[$ORANGE\]→ \[$RESET\]"
 
 # Local changes

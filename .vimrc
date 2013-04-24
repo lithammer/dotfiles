@@ -14,136 +14,112 @@
 " │   <F5> = toggle paste mode on/off                                        │
 " │   ,<Space> = clear search highlight                                      │
 " │                                                                          │
-" │   ,s = search and replace word under cursor                              │
+" │   ,* = search and replace word under cursor                              │
 " │                                                                          │
 " │                                                                          │
 " │ Put machine/user specific settings in ~/.vimrc.local                     │
 " │                                                                          │
 " └──────────────────────────────────────────────────────────────────────────┘
 
-" Vundle
+" Vundle {{{
 filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set runtimepath+=$HOME/.vim/bundle/vundle/
+silent! call vundle#rc()
 
 Bundle 'gmarik/vundle'
 
 Bundle 'Lokaltog/vim-easymotion'
-"Bundle 'Lokaltog/vim-powerline'
-Bundle 'Lokaltog/powerline'
-Bundle 'Shougo/neocomplcache'
+"Bundle 'Shougo/neocomplcache'
 Bundle 'ap/vim-css-color'
-Bundle 'ervandew/supertab'
-Bundle 'fs111/pydoc.vim'
 Bundle 'gregsexton/MatchTag'
 Bundle 'kien/ctrlp.vim'
+"Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'tomtom/tcomment_vim'
+"Bundle 'tpope/vim-commentary'
+Bundle 'godlygeek/tabular'
+Bundle 'terryma/vim-multiple-cursors'
 Bundle 'gregsexton/gitv'
 Bundle 'tpope/vim-fugitive'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'tpope/vim-dispatch'
 Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-surround'
-Bundle 'michaeljsmith/vim-indent-object'
+"Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'mattn/zencoding-vim'
 Bundle 'mileszs/ack.vim'
-
-Bundle 'AutoTag'
+"Bundle 'jceb/vim-orgmode'
 
 if has('python')
+	Bundle 'Valloric/YouCompleteMe'
 	Bundle 'SirVer/ultisnips'
+	" vim-snippets doesn't actually require Python, but depends on ultisnips
+	" which does.
+	Bundle 'honza/vim-snippets'
 	Bundle 'klen/python-mode'
 	Bundle 'sjl/gundo.vim'
+	Bundle 'davidhalter/jedi-vim'
+
+	Bundle 'Lokaltog/powerline'
+	set runtimepath+=$HOME/.vim/bundle/powerline/powerline/bindings/vim
+else
+	Bundle 'ervandew/supertab'
 endif
 
 " Filetype specific
 Bundle 'pangloss/vim-javascript'
-Bundle 'reinh/jquery-autocomplete'
-Bundle 'jQuery'
 Bundle 'othree/html5.vim'
+"Bundle 'othree/javascript-libraries-syntax.vim'
 Bundle 'hail2u/vim-css3-syntax'
-"Bundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
+Bundle 'kchmck/vim-coffee-script'
 Bundle 'groenewege/vim-less'
-Bundle 'vim-pandoc/vim-pandoc'
+Bundle 'tpope/vim-haml'
+Bundle 'tpope/vim-markdown'
+Bundle 'tpope/vim-git'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'guns/vim-clojure-static'
+Bundle 'jnwhiteh/vim-golang'
 Bundle 'nginx.vim'
-"Bundle 'VimClojure'
-Bundle 'davidhalter/jedi-vim'
 
-" Plugin variables
+" }}}
+
+" Plugin variables {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-let NERDCreateDefaultMappings = 0            " Don't create default NERDCommenter keymappings
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
-let NERDTreeMouseMode = 1                    " Single click for everything
 let vimclojure#ParenRainbow = 1
-let g:molokai_original = 1                   " Use original Monokai background color
-let g:solarized_termcolors = 256             " Use 256 colors in terminal (instead of 16)
-let g:syntastic_enable_signs = 1
-let g:syntastic_enable_balloons = 1
-let g:syntastic_echo_current_error = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_python_checker_args='--ignore=E501,E128'
-" let g:Powerline_symbols = 'fancy'            " Custom font tokens
-let g:UltiSnipsJumpForwardTrigger = '<Tab>'
+" let g:EasyMotion_leader_key = '<Space>'
+let g:Gitv_OpenHorizontal = 'auto'
+let g:SuperTabContextDefaultCompletionType = '<C-n>'
+let g:SuperTabDefaultCompletionType = 'context'
+let g:UltiSnipsExpandTrigger = '<C-j>'
+let g:UltiSnipsJumpForwardTrigger = '<C-j>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
+let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
+let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
+let g:jedi#popup_select_first = 0            " Don't auto-select the first hit
+let g:jedi#popup_on_dot = 0
 let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_enable_smart_case = 1
-let g:SuperTabDefaultCompletionType = 'context'
-let g:SuperTabContextDefaultCompletionType = '<C-n>'
-let g:Gitv_OpenHorizontal = 'auto'
-let g:pandoc_no_folding = 1                  " Don't fold Markdown documents
-let g:jedi#popup_on_dot = 0                  " Don't automatically start autocomplete,
-                                             " conflicts with neocomplcache
+let g:solarized_termcolors = 256             " Use 256 colors in terminal (instead of 16)
+let g:syntastic_check_on_open = 1
+let g:syntastic_echo_current_error = 1
+let g:syntastic_enable_balloons = 1
+let g:syntastic_enable_signs = 1
+let g:use_zen_complete_tag = 1               " Complete tags using omnifunc
 
-let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
-let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
-
-let g:pymode_doc = 0                         " Don't load show documentation plugin
 let g:pymode_run = 0                         " Load run code plugin
 let g:pymode_lint = 0                        " Disable pylint code plugin
-
-let g:pymode_rope = 1                        " Load rope plugin
-let g:pymode_rope_auto_project = 1           " Auto create and open ropeproject
-let g:pymode_rope_enable_autoimport = 1      " Enable autoimport
-let g:pymode_rope_autoimport_generate = 1    " Auto generate global cache
-let g:pymode_rope_autoimport_underlineds = 0
-let g:pymode_rope_extended_complete = 1
-let g:pymode_rope_confirm_saving = 1
-let g:pymode_rope_vim_completion = 0
-let g:pymode_rope_guess_project = 1
-let g:pymode_rope_goto_def_newwin = 0
-let g:pymode_rope_always_show_complete_menu = 0
-
 let g:pymode_folding = 0                     " Disable python folding
 let g:pymode_motion = 0                      " Disable python objects and motion
-let g:pymode_virtualenv = 1                  " Auto fix vim python paths if virtualenv enabled
 let g:pymode_breakpoint = 0                  " Disable breakpoints plugin
 let g:pymode_utils_whitespaces = 0           " Disable autoremove unused whitespaces
-
-let g:pymode_syntax = 1                      " Enable pymode's custom syntax highlighting
-let g:pymode_syntax_all = 0                  " Don't enable all python highlightings
-let g:pymode_syntax_print_as_function = 1    " Highlight 'print' as function
-let g:pymode_syntax_indent_errors = 1        " Highlight indentation errors
-let g:pymode_syntax_space_errors = 1         " Highlight trailing spaces
-let g:pymode_syntax_string_formatting = 1    " Highlight string formatting
-let g:pymode_syntax_string_format = 1        " Highlight str.format syntax
-let g:pymode_syntax_string_templates = 1     " Highlight string.Template syntax
-let g:pymode_syntax_doctests = 1             " Highlight doc-tests
-let g:pymode_syntax_builtin_objs = 1         " Highlight builtin objects (__doc__, self, etc)
-let g:pymode_syntax_builtin_funcs = 1        " Highlight builtin functions
-let g:pymode_syntax_highlight_exceptions = 1 " Highlight exceptions
-
-" Load Powerline
-source ~/.vim/bundle/powerline/powerline/bindings/vim/plugin/source_plugin.vim
-
-"let g:ctrlp_working_path_mode = 0            " 0 - don't manage working directory.
-let g:ctrlp_root_markers = ['.ctrlp']        " Add custom root markers
-" Skip our custom root marker when searching
-let g:ctrlp_custom_ignore = {
-	\ 'dir': '\.ropeproject$\|node_modules$\|env$',
-	\ 'file': '\.ctrlp$\|\.png$\|\.jpeg$\|\.jpg$\|\.gif$',
-	\ }
+let g:pymode_rope_vim_completion = 0         " Disable Rope's Vim completion
+let g:pymode_rope_goto_def_newwin = 'new'    " Open goto definition in horizontal split
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'
@@ -153,15 +129,18 @@ Bundle 'wgibbs/vim-irblack'
 "Bundle 'trapd00r/neverland-vim-theme'
 Bundle 'Diablo3'
 "Bundle 'jpo/vim-railscasts-theme'
-"Bundle 'github-theme'
+Bundle 'github-theme'
 Bundle 'jonathanfilip/vim-lucius'
 Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
 Bundle 'sjl/badwolf'
 Bundle 'w0ng/vim-hybrid'
+Bundle 'wombat256.vim'
+Bundle 'mgutz/vim-colors'
+" }}}
 
-" BASIC OPTIONS
+" BASIC OPTIONS {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Put the cursor on a keyword and press 'K' to get information about it!
@@ -178,18 +157,20 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme hybrid
+colorscheme diablo3
 if has('gui_running')
-	colorscheme solarized
+	colorscheme underwater-mod
 endif
 
+"set exrc                      " Enables reading of .vimrc in the current directory
+"set secure                    " Disable autocmd, shell and write commands in local .vimrc files
 set encoding=utf-8 nobomb     " Use UTF-8 without BOM
 set autoindent                " Copy the indent from the current line when
                               " starting a new line
 set formatoptions+=n          " When formatting text, recognize numbered lists
-set formatoptions-=r          " Don't insert current comment leader after
+"set formatoptions-=r          " Don't insert current comment leader after
                               " hitting <Enter> in Insert mode
-set cpoptions+=$              " When making a change, don't redisplay the line
+"set cpoptions+=$              " When making a change, don't redisplay the line
                               " and instead put a '$' sign at the end of the
 							  " changed text
 set gdefault                  " :substitute flag 'g' is on by default
@@ -217,6 +198,9 @@ set fillchars+=stlnc:\        " │ Characters to fill the statuslines
 set fillchars+=diff:⣿         " │ and vertical separators.
 set fillchars+=vert:│         " ┘
 set laststatus=2              " Always show the status line
+set noshowmode                " Hide the default mode text, 
+                              " (e.g. -- INSERT -- below the statusline).
+							  " We have Powerline for this.
 set shortmess=aAItW           " Avoid all the hit-enter prompts
 set lazyredraw                " Don't redraw screen while executing macros,
                               " registers and other commands that have not
@@ -245,9 +229,9 @@ set smarttab                  " A <Tab> in front of a line inserts blanks
 set shiftround                " Round indent to multiple of 'shiftwidth'
 set noexpandtab               " Use tabs (not spaces)
 "set expandtab                 " Use spaces (not tabs)
-set directory=~/.vim/swaps    " Directory for swap files
-set backupdir=~/.vim/backups  " Directory for backup files
-set undodir=~/.vim/undos      " Directory for undo files
+set directory=$HOME/.vim/swaps    " Directory for swap files
+set backupdir=$HOME/.vim/backups  " Directory for backup files
+set undodir=$HOME/.vim/undos      " Directory for undo files
 set undofile                  " Automatically save undo history
 
 set wildignore+=.svn,CVS,.git,.hg            " Version control
@@ -274,7 +258,59 @@ if version >= 703
 	set cryptmethod=blowfish
 endif
 
-" MAPPINGS
+" }}}
+
+" HIGHLIGHT {{{
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Terminal types:
+"
+"   1) term (normal terminals, e.g.: vt100, xterm)
+"   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
+"   3) gui (GUIs)
+
+highlight ColorColumn                              ctermbg=239
+highlight LineNr      cterm=NONE  ctermfg=DarkGrey ctermbg=NONE
+highlight User1       cterm=bold  ctermfg=Grey     ctermbg=237
+
+" Adds a red background for characters beyond 81
+" http://stackoverflow.com/questions/235439/vim-80-column-layout-concerns/235970#235970
+function! LongLines1()
+	highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+	match OverLength /\%81v.\+/
+endfunction
+
+" Adds a grey background on column 80+
+" http://stackoverflow.com/questions/2447109/showing-a-different-background-colour-in-vim-past-80-characters
+function! LongLines2()
+	let &colorcolumn=join(range(81,999), ',')
+	highlight ColorColumn ctermbg=235 guibg=#2c2d27
+	" let &colorcolumn='80,'.join(range(120,999), ',')
+endfunction
+
+call LongLines1()
+
+set statusline=%1*\ [%n]\ [%f]%m%r%h%w%y[%{&ff}:%{strlen(&fenc)?&fenc:'none'}]%=%(\ %c,%l/%L\ %)%P
+"               │     │     │  │ │ │ │ │    │                │                 │     │ │   │    │
+"               │     │     │  │ │ │ │ │    │                │                 │     │ │   │    └─ percent through file
+"               │     │     │  │ │ │ │ │    │                │                 │     │ │   └─ total number of lines
+"               │     │     │  │ │ │ │ │    │                │                 │     │ └─ current line number
+"               │     │     │  │ │ │ │ │    │                │                 │     └─ current column number
+"               │     │     │  │ │ │ │ │    │                │                 └─ left/right separator
+"               │     │     │  │ │ │ │ │    │                └─ file encoding
+"               │     │     │  │ │ │ │ │    └─ file format
+"               │     │     │  │ │ │ │ └─ file type
+"               │     │     │  │ │ │ └─ preview window flag
+"               │     │     │  │ │ └─ help file flag
+"               │     │     │  │ └─ readonly flag
+"               │     │     │  └─ modified flag
+"               │     │     └─ path to the file
+"               │     └─ buffer number
+"               └─ User1 highlight
+
+" }}}
+
+" MAPPINGS {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Use a different mapleader (default is '\')
@@ -292,7 +328,7 @@ nnoremap * *<C-o>
 nnoremap <Leader>* :%s/\<<C-r><C-w>\>/
 
 " <Leader><Space> to clear search highlight
-nnoremap <Leader><Space> :nohl<CR>
+nnoremap <silent> <Leader><Space> :nohlsearch<CR>
 
 " Go to previous file
 map <Leader>p <C-^>
@@ -352,35 +388,37 @@ map <Leader>g :GundoToggle<CR>
 "autocmd VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
 
 " Don't display popup while navigating, backspacing and linebreaking
-inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+"inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
+"inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
 
-" AUTO COMMANDS
+" }}}
+
+" AUTO COMMANDS {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Only show cursorline in the current window and in normal mode
 augroup cline
-	au!
-	autocmd WinLeave * set nocursorline
-	autocmd WinEnter * set cursorline
-	autocmd InsertEnter * set nocursorline
-	autocmd InsertLeave * set cursorline
+"	autocmd!
+"	autocmd WinLeave * set nocursorline
+"	autocmd WinEnter * set cursorline
+"	autocmd InsertEnter * set nocursorline
+"	autocmd InsertLeave * set cursorline
 augroup END
 
 " Only show colorcolumn in the current window
-"augroup ccol
-"	au!
+augroup ccol
+"	autocmd!
 "	autocmd WinLeave * setlocal colorcolumn=0
 "	autocmd WinEnter * setlocal colorcolumn=+1
-"augroup END
+augroup END
 
 " Don't show trailing whitespaces in insert mode
 augroup trailing
-	au!
+	autocmd!
 	autocmd InsertEnter * :set listchars-=trail:⌴
 	autocmd InsertLeave * :set listchars+=trail:⌴
 augroup END
@@ -420,12 +458,36 @@ autocmd FileChangedShell *
 	\ echo 'File has been changed outside of Vim.' |
 	\ echohl None
 
-" FILETYPE SETTINGS
+" Fix terminal timeout when pressing escape
+" When you’re pressing Escape to leave insert mode in the terminal, it will by
+" default take a second or another keystroke to leave insert mode completely
+" and update the statusline.
+" https://powerline.readthedocs.org/en/latest/tipstricks.html#vim
+if !has('gui_running')
+	set ttimeoutlen=10
+	augroup FastEscape
+		autocmd!
+		autocmd InsertEnter * set timeoutlen=0
+		autocmd InsertLeave * set timeoutlen=1000
+	augroup END
+endif
+
+" }}}
+
+" FILETYPE SETTINGS {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Script templates
-autocmd BufNewFile *.sh so ~/.vim/templates/tpl.sh
-autocmd BufNewFile *.py so ~/.vim/templates/tpl.py
+
+" Bash template
+if filereadable(glob('$HOME/.vim/templates/tpl.sh'))
+	autocmd BufNewFile *.sh so $HOME/.vim/templates/tpl.sh
+endif
+
+" Python template
+if filereadable(glob('$HOME/.vim/templates/tpl.py'))
+	autocmd BufNewFile *.py so $HOME/.vim/templates/tpl.py
+endif
 
 " Encrypted files
 function SetupEncryption()
@@ -437,20 +499,20 @@ function SetupEncryption()
 	setlocal foldmethod=indent
 	setlocal foldlevel=0
 	setlocal foldclose=all
-	" move cursor over word and press 'e' to obfuscate/unobfuscate it
+	" Move cursor over word and press 'e' to [un]obfuscate it
 	noremap e g?iw
 endfunction
 autocmd BufReadPre,BufRead * if strlen(&key) | call SetupEncryption() | endif
 
-" Pandoc (Markdown)
-function! SetupPandoc()
+" Markdown
+function! SetupMarkdown()
 	setlocal wrap
 	setlocal wrapmargin=2
 	setlocal textwidth=79
 	" Autowrap text based on 'textwidth'
-	setlocal formatoptions+=t
+	setlocal formatoptions+=t                " Autowrap text based on 'textwidth'
 endfunction
-autocmd FileType pandoc call SetupPandoc()
+autocmd FileType markdown call SetupMarkdown()
 
 " Plain text
 function! SetupPlainText()
@@ -487,9 +549,20 @@ function! SetupRuby()
 endfunction
 autocmd FileType ruby call SetupRuby()
 
+" JSON
+function! TwoSpaceIndent()
+	setlocal expandtab
+	setlocal tabstop=2
+	setlocal shiftwidth=2
+endfunction
+autocmd FileType json,less,css call TwoSpaceIndent()
+
 " The g:lisp_rainbow option provides 10 levels of individual colorization for
 " the parentheses and backquoted parentheses.
 let g:lisp_rainbow = 1
+
+" Enable rainbow_parentheses for Clojure files
+autocmd FileType clojure RainbowParenthesesToggle
 
 " Nginx config files
 autocmd BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
@@ -499,9 +572,14 @@ autocmd BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
 " Automatically compile LESS files on save
 "autocmd BufWritePost *.less !lessc % > $(echo % | sed 's/\.less$/\.css/')
 
-" Use syntax file jquery for javascript
-autocmd BufRead,BufNewFile jquery.*.js set ft=javascript syntax=jquery
-" autocmd BufRead,BufNewFile *.js set ft=javascript syntax=jquery
+" Treat .json files as JavaScript
+autocmd BufNewFile,BufRead *.json setlocal ft=json syntax=javascript
+
+" Set `python -mjson.tool` as formatter for JSON
+autocmd FileType json setlocal equalprg=python\ -mjson.tool
+
+" Set `xmllint` as formatter for XML
+autocmd FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 
 " Warn if there's tabs in space indenting languages
 function! WarnTabs()
@@ -515,7 +593,9 @@ function! WarnTabs()
 endfunction
 autocmd BufReadPost *.{py,rb} call WarnTabs()
 
-" OS SPECIFIC
+" }}}
+
+" OS SPECIFIC {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " General GUI options
@@ -562,6 +642,8 @@ if has('gui_win32')
 endif
 
 " Local settings
-if filereadable(glob('~/.vimrc.local'))
-	source ~/.vimrc.local
+if filereadable(glob('$HOME/.vimrc.local'))
+	source $HOME/.vimrc.local
 endif
+" vim: set foldenable foldmethod=marker foldlevel=0:
+" }}}

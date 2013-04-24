@@ -26,10 +26,16 @@
 [alias]
 	#l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	l  = log --pretty=custom -n 20
+	hist = log --pretty=format:'%Cred%h%Creset %C(green)%ad%Creset | %s %C(yellow)%d%Creset %C(blue)[%an]%Creset' --graph --date=short
 	g  = log --graph --pretty=custom
-	s = status
+	d = diff
+	s = status -sb
+	st = status
 	c = commit --untracked-files=no -v
 	co = checkout
+	ready = rebase -i @{u}
+	standup = "!git log --since yesterday --author `git config user.email` --pretty=short"
+	wdiff = diff --color-words
 [push]
 	default = simple
 [pretty]

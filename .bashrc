@@ -10,15 +10,19 @@ if [[ "$OSTYPE" =~ ^darwin ]]; then
 	# Put /usr/local/bin at the front, not the end
 	export PATH=/usr/local/bin:$PATH
 	# Homebrew installs Python distribute here, needed for easy_install/pip
-	export PATH=$PATH:/usr/local/share/python:/usr/local/share/python3
+	export PATH=$PATH:$(brew --prefix)/share/python:$(brew --prefix)/share/python3
 	# Add RVM to PATH for scripting
 	export PATH=$PATH:$HOME/.rvm/bin
 	# Cabal (Haskell-Platform)
 	export PATH=$HOME/.cabal/bin:$PATH
 	# Node.js npm
-	export PATH=/usr/local/share/npm/bin:$PATH
+	export PATH="$(brew --prefix)/share/npm/bin:$PATH"
+	# brew-installed GNU core utilities bin
+	export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
 fi
 
+# brew-installed GNU core utilities manpages
+export MANPATH="$(brew --prefix coreutils)/libexec/gnuman:$MANPATH"
 
 # Make vim the default editor
 export EDITOR="vim"
@@ -49,20 +53,17 @@ export MANPAGER="less -X"
 export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 # Files to ignore when auto-completing
-export FIGNORE=.pyc:.o:.class:.beam
+export FIGNORE=.pyc:.o:.class:.beam:__pycache__
 
 # Virtualenwrapper directory
 export WORKON_HOME=$HOME/.virtualenvs
 
 # Virtualenwrapper settings
 if [[ "$OSTYPE" =~ ^darwin ]]; then
-	[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
+	[ -e $(brew --prefix)/bin/virtualenvwrapper.sh ] && . $(brew --prefix)/bin/virtualenvwrapper.sh
 else
 	[ -e /usr/bin/virtualenvwrapper.sh ] && . /usr/bin/virtualenvwrapper.sh
 fi
-
-# This loads RVM into a shell session.
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
 
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -98,9 +99,9 @@ for option in autocd globstar; do
 done
 
 if [[ "$OSTYPE" =~ ^darwin ]]; then
-	[ -e `brew --prefix`/etc/bash_completion ] && . `brew --prefix`/etc/bash_completion
+	[ -e $(brew --prefix)/etc/bash_completion ] && . $(brew --prefix)/etc/bash_completion
 else
-	[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+	[ -e /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 fi
 
 # Add colors to the man page
@@ -115,16 +116,6 @@ man() {
 		LESS_TERMCAP_us=$(printf "\e[1;32m") \
 			man "$@"
 }
-
-# @gf3’s Sexy Bash Prompt, inspired by “Extravagant Zsh Prompt”
-# Shamelessly copied from https://github.com/gf3/dotfiles
-# Screenshot: http://i.imgur.com/s0Blh.png
-
-if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
-	export TERM=gnome-256color
-elif infocmp xterm-256color >/dev/null 2>&1; then
-	export TERM=xterm-256color
-fi
 
 if tput setaf 1 &> /dev/null; then
 	tput sgr0

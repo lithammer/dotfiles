@@ -55,6 +55,10 @@ export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 # Files to ignore when auto-completing
 export FIGNORE=.pyc:.o:.class:.beam:__pycache__
 
+# Make Python not write .pyc and .pyo files
+# http://docs.python.org/dev/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
+export PYTHONDONTWRITEBYTECODE=true
+
 # Virtualenwrapper directory
 export WORKON_HOME=$HOME/.virtualenvs
 

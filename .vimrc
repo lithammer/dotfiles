@@ -34,7 +34,7 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ap/vim-css-color'
 Bundle 'gregsexton/MatchTag'
 Bundle 'kien/ctrlp.vim'
-"Bundle 'kien/rainbow_parentheses.vim'
+Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
@@ -53,13 +53,14 @@ Bundle 'tpope/vim-surround'
 Bundle 'mattn/zencoding-vim'
 Bundle 'mileszs/ack.vim'
 "Bundle 'jceb/vim-orgmode'
+Bundle 'marijnh/tern_for_vim'
 
 if has('python')
 	Bundle 'Valloric/YouCompleteMe'
 	Bundle 'SirVer/ultisnips'
 	" vim-snippets doesn't actually require Python, but depends on ultisnips
 	" which does.
-	Bundle 'honza/vim-snippets'
+	"Bundle 'honza/vim-snippets'
 	Bundle 'klen/python-mode'
 	Bundle 'sjl/gundo.vim'
 	Bundle 'davidhalter/jedi-vim'
@@ -92,6 +93,7 @@ Bundle 'nginx.vim'
 
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let vimclojure#ParenRainbow = 1
+let tern#is_show_argument_hints_enabled = 1
 " let g:EasyMotion_leader_key = '<Space>'
 let g:Gitv_OpenHorizontal = 'auto'
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
@@ -157,7 +159,7 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme diablo3
+colorscheme solarized
 if has('gui_running')
 	colorscheme underwater-mod
 endif
@@ -549,13 +551,13 @@ function! SetupRuby()
 endfunction
 autocmd FileType ruby call SetupRuby()
 
-" JSON
+" JSON, LESS, CSS and Jade
 function! TwoSpaceIndent()
 	setlocal expandtab
 	setlocal tabstop=2
 	setlocal shiftwidth=2
 endfunction
-autocmd FileType json,less,css call TwoSpaceIndent()
+autocmd FileType json,less,css,jade call TwoSpaceIndent()
 
 " The g:lisp_rainbow option provides 10 levels of individual colorization for
 " the parentheses and backquoted parentheses.

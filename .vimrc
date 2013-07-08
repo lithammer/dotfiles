@@ -29,31 +29,35 @@ silent! call vundle#rc()
 
 Bundle 'gmarik/vundle'
 
-Bundle 'Lokaltog/vim-easymotion'
-"Bundle 'Shougo/neocomplcache'
+"Bundle 'airblade/vim-gitgutter'
 Bundle 'ap/vim-css-color'
+Bundle 'bling/vim-airline'
+"Bundle 'godlygeek/tabular'
+"Bundle 'gregsexton/gitv'
 Bundle 'gregsexton/MatchTag'
+"Bundle 'jceb/vim-orgmode'
 Bundle 'kien/ctrlp.vim'
-Bundle 'kien/rainbow_parentheses.vim'
+"Bundle 'kien/rainbow_parentheses.vim'
+Bundle 'Lokaltog/vim-easymotion'
 Bundle 'majutsushi/tagbar'
+Bundle 'marijnh/tern_for_vim'
+Bundle 'mattn/zencoding-vim'
+"Bundle 'michaeljsmith/vim-indent-object'
+Bundle 'mileszs/ack.vim'
+Bundle 'Raimondi/delimitMate'
+Bundle 'rking/ag.vim'
 Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
+Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tomtom/tcomment_vim'
 "Bundle 'tpope/vim-commentary'
-Bundle 'godlygeek/tabular'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'gregsexton/gitv'
-Bundle 'tpope/vim-fugitive'
-Bundle 'airblade/vim-gitgutter'
 Bundle 'tpope/vim-dispatch'
+Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-surround'
-"Bundle 'michaeljsmith/vim-indent-object'
-Bundle 'mattn/zencoding-vim'
-Bundle 'mileszs/ack.vim'
-"Bundle 'jceb/vim-orgmode'
-Bundle 'marijnh/tern_for_vim'
+
+Bundle 'LustyJuggler'
 
 if has('python')
 	Bundle 'Valloric/YouCompleteMe'
@@ -65,8 +69,8 @@ if has('python')
 	Bundle 'sjl/gundo.vim'
 	Bundle 'davidhalter/jedi-vim'
 
-	Bundle 'Lokaltog/powerline'
-	set runtimepath+=$HOME/.vim/bundle/powerline/powerline/bindings/vim
+	" Bundle 'Lokaltog/powerline'
+	" set runtimepath+=$HOME/.vim/bundle/powerline/powerline/bindings/vim
 else
 	Bundle 'ervandew/supertab'
 endif
@@ -84,7 +88,8 @@ Bundle 'tpope/vim-git'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
 Bundle 'guns/vim-clojure-static'
-Bundle 'jnwhiteh/vim-golang'
+"Bundle 'jnwhiteh/vim-golang'
+Bundle 'Blackrush/vim-gocode'
 Bundle 'nginx.vim'
 
 " }}}
@@ -95,7 +100,9 @@ Bundle 'nginx.vim'
 let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let vimclojure#ParenRainbow = 1
 let tern#is_show_argument_hints_enabled = 1
+let g:airline_powerline_fonts = 1
 " let g:EasyMotion_leader_key = '<Space>'
+let g:EclimCompletionMethod = 'omnifunc'
 let g:Gitv_OpenHorizontal = 'auto'
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
 let g:SuperTabDefaultCompletionType = 'context'
@@ -106,14 +113,18 @@ let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute suppor
 let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
 let g:jedi#popup_select_first = 0            " Don't auto-select the first hit
 let g:jedi#popup_on_dot = 0
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_smart_case = 1
+let g:delimitMate_expand_cr = 1              " Enable expansion of <CR>
+let g:delimitMate_expand_space = 1           " Enable expansion of <Space>
 let g:solarized_termcolors = 256             " Use 256 colors in terminal (instead of 16)
 let g:syntastic_check_on_open = 1
 let g:syntastic_echo_current_error = 1
 let g:syntastic_enable_balloons = 1
 let g:syntastic_enable_signs = 1
+"let g:syntastic_html_checkers = ['validator']
+let g:syntastic_html_checkers = []
+let g:syntastic_python_checkers = ['flake8']
 let g:use_zen_complete_tag = 1               " Complete tags using omnifunc
+let g:ycm_register_as_syntastic_checker = 0  " Do not use YCM for syntax checks
 
 let g:pymode_run = 0                         " Load run code plugin
 let g:pymode_lint = 0                        " Disable pylint code plugin
@@ -141,6 +152,8 @@ Bundle 'sjl/badwolf'
 Bundle 'w0ng/vim-hybrid'
 Bundle 'wombat256.vim'
 Bundle 'mgutz/vim-colors'
+Bundle 'Pychimp/vim-luna'
+Bundle 'junegunn/seoul256.vim'
 " }}}
 
 " BASIC OPTIONS {{{
@@ -160,9 +173,9 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme solarized
+colorscheme Tomorrow-Night
 if has('gui_running')
-	colorscheme underwater-mod
+	colorscheme chance-of-storm
 endif
 
 "set exrc                      " Enables reading of .vimrc in the current directory
@@ -201,10 +214,12 @@ set fillchars+=stlnc:\        " │ Characters to fill the statuslines
 set fillchars+=diff:⣿         " │ and vertical separators.
 set fillchars+=vert:│         " ┘
 set laststatus=2              " Always show the status line
-set noshowmode                " Hide the default mode text, 
+set noshowmode                " Hide the default mode text,
                               " (e.g. -- INSERT -- below the statusline).
 							  " We have Powerline for this.
 set shortmess=aAItW           " Avoid all the hit-enter prompts
+set ttimeoutlen=50            " The time in milliseconds that is waited for a
+                              " key code or mapped key sequence to complete.
 set lazyredraw                " Don't redraw screen while executing macros,
                               " registers and other commands that have not
 							  " been typed
@@ -342,6 +357,11 @@ nnoremap <Leader>. :lcd %:p:h<CR>
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
 
+" This mapping makes Ctrl-Tab switch between tabs.
+" Ctrl-Shift-Tab goes the other way.
+noremap <C-Tab> :tabnext<CR>
+noremap <C-S-Tab> :tabprev<CR>
+
 " Strip whitespace
 function! StripWhitespaces()
     " Save last search and cursor position
@@ -385,18 +405,9 @@ nmap <Leader>t :TagbarToggle<CR>
 " Load the Gundo window
 map <Leader>g :GundoToggle<CR>
 
-" Neocomplcache
-" <Tab>: completion.
-"autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-"autocmd VimEnter * inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
-
-" Don't display popup while navigating, backspacing and linebreaking
-"inoremap <expr><CR> neocomplcache#smart_close_popup()."\<CR>"
-"inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+" Search for tag within all open buffers
+nmap <C-g> :CtrlPBufTagAll<CR>
+imap <C-g> <Esc>:CtrlPBufTagAll<CR>
 
 " }}}
 
@@ -461,20 +472,6 @@ autocmd FileChangedShell *
 	\ echo 'File has been changed outside of Vim.' |
 	\ echohl None
 
-" Fix terminal timeout when pressing escape
-" When you’re pressing Escape to leave insert mode in the terminal, it will by
-" default take a second or another keystroke to leave insert mode completely
-" and update the statusline.
-" https://powerline.readthedocs.org/en/latest/tipstricks.html#vim
-if !has('gui_running')
-	set ttimeoutlen=10
-	augroup FastEscape
-		autocmd!
-		autocmd InsertEnter * set timeoutlen=0
-		autocmd InsertLeave * set timeoutlen=1000
-	augroup END
-endif
-
 " }}}
 
 " FILETYPE SETTINGS {{{
@@ -493,7 +490,7 @@ if filereadable(glob('$HOME/.vim/templates/tpl.py'))
 endif
 
 " Encrypted files
-function SetupEncryption()
+function! SetupEncryption()
 	set viminfo=
 	setlocal bufhidden=wipe
 	setlocal noswapfile
@@ -577,6 +574,7 @@ autocmd BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
 
 " Treat .json files as JavaScript
 autocmd BufNewFile,BufRead *.json setlocal ft=json syntax=javascript
+autocmd FileType json setlocal syntax=javascript
 
 " Set `python -mjson.tool` as formatter for JSON
 autocmd FileType json setlocal equalprg=python\ -mjson.tool
@@ -605,6 +603,10 @@ autocmd BufReadPost *.{py,rb} call WarnTabs()
 if has('gui')
 	set guioptions-=m  " Remove menu bar
 	set guioptions-=T  " Remove toolbar
+	set guioptions-=l  " Remove left scrollbar
+	set guioptions-=L
+	set guioptions-=r  " Remove right scrollbar
+	set guioptions-=R
 endif
 
 " OS X
@@ -637,6 +639,15 @@ if has('gui_macvim')
 	map! <D-7> <C-O>:tabn 7<CR>
 	map! <D-8> <C-O>:tabn 8<CR>
 	map! <D-9> <C-O>:tabn 9<CR>
+
+	" This mapping makes Ctrl-Tab switch between tabs.
+	" Ctrl-Shift-Tab goes the other way.
+	noremap <C-Tab> :tabnext<CR>
+	noremap <C-S-Tab> :tabprev<CR>
+
+	" Open goto symbol on all buffers
+	nmap <D-R> :CtrlPBufTagAll<cr>
+	imap <D-R> <esc>:CtrlPBufTagAll<cr>
 endif
 
 " Windows
@@ -648,5 +659,5 @@ endif
 if filereadable(glob('$HOME/.vimrc.local'))
 	source $HOME/.vimrc.local
 endif
-" vim: set foldenable foldmethod=marker foldlevel=0:
+" --vim: set foldenable foldmethod=marker foldlevel=0:
 " }}}

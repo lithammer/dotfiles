@@ -32,6 +32,7 @@ Bundle 'gmarik/vundle'
 "Bundle 'airblade/vim-gitgutter'
 Bundle 'ap/vim-css-color'
 Bundle 'bling/vim-airline'
+Bundle 'bling/vim-bufferline'
 "Bundle 'godlygeek/tabular'
 "Bundle 'gregsexton/gitv'
 Bundle 'gregsexton/MatchTag'
@@ -41,7 +42,8 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'majutsushi/tagbar'
 Bundle 'marijnh/tern_for_vim'
-Bundle 'mattn/zencoding-vim'
+Bundle 'mattn/emmet-vim'
+"Bundle 'mhinz/vim-startify'
 "Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'mileszs/ack.vim'
 Bundle 'Raimondi/delimitMate'
@@ -57,28 +59,27 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-surround'
 
-Bundle 'LustyJuggler'
-
 if has('python')
 	Bundle 'Valloric/YouCompleteMe'
 	Bundle 'SirVer/ultisnips'
 	" vim-snippets doesn't actually require Python, but depends on ultisnips
 	" which does.
-	"Bundle 'honza/vim-snippets'
+	Bundle 'honza/vim-snippets'
 	Bundle 'klen/python-mode'
 	Bundle 'sjl/gundo.vim'
 	Bundle 'davidhalter/jedi-vim'
-
-	" Bundle 'Lokaltog/powerline'
-	" set runtimepath+=$HOME/.vim/bundle/powerline/powerline/bindings/vim
 else
 	Bundle 'ervandew/supertab'
 endif
 
+if has('ruby')
+	"Bundle 'LustyJuggler'
+end
+
 " Filetype specific
 Bundle 'pangloss/vim-javascript'
 Bundle 'othree/html5.vim'
-"Bundle 'othree/javascript-libraries-syntax.vim'
+Bundle 'othree/javascript-libraries-syntax.vim'
 Bundle 'hail2u/vim-css3-syntax'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'groenewege/vim-less'
@@ -132,6 +133,7 @@ let g:pymode_folding = 0                     " Disable python folding
 let g:pymode_motion = 0                      " Disable python objects and motion
 let g:pymode_breakpoint = 0                  " Disable breakpoints plugin
 let g:pymode_utils_whitespaces = 0           " Disable autoremove unused whitespaces
+let g:pymode_rope = 0                        " Disable Rope script
 let g:pymode_rope_vim_completion = 0         " Disable Rope's Vim completion
 let g:pymode_rope_goto_def_newwin = 'new'    " Open goto definition in horizontal split
 
@@ -145,6 +147,7 @@ Bundle 'Diablo3'
 "Bundle 'jpo/vim-railscasts-theme'
 Bundle 'github-theme'
 Bundle 'jonathanfilip/vim-lucius'
+Bundle 'chriskempson/base16-vim'
 Bundle 'chriskempson/vim-tomorrow-theme'
 Bundle 'noahfrederick/Hemisu'
 Bundle 'nanotech/jellybeans.vim'
@@ -173,11 +176,14 @@ set background=dark
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=800
 
-colorscheme Tomorrow-Night
+"let g:airline_theme = 'dark'
+colorscheme luna-term
 if has('gui_running')
 	colorscheme chance-of-storm
 endif
 
+set autowrite                 " Autosave when changing buffer
+set autoread                  " Automatically read file again if changed from outside
 "set exrc                      " Enables reading of .vimrc in the current directory
 "set secure                    " Disable autocmd, shell and write commands in local .vimrc files
 set encoding=utf-8 nobomb     " Use UTF-8 without BOM
@@ -190,6 +196,7 @@ set formatoptions+=n          " When formatting text, recognize numbered lists
                               " and instead put a '$' sign at the end of the
 							  " changed text
 set gdefault                  " :substitute flag 'g' is on by default
+set nrformats-=octal          " Don't consider base 8 for <C-a> / <C-x>
 set hlsearch                  " Enable search highlighting
 set ignorecase                " Ignore case in search patterns
 set smartcase                 " Override the 'ignorecase' option if the search
@@ -217,7 +224,8 @@ set laststatus=2              " Always show the status line
 set noshowmode                " Hide the default mode text,
                               " (e.g. -- INSERT -- below the statusline).
 							  " We have Powerline for this.
-set shortmess=aAItW           " Avoid all the hit-enter prompts
+"set shortmess=aAItW           " Avoid all the hit-enter prompts
+set ttimeout
 set ttimeoutlen=50            " The time in milliseconds that is waited for a
                               " key code or mapped key sequence to complete.
 set lazyredraw                " Don't redraw screen while executing macros,
@@ -229,6 +237,7 @@ set matchpairs+=<:>           " Match HTML tags with the '%' command
 set mouse=a                   " Enable mouse in all modes
 set number                    " Show the line number
 set pastetoggle=<F5>          " <F5> to toggle between 'paste' and 'nopaste' mode
+set display+=lastline         " Display as much as possible about the last line in a window
 set scrolloff=5               " When the page starts to scroll, keep the cursor
                               " 5 lines below the top and 5 lines above the
                               " bottom of the screen
@@ -345,8 +354,10 @@ nnoremap * *<C-o>
 " Search and replace the word under cursor
 nnoremap <Leader>* :%s/\<<C-r><C-w>\>/
 
-" <Leader><Space> to clear search highlight
-nnoremap <silent> <Leader><Space> :nohlsearch<CR>
+" Use <C-L> to clear the highlighting of :set hlsearch.
+if maparg('<C-L>', 'n') ==# ''
+	nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+endif
 
 " Go to previous file
 map <Leader>p <C-^>
@@ -465,12 +476,6 @@ function! SetCursorPosition()
 		endif
 	end
 endfunction
-
-" Helps if you have to use another editor on the same file
-autocmd FileChangedShell *
-	\ echohl WarningMsg |
-	\ echo 'File has been changed outside of Vim.' |
-	\ echohl None
 
 " }}}
 

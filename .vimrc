@@ -33,6 +33,7 @@ Bundle 'gmarik/vundle'
 Bundle 'ap/vim-css-color'
 Bundle 'bling/vim-airline'
 Bundle 'bling/vim-bufferline'
+Bundle 'chrisbra/csv.vim'
 "Bundle 'godlygeek/tabular'
 "Bundle 'gregsexton/gitv'
 Bundle 'gregsexton/MatchTag'
@@ -46,6 +47,7 @@ Bundle 'mattn/emmet-vim'
 "Bundle 'mhinz/vim-startify'
 "Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'mileszs/ack.vim'
+Bundle 'moll/vim-node'
 Bundle 'Raimondi/delimitMate'
 Bundle 'rking/ag.vim'
 Bundle 'scrooloose/nerdtree'
@@ -64,8 +66,8 @@ if has('python')
 	Bundle 'SirVer/ultisnips'
 	" vim-snippets doesn't actually require Python, but depends on ultisnips
 	" which does.
-	Bundle 'honza/vim-snippets'
-	Bundle 'klen/python-mode'
+	"Bundle 'honza/vim-snippets'
+	Bundle 'jmcantrell/vim-virtualenv'
 	Bundle 'sjl/gundo.vim'
 	Bundle 'davidhalter/jedi-vim'
 else
@@ -79,7 +81,7 @@ end
 " Filetype specific
 Bundle 'pangloss/vim-javascript'
 Bundle 'othree/html5.vim'
-Bundle 'othree/javascript-libraries-syntax.vim'
+"Bundle 'othree/javascript-libraries-syntax.vim'
 Bundle 'hail2u/vim-css3-syntax'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'groenewege/vim-less'
@@ -125,17 +127,8 @@ let g:syntastic_enable_signs = 1
 let g:syntastic_html_checkers = []
 let g:syntastic_python_checkers = ['flake8']
 let g:use_zen_complete_tag = 1               " Complete tags using omnifunc
+let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
 let g:ycm_register_as_syntastic_checker = 0  " Do not use YCM for syntax checks
-
-let g:pymode_run = 0                         " Load run code plugin
-let g:pymode_lint = 0                        " Disable pylint code plugin
-let g:pymode_folding = 0                     " Disable python folding
-let g:pymode_motion = 0                      " Disable python objects and motion
-let g:pymode_breakpoint = 0                  " Disable breakpoints plugin
-let g:pymode_utils_whitespaces = 0           " Disable autoremove unused whitespaces
-let g:pymode_rope = 0                        " Disable Rope script
-let g:pymode_rope_vim_completion = 0         " Disable Rope's Vim completion
-let g:pymode_rope_goto_def_newwin = 'new'    " Open goto definition in horizontal split
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'

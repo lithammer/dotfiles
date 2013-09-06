@@ -32,7 +32,9 @@ Bundle 'gmarik/vundle'
 "Bundle 'airblade/vim-gitgutter'
 Bundle 'ap/vim-css-color'
 Bundle 'bling/vim-airline'
-Bundle 'bling/vim-bufferline'
+" Replaced by vim-airline's tab line:
+" https://github.com/bling/vim-airline/tree/dev#smarter-tab-line
+"Bundle 'bling/vim-bufferline'
 Bundle 'chrisbra/csv.vim'
 "Bundle 'godlygeek/tabular'
 "Bundle 'gregsexton/gitv'
@@ -83,6 +85,7 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'othree/html5.vim'
 "Bundle 'othree/javascript-libraries-syntax.vim'
 Bundle 'hail2u/vim-css3-syntax'
+Bundle 'hdima/python-syntax'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'groenewege/vim-less'
 Bundle 'tpope/vim-haml'
@@ -104,7 +107,11 @@ let NERDTreeIgnore = ['\.pyc$']              " Browser skiplist
 let vimclojure#ParenRainbow = 1
 let tern#is_show_argument_hints_enabled = 1
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnamemod = ':t' " Filename only
+" let g:airline#extensions#tabline#fnamemod = ':p:.' " Relative path
 " let g:EasyMotion_leader_key = '<Space>'
+let g:ctrlp_cmd = 'CtrlPLastMode'            " Open CtrlP in last mode used
 let g:EclimCompletionMethod = 'omnifunc'
 let g:Gitv_OpenHorizontal = 'auto'
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
@@ -129,6 +136,7 @@ let g:syntastic_python_checkers = ['flake8']
 let g:use_zen_complete_tag = 1               " Complete tags using omnifunc
 let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
 let g:ycm_register_as_syntastic_checker = 0  " Do not use YCM for syntax checks
+let g:netrw_liststyle = 3                    " Tree style file listing
 
 " Color schemes
 Bundle 'altercation/vim-colors-solarized'

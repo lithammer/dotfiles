@@ -26,7 +26,7 @@
 [alias]
 	#l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	l  = log --pretty=custom -n 20
-	hist = log --pretty=format:'%Cred%h%Creset %C(green)%ad%Creset | %s %C(yellow)%d%Creset %C(blue)[%an]%Creset' --graph --date=short
+	hist = log -n 20 --pretty=format:'%Cred%h%Creset %C(green)%ad%Creset | %s %C(yellow)%d%Creset %C(blue)[%an]%Creset' --graph --date=short
 	g  = log --graph --pretty=custom
 	d = diff
 	s = status -sb

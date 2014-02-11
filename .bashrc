@@ -1,28 +1,24 @@
-# Load ~/.extra, ~/.bash_prompt, ~/.exports, ~/.aliases, and ~/.functions
-# ~/.extra can be used for settings you don’t want to commit
-for file in ~/.{extra,bash_prompt,exports,aliases,functions}; do
-	[ -r "$file" ] && source "$file"
+# Load ~/.aliases, and ~/.functions
+for file in ~/.{aliases,functions}; do
+    [ -r "$file"  ] && [ -f "$file"  ] && source "$file"
 done
 unset file
 
-if [[ "$OSTYPE" =~ ^darwin ]]; then
-	export PATH=/usr/local/sbin:$PATH
-	# Put /usr/local/bin at the front, not the end
-	export PATH=/usr/local/bin:$PATH
-	# Homebrew installs Python distribute here, needed for easy_install/pip
-	export PATH=$PATH:$(brew --prefix)/share/python:$(brew --prefix)/share/python3
-	# Add RVM to PATH for scripting
-	export PATH=$PATH:$HOME/.rvm/bin
-	# Cabal (Haskell-Platform)
-	export PATH=$HOME/.cabal/bin:$PATH
-	# Node.js npm
-	export PATH="$(brew --prefix)/share/npm/bin:$PATH"
-	# brew-installed GNU core utilities bin
-	export PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
-fi
+PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
+PATH="$GOPATH/bin:$PATH"
+PATH="$HOME/.bin:$PATH"
+PATH="/Applications/Postgres93.app/Contents/MacOS/bin:$PATH"
+export PATH
 
-# brew-installed GNU core utilities manpages
-export MANPATH="$(brew --prefix coreutils)/libexec/gnuman:$MANPATH"
+for dir in coreutils gnu-sed; do
+    MANPATH="/usr/local/opt/$dir/libexec/gnuman:$MANPATH"
+done
+export MANPATH
+
+# http://golang.org/doc/code.html#GOPATH
+export GOPATH="$HOME/.go"
 
 # Make vim the default editor
 export EDITOR="vim"
@@ -42,38 +38,34 @@ export HISTIGNORE="&:[bf]g:c:clear:exit:q:ll:ls -l:pwd:* --help"
 export HISTSIZE=5000
 
 # Prefer US English and use UTF-8 encoding
-export LANG="en_US"
-export LC_ALL="en_US.UTF-8"
+export LANG="en_GB"
+export LC_ALL="en_GB.UTF-8"
 
 # Don't clear the screen after quitting a man page
 export MANPAGER="less -X"
 
-# Make new shells get the history lines from all previous
-# shells instead of the default "last window closed" history
-export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-
 # Files to ignore when auto-completing
 export FIGNORE=.pyc:.o:.class:.beam:__pycache__
 
-# Make Python not write .pyc and .pyo files
+# Python won’t try to write .pyc or .pyo files on the import of source modules
 # http://docs.python.org/dev/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
 export PYTHONDONTWRITEBYTECODE=true
 
-# Virtualenwrapper directory
-export WORKON_HOME=$HOME/.virtualenvs
+# Environment variable for the docker daemon
+export DOCKER_HOST=tcp://
+
+# Customize `ls` colors
+export LS_COLORS='rs=0:di=38;5;27:ln=38;5;51:mh=44;38;5;15:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=05;48;5;232;38;5;15:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;34:*.tar=38;5;9:*.tgz=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.Z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lz=38;5;9:*.xz=38;5;9:*.bz2=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.bz=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.rar=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.axv=38;5;13:*.anx=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.axa=38;5;45:*.oga=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:'
 
 # Virtualenwrapper settings
-if [[ "$OSTYPE" =~ ^darwin ]]; then
-	[ -e $(brew --prefix)/bin/virtualenvwrapper.sh ] && . $(brew --prefix)/bin/virtualenvwrapper.sh
-else
-	[ -e /usr/bin/virtualenvwrapper.sh ] && . /usr/bin/virtualenvwrapper.sh
-fi
+[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
 
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# Include filenames beginning with a "." in the filename expansion
+# Includes filenames beginning with a . (dot) in the results of pathname
+# expansion.
 shopt -s dotglob
 
 # Extended pattern matching
@@ -99,151 +91,109 @@ shopt -s no_empty_cmd_completion
 # * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
 # * Recursive globbing, e.g. `echo **/*.txt`
 for option in autocd globstar; do
-	shopt -s "$option" 2> /dev/null
+    shopt -s "$option" 2> /dev/null
 done
 
-if [[ "$OSTYPE" =~ ^darwin ]]; then
-	[ -e $(brew --prefix)/etc/bash_completion ] && . $(brew --prefix)/etc/bash_completion
-else
-	[ -e /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
-fi
+# Enable bash-completion
+[ -e /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+
+# Enable pyenv
+# https://github.com/yyuu/pyenv
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 # Add colors to the man page
 man() {
-	env \
-		LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-		LESS_TERMCAP_md=$(printf "\e[1;31m") \
-		LESS_TERMCAP_me=$(printf "\e[0m") \
-		LESS_TERMCAP_se=$(printf "\e[0m") \
-		LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-		LESS_TERMCAP_ue=$(printf "\e[0m") \
-		LESS_TERMCAP_us=$(printf "\e[1;32m") \
-			man "$@"
+    env \
+        LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+        LESS_TERMCAP_md=$(printf "\e[1;31m") \
+        LESS_TERMCAP_me=$(printf "\e[0m") \
+        LESS_TERMCAP_se=$(printf "\e[0m") \
+        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+        LESS_TERMCAP_ue=$(printf "\e[0m") \
+        LESS_TERMCAP_us=$(printf "\e[1;32m") \
+            man "$@"
 }
 
 if tput setaf 1 &> /dev/null; then
-	tput sgr0
-	if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
-		MAGENTA=$(tput setaf 9)
-		ORANGE=$(tput setaf 172)
-		GREEN=$(tput setaf 82)
-		YELLOW=$(tput setaf 226)
-		PURPLE=$(tput setaf 141)
-		WHITE=$(tput setaf 0)
-	else
-		MAGENTA=$(tput setaf 5)
-		ORANGE=$(tput setaf 4)
-		GREEN=$(tput setaf 2)
-		YELLOW=$(tput setaf 3)
-		PURPLE=$(tput setaf 1)
-		WHITE=$(tput setaf 7)
-	fi
-	BOLD=$(tput bold)
-	RESET=$(tput sgr0)
+    tput sgr0
+    if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+        BLACK=$(tput setaf 0)
+        RED=$(tput setaf 1)
+        GREEN=$(tput setaf 2)
+        YELLOW=$(tput setaf 3)
+        BLUE=$(tput setaf 4)
+        MAGENTA=$(tput setaf 5)
+        CYAN=$(tput setaf 6)
+        WHITE=$(tput setaf 7)
+        GRAY=$(tput setaf 8)
+        GREY=$(tput setaf 8)
+        ORANGE=$(tput setaf 172)
+    else
+        BLACK=$(tput setaf 0)
+        RED=$(tput setaf 1)
+        GREEN=$(tput setaf 2)
+        YELLOW=$(tput setaf 3)
+        BLUE=$(tput setaf 4)
+        MAGENTA=$(tput setaf 5)
+        CYAN=$(tput setaf 6)
+        WHITE=$(tput setaf 7)
+        GRAY=$(tput setaf 8)
+        GREY=$(tput setaf 8)
+    fi
+    BOLD=$(tput bold)
+    RESET=$(tput sgr0)
 else
-	MAGENTA="\033[1;31m"
-	ORANGE="\033[1;33m"
-	GREEN="\033[1;32m"
-	YELLOW="\033[1;32m"
-	PURPLE="\033[1;35m"
-	WHITE="\033[1;37m"
-	BOLD=""
-	RESET="\033[m"
+    BLACK="\033[0;30m"
+    RED="\033[0;31m"
+    GREEN="\033[1;32m"
+    YELLOW="\033[1;33m"
+    BLUE="\033[1;34m"
+    MAGENTA="\033[1;35m"
+    CYAN="\033[1;36m"
+    WHITE="\033[1;37m"
+    GRAY="\033[1;38m"
+    GREY="\033[1;38m"
+    BOLD=""
+    RESET="\033[m"
 fi
 
-export MAGENTA
-export ORANGE
+export BLACK
+export RED
 export GREEN
 export YELLOW
-export PURPLE
+export BLUE
+export MAGENTA
+export CYAN
 export WHITE
+export GRAY
+export GREY
 export BOLD
 export RESET
 
 # Disable virtualenvs PS1 prefix
 VIRTUAL_ENV_DISABLE_PROMPT=true
 
-function prompt_virtualenv() {
-	printf "${VIRTUAL_ENV:+ as ${YELLOW}`basename ${VIRTUAL_ENV}`}"
+# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
+GIT_PS1_SHOWUPSTREAM='auto'
+GIT_PS1_SHOWCOLORHINTS=true
+
+function __virtualenv_ps1() {
+    printf "${VIRTUAL_ENV:+(\[$MAGENTA\]`basename ${VIRTUAL_ENV}`\[$RESET\]) }"
 }
 
-is_git_repo() {
-    git rev-parse --is-inside-work-tree &> /dev/null
+prompt_command () {
+    __git_ps1 "$(__virtualenv_ps1)\[$GREY\]\w\[$RESET\]" "\[$YELLOW\] ❯ \[$RESET\]" " %s"
 }
 
-get_git_branch() {
-    local branch_name
+PROMPT_COMMAND=prompt_command
 
-    # Get the short symbolic ref
-    branch_name=$(command git symbolic-ref --quiet --short HEAD 2> /dev/null) ||
-    # If HEAD isn't a symbolic ref, get the short SHA
-    branch_name=$(command git rev-parse --short HEAD 2> /dev/null) ||
-    # Otherwise, just give up
-    branch_name="(unknown)"
+# Make new shells get the history lines from all previous
+# shells instead of the default "last window closed" history
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
-    echo $branch_name
-}
-
-# Git status information
-function prompt_git() {
-    local git_info git_state state_color git_status uc us ut st
-
-    if ! is_git_repo; then
-        return 1
-    fi
-
-    git_info=$(get_git_branch)
-
-    # The following checks can print a character if a condition matches.
-    # By default, only a dirty branch will show a star.
-    # If you want more info in your prompt, just assign a character to it below.
-    # Keep in mind that the checks are not exclusive, all 4 could be true.
-    #
-    # Check for uncommitted changes in the index
-    if ! `command git diff --quiet --ignore-submodules --cached`; then
-        uc="+" # Suggestion: "+"
-    fi
-
-    # Check for unstaged changes
-    if ! `command git diff-files --quiet --ignore-submodules --`; then
-        us="*" # Suggestion: "*"
-    fi
-
-    # Check for untracked files
-    if [ -n "$(command git ls-files --others --exclude-standard)" ]; then
-        ut="" # Suggestion: "?"
-    fi
-
-    # Check for stashed files
-    if `command git rev-parse --verify refs/stash &>/dev/null`; then
-        st="$" # Suggestion: "$"
-    fi
-
-    # Now we combine all possible symbols to make the "state" string
-    # If you followed the suggestions and all cases match it would say: "+*?$"
-    git_state=$uc$us$ut$st
-
-    # Combine the branch name and state information
-    if [[ $git_state ]]; then
-        git_info="$git_info$git_state"
-    fi
-
-	# Capture the output of the "git status" command.
-	git_status="$(git status 2> /dev/null)"
-
-	# Set color based on clean/staged/dirty.
-	if [[ ${git_status} =~ "working directory clean" ]]; then
-		state_color="${GREEN}"
-	elif [[ ${git_status} =~ "Changes to be committed" ]]; then
-		state_color="${YELLOW}"
-	else
-		state_color="${MAGENTA}"
-	fi
-
-    printf " on ${state_color}${git_info}"
-}
-
-export PS1="\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$PURPLE\]\w\[$WHITE\]\$(prompt_git)\[$WHITE\]\$(prompt_virtualenv)\[$WHITE\]\n\$ \[$RESET\]"
 export PS2="\[$ORANGE\]→ \[$RESET\]"
 
 # Local changes

@@ -4,21 +4,21 @@ for file in ~/.{aliases,functions}; do
 done
 unset file
 
-PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+# http://golang.org/doc/code.html#GOPATH
+export GOPATH="$HOME/.go"
+
+# PATH="/Applications/Postgres93.app/Contents/MacOS/bin:$PATH"
+PATH="/usr/local/bin:$PATH"
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
 PATH="$GOPATH/bin:$PATH"
 PATH="$HOME/.bin:$PATH"
-PATH="/Applications/Postgres93.app/Contents/MacOS/bin:$PATH"
 export PATH
 
 for dir in coreutils gnu-sed; do
     MANPATH="/usr/local/opt/$dir/libexec/gnuman:$MANPATH"
 done
 export MANPATH
-
-# http://golang.org/doc/code.html#GOPATH
-export GOPATH="$HOME/.go"
 
 # Make vim the default editor
 export EDITOR="vim"

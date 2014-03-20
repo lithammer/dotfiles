@@ -20,42 +20,49 @@
 " │                                                                      │
 " └──────────────────────────────────────────────────────────────────────┘
 
-" Vundle {{{
+" Plugins {{{
 filetype off
 set runtimepath+=$HOME/.vim/bundle/vundle/
 silent! call vundle#rc()
 
 Bundle 'gmarik/vundle'
 
-" Bundle 'airblade/vim-gitgutter'
+" Unused but potentially cool/useful stuff {{{
+"Bundle 'airblade/vim-gitgutter'
+"Bundle 'bling/vim-bufferline
+"Bundle 'godlygeek/tabular'
+"Bundle 'jceb/vim-orgmode'
+"Bundle 'junegunn/vim-emoji'
+"Bundle 'junegunn/vim-scroll-position'
+"Bundle 'mhinz/vim-startify'
+"Bundle 'michaeljsmith/vim-indent-object'
+"Bundle 'scrooloose/nerdtree'
+"Bundle 'terryma/vim-multiple-cursors'
+"Bundle 'tpope/vim-commentary'
+" }}}
+
 Bundle 'gorodinskiy/vim-coloresque'
 Bundle 'bling/vim-airline'
-" Bundle 'bling/vim-bufferline
 Bundle 'chrisbra/csv.vim'
-" Bundle 'godlygeek/tabular'
-" Bundle 'gregsexton/gitv'
 Bundle 'gregsexton/MatchTag'
-" Bundle 'jceb/vim-orgmode'
+Bundle 'gregsexton/gitv'
 Bundle 'junegunn/vim-easy-align'
 Bundle 'justinmk/vim-sneak'
 Bundle 'kien/ctrlp.vim'
 Bundle 'kien/rainbow_parentheses.vim'
+Bundle 'kshenoy/vim-signature'
+Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'majutsushi/tagbar'
 Bundle 'marijnh/tern_for_vim'
 Bundle 'mattn/emmet-vim'
-" Bundle 'mhinz/vim-startify'
 Bundle 'mhinz/vim-signify'
-" Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'mileszs/ack.vim'
 Bundle 'osyo-manga/vim-over'
 Bundle 'Raimondi/delimitMate'
 Bundle 'rking/ag.vim'
-" Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'Shougo/unite.vim'
-" Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tomtom/tcomment_vim'
-" Bundle 'tpope/vim-commentary'
 Bundle 'tpope/vim-dispatch'
 Bundle 'tpope/vim-eunuch'
 Bundle 'tpope/vim-fugitive'
@@ -63,121 +70,140 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-speeddating'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-vinegar'
+Bundle 'wellle/targets.vim'
 
 if has('python')
     if v:version > 703 || v:version == 703 && has('patch584')
         Bundle 'Valloric/YouCompleteMe'
     endif
     Bundle 'SirVer/ultisnips'
-    " vim-snippets doesn't actually require Python, but depends
-    " on ultisnips which does.
-    "Bundle 'honza/vim-snippets'
+    Bundle 'honza/vim-snippets'
     Bundle 'jmcantrell/vim-virtualenv'
     Bundle 'sjl/gundo.vim'
-else
-    Bundle 'ervandew/supertab'
 endif
 
 if has('ruby')
-    " Bundle 'sjbach/lusty'
 end
 
 if has('lua')
     if v:version > 703 || v:version == 703 && has('patch885')
         " Bundle 'Shougo/neocomplete.vim'
+
+        " Actually requires Python, but only used together with neocomplete
+        " Bundle 'davidhalter/jedi-vim'
     endif
 endif
 
-" Filetype specific
-
-Bundle 'c9s/vimomni.vim'
-Bundle 'hdima/python-syntax'
+" Filetype specific {{{
+Bundle 'sheerun/vim-polyglot'
 Bundle 'hynek/vim-python-pep8-indent'
-Bundle 'jimenezrick/vimerl'
 Bundle 'moll/vim-node'
-Bundle 'tpope/vim-markdown'
-Bundle 'tpope/vim-git'
-Bundle 'guns/vim-clojure-static'
-" Bundle 'jnwhiteh/vim-golang'
-Bundle 'Blackrush/vim-gocode'
-Bundle 'nginx.vim'
-
-" Web (CSS, JS, ...)
-Bundle 'groenewege/vim-less'
-Bundle 'wavded/vim-stylus'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'othree/html5.vim'
-Bundle 'hail2u/vim-css3-syntax'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'pangloss/vim-javascript'
-" vim-jsx depends on 'pangloss/vim-javascript'
 Bundle 'mxw/vim-jsx'
-" Bundle 'jelera/vim-javascript-syntax'
+Bundle 'hail2u/vim-css3-syntax'
 " Bundle 'othree/javascript-libraries-syntax.vim'
+" }}}
+
+" Color schemes {{{
+"Bundle 'altercation/vim-colors-solarized'
+"Bundle 'Diablo3'
+"Bundle 'jonathanfilip/vim-lucius'
+Bundle 'chriskempson/base16-vim'
+"Bundle 'nanotech/jellybeans.vim'
+"Bundle 'w0ng/vim-hybrid'
+"Bundle 'wombat256.vim'
+"Bundle 'Pychimp/vim-luna'
+" }}}
 
 " }}}
 
 " Plugin variables {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+" Neocomplete {{{
+" let g:neocomplete#enable_at_startup = 1
+" let g:neocomplete#enable_smart_case = 1
+"
+" autocmd FileType python setlocal omnifunc=jedi#completions
+" let g:jedi#completions_enabled = 0
+" let g:jedi#auto_vim_configuration = 0
+" let g:neocomplete#force_omni_input_patterns = {}
+" let g:neocomplete#force_omni_input_patterns.python =
+" \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+" let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
+"
+" " Cycle completions with Tab and Shift-Tab
+" inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<Tab>"
+" }}}
+
+" Tern
 let tern#is_show_argument_hints_enabled = 1
+
+" Python syntax
 let python_highlight_all = 1
-" https://github.com/chriskempson/base16-vim#256-colorspace
-let base16colorspace = 256
-" let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+
+" Airline
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+" let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#buffer_min_count = 2
-let g:ctrlp_cmd = 'CtrlPLastMode'            " Open CtrlP in last mode used
-let g:EclimCompletionMethod = 'omnifunc'
+" let g:airline#extensions#tabline#excludes = []
+
+" Ctrl-P
+let g:ctrlp_max_height = 15
+if executable('ag')
+      " let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+      let g:ackprg = 'ag'
+      let g:ack_wildignore = 0
+endif
+
+" Gitv
 let g:Gitv_OpenHorizontal = 'auto'
+
+" Supertab
 let g:SuperTabContextDefaultCompletionType = '<C-n>'
 let g:SuperTabDefaultCompletionType = 'context'
+
+" UltiSnips
 let g:UltiSnipsExpandTrigger = '<C-j>'
 let g:UltiSnipsJumpForwardTrigger = '<C-j>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
 " let g:UltiSnipsSnippetDirectories = '~/.vim/bundle/vim-snippets/UltiSnips'
+
+" HTML 5
 let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
 let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
+
+" delimitMate
 let g:delimitMate_expand_cr = 1              " Enable expansion of <CR>
 let g:delimitMate_expand_space = 0           " Enable expansion of <Space>
+
+" Solarized colorscheme
 let g:solarized_termcolors = 256             " Use 256 colors in terminal (instead of 16)
+
+" Sneak
 let g:sneak#streak = 1
+
+" Syntastic
 let g:syntastic_check_on_open = 1
-"let g:syntastic_html_checkers = ['validator']
 let g:syntastic_html_checkers = []
 let g:syntastic_python_checkers = ['frosted', 'pep8']
+
+" Virtualenv
 let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
-let g:netrw_liststyle = 3                    " Tree style file listing
+
+" EasyAlign
+vmap <Enter> <Plug>(EasyAlign)
 
 " Replace Vim's search and replace with vim-over
-" cabbrev %s OverCommandLine<cr>%s
-" cabbrev '<,'>s OverCommandLine<cr>'<,'>s'>>'
-
-" Color schemes
-" Bundle 'altercation/vim-colors-solarized'
-" Bundle 'baskerville/bubblegum'
-" Bundle 'tomasr/molokai'
-" Bundle 'wgibbs/vim-irblack'
-" Bundle 'Diablo3'
-" Bundle 'jpo/vim-railscasts-theme'
-" Bundle 'github-theme'
-" Bundle 'jonathanfilip/vim-lucius'
-Bundle 'chriskempson/base16-vim'
-Bundle 'chriskempson/vim-tomorrow-theme'
-" Bundle 'noahfrederick/Hemisu'
-Bundle 'nanotech/jellybeans.vim'
-" Bundle 'sjl/badwolf'
-Bundle 'w0ng/vim-hybrid'
-" Bundle 'wombat256.vim'
-" Bundle 'Pychimp/vim-luna'
+cabbrev %s OverCommandLine<cr>%s
+cabbrev '<,'>s OverCommandLine<cr>'<,'>s
 " }}}
 
-" BASIC OPTIONS {{{
+" Options {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Use :help 'option' or press 'K' while having the cursor on the option to see
@@ -190,70 +216,156 @@ if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
     runtime! macros/matchit.vim
 endif
 
+" Tree style file listing
+let g:netrw_liststyle = 3
+
 syntax on
+
+" Use the 256 color space instead of 16
 set t_Co=256
+
+" Make sure dark background is used for colorschemes
 set background=dark
 
-" Don't try to highlight lines longer than 800 characters.
-set synmaxcol=800
+let g:airline_theme = 'badwolf'
+let base16colorspace = 256
 
-" let g:hybrid_use_iTerm_colors = 1
-colorscheme hybrid
-let g:airline_theme = 'base16'
+colorscheme base16-ocean
 if has('gui_running')
     colorscheme base16-ocean
 endif
 
+" Don't try to highlight lines longer than 800 characters.
+set synmaxcol=400
+
+" Automatically save when moving between buffers (and more)
 set autowrite
+
+" Automatically read file again if external changes have been made
 set autoread
-" set exrc
-" set secure
+
 set encoding=utf-8 nobomb
+
+" Copy indent from current line when starting a new line, see doc for more
+" details of additional features
 set autoindent
+
+" Recognize numbered lists when formatting text
 set formatoptions+=n
+
 " Delete comment character when joining commented lines
 if v:version > 703 || v:version == 703 && has('patch541')
     set formatoptions+=j
 endif
 
+" Use 4-space indentation, this might be overriden by language specific
+" indentation
+set tabstop=4 softtabstop=4 shiftwidth=4
 set expandtab
 set shiftround
-set shiftwidth=4
 set smarttab
-set softtabstop=4
-set tabstop=4
 
-" set cpoptions+=$
-" set cursorline
-set backspace=2
+" When making a change to one line, don't redisplay the line,
+" but put a '$' at the end of the changed text
+"set cpoptions+=$
+
+" Highlight current cursor row
+set cursorline
+
+" Highlight one column after 'textwidth'
+set colorcolumn=+1
+
+" Allow backspacing over everything
+set backspace=indent,eol,start
+
+" Show menu when there's at least one match, and show extra information
 set completeopt=menuone,preview
+
+" Use stronger file encryption
 set cryptmethod=blowfish
+
+" Show as much as possible of the last line in a window
 set display+=lastline
+
+" Remove fold characters
 set fillchars="vert:|,fold:"
+
+" ':substitute' flag 'g' is on by default, will replace
+" all matches on a line instead of one
 set gdefault
+
+" Highlight all search matches
 set hlsearch
-set ignorecase
+
+" Ignore case in search patterns, except when it contains upper case
+" characters
+set ignorecase smartcase
+
+" Search while typing
 set incsearch
+
+" Always show statusline
 set laststatus=2
+
+" Don't redraw screen while executing macros
 set lazyredraw
+
+" Break long lines on more natural break points
 set linebreak
+
+" Show some hidden characters ('listchars')
 set list
+
+" Faster and more precise mouse support
+set ttymouse=xterm2
+
+" Allow mouse usage in all modes
 set mouse=a
+
+" Don't show current mode on last line (vim-airline does this instead)
 set noshowmode
+
+" Don't wrap long lines
 set nowrap
+
+" Treat numbers starting with 0x or 0X as hexadecimals
 set nrformats="hex"
+
+" Show line numbers
 set number
+
+" Shortcut to toggle paste mode
 set pastetoggle=<F5>
+
+" Use current line as starting point for line numbering
 set relativenumber
+
+" Always report number of lines changes
 set report=0
+
+" Minimal number of screen lines to keep above and below the cursor
 set scrolloff=5
+
+" Characters to put at the start of wrap lines
 set showbreak=\ \ ↪
+
+" Briefly jump to matching bracket in insert mode
 set showmatch
+
+" The minimal number of columns to scroll horizontally
 set sidescroll=10
-set smartcase
+
+" Put the new window on the right when doing :vsplit
+set splitright
+
+" Set the title of the window to 'titlestring'
 set title
-set ttimeout
-set ttimeoutlen=50
+
+" The time in milliseconds that is waited for a key code or mapped key
+" sequence to complete
+set ttimeout ttimeoutlen=50
+
+" More characters will be sent to the screen for redrawing
 set ttyfast
 
 try
@@ -267,7 +379,13 @@ catch
     endfor
 endtry
 
+" Allow cursor beyond EOL in Visual block mode
+set virtualedit=block
+
+" Enable enhanced command-line completion by showing all matches
 set wildmenu
+
+" Match longest commong string
 set wildmode=list:longest,list:full
 
 " Version control
@@ -283,7 +401,7 @@ set wildignore+=*.jpe?g,*.png,*.gif,*.bmp,*.ico
 set wildignore+=venv,env,node_modules
 
 " Library folders
-set wildignore+=lib,libs
+" set wildignore+=lib,libs
 
 " OS files
 set wildignore+=*.DS_Store
@@ -297,37 +415,7 @@ endif
 
 " }}}
 
-" HIGHLIGHT {{{
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-" Terminal types:
-"
-"   1) term (normal terminals, e.g.: vt100, xterm)
-"   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
-"   3) gui (GUIs)
-
-highlight ColorColumn                              ctermbg=239
-highlight LineNr      cterm=NONE  ctermfg=DarkGrey ctermbg=NONE
-highlight User1       cterm=bold  ctermfg=Grey     ctermbg=237
-
-" Adds a red background for characters beyond 81
-" http://stackoverflow.com/questions/235439/vim-80-column-layout-concerns/235970#235970
-function! LongLines1()
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-    match OverLength /\%81v.\+/
-endfunction
-
-" Adds a grey background on column 80+
-" http://stackoverflow.com/questions/2447109/showing-a-different-background-colour-in-vim-past-80-characters
-function! LongLines2()
-    let &colorcolumn=join(range(81,999), ',')
-    highlight ColorColumn ctermbg=235 guibg=#2c2d27
-    " let &colorcolumn='80,'.join(range(120,999), ',')
-endfunction
-
-" }}}
-
-" MAPPINGS {{{
+" Mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Use a different mapleader (default is '\')
@@ -337,15 +425,19 @@ let mapleader = ','
 command W w
 command Q q
 
-" Yank to system clipboard as well
-noremap y "*y
-noremap yy "*Y
-noremap Y "*y$
+" Make Y behave like D (yank from cursor to EOL)
+nnoremap Y y$
 
-" Toggle fold
-noremap <space> za
+" <C-V><C-V> Paste clipboard content
+inoremap <C-V><C-V> <c-o>"*P
+" noremap <Leader>v "*p
+" Clipboard
+vnoremap <C-c> "*y"
 
-" Don't move on *
+" Toggle fold under cursor
+noremap <Space> za
+
+" Don't move on '*', useful when highlighting words
 nnoremap * *<C-o>
 
 " Search and replace the word under cursor
@@ -359,14 +451,10 @@ endif
 " Go to previous file
 map <Leader>p <C-^>
 
-" Set working directory
-nnoremap <Leader>. :lcd %:p:h<CR>
-
 " Toggle invisible characters
 noremap <Leader>i :set list!<CR>
 
-" This mapping makes Ctrl-Tab switch between tabs.
-" Ctrl-Shift-Tab goes the other way.
+" Cycle between tabs
 noremap <C-Tab> :tabnext<CR>
 noremap <C-S-Tab> :tabprev<CR>
 
@@ -386,7 +474,7 @@ function! StripWhitespaces()
 endfunction
 nnoremap <Leader>ss :call StripWhitespaces()<CR>
 
-" Highlight problem lines: more than 80 chars, trailing spaces, only whitespace
+" Highlight lines with more than 80 chars (or 'textwidth')aas dasd sdfsdf sdf dsf fsdf
 function! HighlightProblemLines()
     set nolist!
     set nolist?
@@ -401,9 +489,6 @@ function! HighlightProblemLines()
 endfunction
 nnoremap <silent> <Leader>l :call HighlightProblemLines()<CR>
 
-" Toggle NERDTree on/off
-noremap <Leader>n :NERDTreeToggle<CR>
-
 " Toggle comments (TComment)
 map <Leader>c :TComment<CR>
 
@@ -414,17 +499,29 @@ nmap <Leader>t :TagbarToggle<CR>
 map <Leader>g :GundoToggle<CR>
 
 " Search for tag within all open buffers
+" nnoremap <C-P><C-P> :CtrlPBuffer<cr>
 nmap <C-g> :CtrlPBufTagAll<CR>
-imap <C-g> <Esc>:CtrlPBufTagAll<CR>
 
 " Looks up the symbol under the cursor and jumps to its definition if
 " possible; if the definition is not accessible from the current translation
 " unit, jumps to the symbol's declaration.
 nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
+" Use vim-dispatch to build in the background (uses makeprg)
+nnoremap <C-m> :Make!<CR>
+
+" https://github.com/justinmk/vim-sneak#how-can-i-replace-f-with-sneak
+nmap f <Plug>Sneak_s
+nmap F <Plug>Sneak_S
+
+hi link SneakPluginTarget Search
+hi link SneakPluginScope Search
+hi link SneakStreakTarget Search
+" hi SneakStreakMask guifg=03 guibg=03 ctermfg=03 ctermbg=03
+
 " }}}
 
-" AUTO COMMANDS {{{
+" Auto commands {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Only show cursorline in the current window and in normal mode
@@ -439,7 +536,7 @@ if (&cursorline)
 endif
 
 " Only show colorcolumn in the current window
-if (&colorcolumn)
+if (&colorcolumn == '+1')
     augroup ccol
         autocmd!
         autocmd WinLeave * setlocal colorcolumn=0
@@ -495,7 +592,7 @@ autocmd Syntax * RainbowParenthesesLoadSquare
 
 " }}}
 
-" FILETYPE SETTINGS {{{
+" Filetype settings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Script templates
@@ -613,14 +710,9 @@ autocmd BufNewFile,BufRead *.json setlocal filetype=json
 " the parentheses and backquoted parentheses.
 let g:lisp_rainbow = 1
 
-" Nginx config files
-autocmd BufRead,BufNewFile /etc/nginx/conf/* set ft=nginx
-autocmd BufRead,BufNewFile /etc/nginx/sites-available/* set ft=nginx
-autocmd BufRead,BufNewFile /etc/nginx/sites-enabled/* set ft=nginx
-
 " }}}
 
-" OS SPECIFIC {{{
+" OS Specific {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " General GUI options
@@ -683,5 +775,5 @@ endif
 if filereadable(glob('$HOME/.vimrc.local'))
     source $HOME/.vimrc.local
 endif
-" --vim: set foldenable foldmethod=marker foldlevel=0:
+" vim: set foldenable foldmethod=marker foldlevel=0:
 " }}}

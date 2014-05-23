@@ -8,11 +8,13 @@ unset file
 export GOPATH="$HOME/.go"
 
 # PATH="/Applications/Postgres93.app/Contents/MacOS/bin:$PATH"
-PATH="/usr/local/bin:$PATH"
+PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
+PATH="$PATH:/usr/local/Cellar/go/1.2.1/libexec/bin"
 PATH="$GOPATH/bin:$PATH"
 PATH="$HOME/.bin:$PATH"
+
 export PATH
 
 for dir in coreutils gnu-sed; do
@@ -49,16 +51,13 @@ export FIGNORE=.pyc:.o:.class:.beam:__pycache__
 
 # Python won’t try to write .pyc or .pyo files on the import of source modules
 # http://docs.python.org/dev/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
-export PYTHONDONTWRITEBYTECODE=true
+# export PYTHONDONTWRITEBYTECODE=true
 
 # Environment variable for the docker daemon
 export DOCKER_HOST=tcp://
 
 # Customize `ls` colors
 export LS_COLORS='rs=0:di=38;5;27:ln=38;5;51:mh=44;38;5;15:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=05;48;5;232;38;5;15:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;34:*.tar=38;5;9:*.tgz=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.Z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lz=38;5;9:*.xz=38;5;9:*.bz2=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.bz=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.rar=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.axv=38;5;13:*.anx=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.axa=38;5;45:*.oga=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:'
-
-# Virtualenwrapper settings
-[ -e /usr/local/bin/virtualenvwrapper.sh ] && . /usr/local/bin/virtualenvwrapper.sh
 
 # Check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -94,25 +93,31 @@ for option in autocd globstar; do
     shopt -s "$option" 2> /dev/null
 done
 
-# Enable bash-completion
-[ -e /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+# Add tab completion for many Bash commands
+if which brew > /dev/null && [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+    source "$(brew --prefix)/etc/bash_completion"
+fi
+
+# Enable bash completion for pip
+if which pip > /dev/null; then
+    eval "$(pip completion --bash)"
+fi
 
 # Enable pyenv
 # https://github.com/yyuu/pyenv
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if which pyenv > /dev/null; then
+    eval "$(pyenv init -)"
+fi
 
-# Add colors to the man page
-man() {
-    env \
-        LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-        LESS_TERMCAP_md=$(printf "\e[1;31m") \
-        LESS_TERMCAP_me=$(printf "\e[0m") \
-        LESS_TERMCAP_se=$(printf "\e[0m") \
-        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-        LESS_TERMCAP_ue=$(printf "\e[0m") \
-        LESS_TERMCAP_us=$(printf "\e[1;32m") \
-            man "$@"
-}
+# Enable z
+if [ -e $(brew --prefix)/etc/profile.d/z.sh  ]; then
+    source $(brew --prefix)/etc/profile.d/z.sh
+fi
+
+# Virtualenwrapper settings
+if [ -e '/usr/local/bin/virtualenvwrapper_lazy.sh' ]; then
+    source /usr/local/bin/virtualenvwrapper_lazy.sh
+fi
 
 if tput setaf 1 &> /dev/null; then
     tput sgr0
@@ -170,6 +175,19 @@ export GREY
 export BOLD
 export RESET
 
+# Add colors to the man page
+# man() {
+#     env LESS_TERMCAP_mb=$'\e[01;31m' \
+#         LESS_TERMCAP_md=$'\e[01;38;5;74m' \
+#         LESS_TERMCAP_me=$'\e[0m' \
+#         LESS_TERMCAP_se=$'\e[0m' \
+#         LESS_TERMCAP_so=$'\e[30;48;5;11m' \
+#         LESS_TERMCAP_ue=$'\e[0m' \
+#         LESS_TERMCAP_us=$'\e[04;38;5;146m' \
+#     man "$@"
+# }
+export LESS_TERMCAP_md="$BLUE"
+
 # Disable virtualenvs PS1 prefix
 VIRTUAL_ENV_DISABLE_PROMPT=true
 
@@ -181,20 +199,34 @@ GIT_PS1_SHOWUPSTREAM='auto'
 GIT_PS1_SHOWCOLORHINTS=true
 
 function __virtualenv_ps1() {
-    printf "${VIRTUAL_ENV:+(\[$MAGENTA\]`basename ${VIRTUAL_ENV}`\[$RESET\]) }"
+    printf "${VIRTUAL_ENV:+[\[$MAGENTA\]`basename ${VIRTUAL_ENV}`\[$RESET\]] }"
+}
+
+function __pyenv_ps1() {
+    local version_name=$(pyenv version-name)
+    if [ "$version_name" != "system" ]; then
+        printf "\[$BLUE\]$version_name\[$RESET\] "
+    fi
+}
+
+function __exit_code() {
+    # http://stackoverflow.com/a/5946917/1862923
+    printf '%.*s' $? $?
 }
 
 prompt_command () {
-    __git_ps1 "$(__virtualenv_ps1)\[$GREY\]\w\[$RESET\]" "\[$YELLOW\] ❯ \[$RESET\]" " %s"
+    __git_ps1 "\[$RED\]$(__exit_code)\[$RESET\] $(__virtualenv_ps1)$(__pyenv_ps1)\[$GREY\]\w\[$RESET\]" " \[$RED\]❯\[$YELLOW\]❯\[$GREEN\]❯\[$RESET\] " " (%s)"
+
+    # Make new shells get the history lines from all previous shells instead of
+    # the default "last window closed" history. Do this last otherwise it will
+    # mess with the $? variable used in the prompt.
+    history -a
 }
 
-PROMPT_COMMAND=prompt_command
-
-# Make new shells get the history lines from all previous
-# shells instead of the default "last window closed" history
-export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+# The value is used as the number of trailing directory components to retain
+# when expanding the \w prompt string escapes. Characters removed are replaced
+# with an ellipsis.
+export PROMPT_DIRTRIM=3
+export PROMPT_COMMAND=prompt_command
 
 export PS2="\[$ORANGE\]→ \[$RESET\]"
-
-# Local changes
-[ -e ~/.bashrc.local ] && . ~/.bashrc.local

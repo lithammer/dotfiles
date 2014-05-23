@@ -26,23 +26,23 @@
 [alias]
 	#l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	l  = log --pretty=custom -n 20
-	hist = log -n 20 --pretty=format:'%Cred%h%Creset %C(green)%ad%Creset | %s %C(yellow)%d%Creset %C(blue)[%an]%Creset' --graph --date=short
-	g  = log --graph --pretty=custom
+	g  = log --graph --pretty=custom -n 20
 	d = diff
 	s = status -sb
 	st = status
 	c = commit --untracked-files=no -v
-	co = checkout
-	ready = rebase -i @{u}
 	standup = "!git log --since yesterday --author `git config user.email` --pretty=short"
 	wdiff = diff --color-words
 [push]
 	default = simple
 [pretty]
     # Custom log output
-    custom = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(green)%s %C(yellow)(%an)"
+    custom = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(reset)%s %C(yellow)(%an)"
     #                     │        │            │            │  author name ┘
     #                     │        │            │            └─ message
     #                     │        │            └─ date (relative)
     #                     │        └─ decorations (branch, heads or tags)
     #                     └─ hash (abbreviated)
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f

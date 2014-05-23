@@ -1,9 +1,6 @@
 # Make Tab autocomplete regardless of filename case
 set completion-ignore-case on
 
-# Don’t prompt unless there are over 500 possible completions
-set completion-query-items 500
-
 # List all matches in case multiple possible completions are possible
 set show-all-if-ambiguous on
 
@@ -19,10 +16,7 @@ set mark-symlinked-directories on
 set match-hidden-files off
 
 # Show all autocomplete results at once
-set page-completions off
-
-# Immediately show all possible completions
-set show-all-if-ambiguous on
+# set page-completions off
 
 # If there are more than 200 possible completions for a word, ask to show them all
 set completion-query-items 200
@@ -42,8 +36,9 @@ set input-meta on
 set output-meta on
 set convert-meta off
 
-# Use Alt/Meta + Delete to delete the preceding word
-"\e[3;3~": kill-word
-
 # Make TAB cycle through possible completions
-"\t": menu-complete
+# "\t": menu-complete
+
+# Adds a characters to the beginning of the prompt indicating the current
+# editing mode.
+#set show-mode-in-prompt on

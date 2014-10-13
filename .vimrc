@@ -20,239 +20,319 @@
 " └──────────────────────────────────────────────────────────────────────┘
 
 " Plugins {{{
-call plug#begin('~/.vim/bundle')
+call plug#begin()
 
-" Unused but potentially cool/useful stuff {{{
-"Plug 'dyng/ctrlsf.vim'
-"Plug 'godlygeek/tabular'
-"Plug 'junegunn/vim-scroll-position'
-"Plug 'mhinz/vim-startify'
-"Plug 'michaeljsmith/vim-indent-object'
-"Plug 'sjl/gundo.vim'
-"Plug 'terryma/vim-multiple-cursors'
-"Plug 'tpope/vim-commentary'
-" }}}
+Plug 'tpope/vim-sensible'
 
+Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'Raimondi/delimitMate'
 Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim'
+Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 Plug 'aaronbieber/vim-vault'
 Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-airline'
-Plug 'gorodinskiy/vim-coloresque'
-Plug 'gregsexton/MatchTag'
-Plug 'gregsexton/gitv'
-Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+Plug 'junegunn/fzf'
+Plug 'jeetsukumaran/vim-filebeagle'
 Plug 'justinmk/vim-sneak'
-Plug 'kien/ctrlp.vim'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'kshenoy/vim-signature'
-Plug 'majutsushi/tagbar'
-Plug 'marijnh/tern_for_vim'
+Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
+"Plug 'marijnh/tern_for_vim' " Not working in Python 3
 Plug 'mattn/emmet-vim'
-Plug 'mbbill/undotree'
-Plug 'mileszs/ack.vim'
+Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
+Plug 'mileszs/ack.vim', {'on': 'Ack'}
 Plug 'osyo-manga/vim-over'
-Plug 'rking/ag.vim'
+Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
-Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-tbone'
+Plug 'tpope/vim-unimpaired'
 Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
-Plug 'wellle/tmux-complete.vim'
+" Plug 'wellle/tmux-complete.vim'
+
+if has('python') || has('python3')
+    Plug 'SirVer/ultisnips'
+    Plug 'Valloric/MatchTagAlways'
+    " Plug 'Valloric/YouCompleteMe'
+    Plug 'davidhalter/jedi-vim', {'for': 'python'}
+    Plug 'honza/vim-snippets'
+
+    Plug 'lambdalisue/vim-pyenv', {'for': 'python'}
+    Plug 'jmcantrell/vim-virtualenv', {'for': 'python'}
+endif
+
+if has('python3')
+    let g:jedi#force_py_version = 3
+    let g:pyenv#force_py_version = 3
+    "let g:pyenv#auto_force_py_version = 1
+    let g:pyenv#python_exec = 'python3'
+  endif
 
 if has('python')
-    if v:version > 703 || v:version == 703 && has('patch584')
-        Plug 'Valloric/YouCompleteMe'
-    endif
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
-    Plug 'jmcantrell/vim-virtualenv'
-    " Plug 'davidhalter/jedi-vim'
+    " Will explode because Vim is compiled with Python3
+    let g:pyenv#auto_activate = 0
 endif
 
 if has('ruby')
-end
+endif
 
 if has('lua')
     if v:version > 703 || v:version == 703 && has('patch885')
-        " Plug 'Shougo/neocomplete.vim'
+        Plug 'Shougo/neocomplete.vim'
     endif
 endif
 
 " Filetype specific {{{
-" Plug 'sheerun/vim-polyglot'
+Plug 'fatih/vim-go'
 
-" Plug 'ap/vim-css-color'
-Plug 'andersoncustodio/vim-tmux'
-Plug 'chrisbra/csv.vim'
 Plug 'dag/vim-fish'
-Plug 'digitaltoad/vim-jade'
-" Plug 'fatih/vim-go'
-Plug 'Blackrush/vim-gocode'
-Plug 'glanotte/vim-jasmine'
-Plug 'gorodinskiy/vim-coloresque'
-Plug 'groenewege/vim-less'
-Plug 'guns/vim-clojure-static'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'honza/dockerfile.vim'
 Plug 'hynek/vim-python-pep8-indent'
-Plug 'kchmck/vim-coffee-script'
-Plug 'leafgarland/typescript-vim'
-Plug 'leafo/moonscript-vim'
-Plug 'leshill/vim-json'
-Plug 'mitsuhiko/vim-python-combined'
 Plug 'moll/vim-node'
 Plug 'mxw/vim-jsx'
-Plug 'oscarh/vimerl'
-Plug 'othree/html5.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'tpope/vim-git'
-Plug 'tpope/vim-haml'
-Plug 'travitch/hasksyn'
-Plug 'wavded/vim-stylus'
-Plug 'wting/rust.vim'
+Plug 'elzr/vim-json'
+Plug 'sheerun/vim-polyglot'
 " Plug 'othree/javascript-libraries-syntax.vim'
 " }}}
 
 " Color schemes {{{
-"Plug 'altercation/vim-colors-solarized'
 "Plug 'Diablo3'
+"Plug 'Pychimp/vim-luna'
 "Plug 'jonathanfilip/vim-lucius'
 Plug 'chriskempson/base16-vim'
-"Plug 'nanotech/jellybeans.vim'
+"Plug 'junegunn/seoul256.vim'
+Plug 'nanotech/jellybeans.vim'
 "Plug 'w0ng/vim-hybrid'
 "Plug 'wombat256.vim'
-"Plug 'Pychimp/vim-luna'
 " }}}
 
 call plug#end()
 " }}}
 
-" Plugin variables {{{
+" Plugin settings and mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-" Neocomplete {{{
-" let g:neocomplete#enable_at_startup = 1
-" let g:neocomplete#enable_smart_case = 1
-"
-" autocmd FileType python setlocal omnifunc=jedi#completions
-" let g:jedi#completions_enabled = 0
-" let g:jedi#auto_vim_configuration = 0
-" let g:neocomplete#sources#omni#functions = {'go': 'go#complete#Complete'}
-" let g:neocomplete#force_omni_input_patterns = {}
-" let g:neocomplete#force_omni_input_patterns.python =
-"     \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-" let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
-"
-" " Cycle completions with Tab and Shift-Tab
-" inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<Tab>"
-" }}}
+" Use a different mapleader (default is '\')
+let mapleader = ','
 
-" Tern
-let tern#is_show_argument_hints_enabled = 'on_move'
-let tern#tern_show_signature_in_pum = 1
-
-" Python syntax
-let python_highlight_all = 1
-
-" Airline
+" Airline {{{
+"let g:airline_theme = 'badwolf'
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
+
+let g:airline#extensions#tagbar#enabled = 0
+let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#hunks#enabled = 0
+
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ''
 let g:airline#extensions#tabline#left_alt_sep = ''
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#buffer_min_count = 2
-" let g:airline#extensions#tabline#excludes = []
+" }}}
 
-" Ctrl-P
-let g:ctrlp_max_height = 15
-if executable('ag')
-      let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-      let g:ctrlp_use_caching = 0
-      let g:ackprg = 'ag'
-      let g:ack_wildignore = 0
-endif
+" delimitMate {{{
+let delimitMate_expand_cr = 1                " Enable expansion of <CR>
+" }}}
 
-" Gitv
-let g:Gitv_OpenHorizontal = 'auto'
+" Commentary {{{
+map <Leader>c :Commentary<CR>
+" }}}
 
-" UltiSnips
-let g:UltiSnipsExpandTrigger = '<C-k>'
-let g:UltiSnipsJumpForwardTrigger = '<C-k>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
+" Dispatch {{{
+" Use vim-dispatch to build in the background (uses makeprg)
+nnoremap <F6> :Dispatch<CR>
+" }}}
 
-" Unite.vim
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-let g:ctrlp_map = ''
-nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
+" EasyAlign {{{
+vmap <Enter> <Plug>(EasyAlign)
+" }}}
 
-command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
+" FZF {{{
+nnoremap <silent> <Leader><Leader> :FZF -m<CR>
 
-if executable('pt')
-    let g:unite_source_grep_command = 'pt'
-    let g:unite_source_grep_default_opts = '--nogroup --nocolor'
-    let g:unite_source_grep_recursive_opt = ''
-    let g:unite_source_grep_encoding = 'utf-8'
-elseif executable('ag')
-    " Use ag in unite grep source.
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
-    let g:unite_source_grep_recursive_opt = ''
-endif
+nnoremap <silent> <Leader>s :call fzf#run({ 'tmux_height': '40%', 'sink': 'botright split' })<CR>
+nnoremap <silent> <Leader>v :call fzf#run({ 'tmux_width': winwidth('.') / 2, 'sink': 'vertical botright split' })<CR>
 
-let g:unite_source_history_yank_enable = 1
-"nnoremap <C-y> :<C-u>Unite history/yank<CR>
-noremap <Leader>y :<C-u>Unite history/yank<CR>
+function! BufList()
+  redir => ls
+  silent ls
+  redir END
+  return split(ls, '\n')
+endfunction
 
-nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
+function! BufOpen(e)
+  execute 'buffer '. matchstr(a:e, '^[ 0-9]*')
+endfunction
 
-" HTML 5
+nnoremap <silent> <Leader>b :call fzf#run({
+\   'source':      reverse(BufList()),
+\   'sink':        function('BufOpen'),
+\   'options':     '+m',
+\   'tmux_height': '40%'
+\ })<CR>
+" }}}
+
+" Over {{{
+cabbrev %s OverCommandLine<CR>%s
+cabbrev '<,'>s OverCommandLine<CR>'<,'>s
+" }}}
+
+" HTML 5 {{{
 let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
 let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
+" }}}
 
-" delimitMate
-let g:delimitMate_expand_cr = 1              " Enable expansion of <CR>
-let g:delimitMate_expand_space = 0           " Enable expansion of <Space>
+" Neocomplete (and related) {{{
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
 
-" Sneak
+if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+endif
+
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+
+if !exists('g:neocomplete#sources#omni#functions')
+  let g:neocomplete#sources#omni#functions = {}
+endif
+
+
+let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#show_call_signatures = 0
+let g:tmuxcomplete#trigger = ''
+
+let g:neocomplete#sources#omni#functions.go = 'go#complete#Complete'
+let g:neocomplete#force_omni_input_patterns.python =
+    \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
+
+autocmd FileType python setlocal omnifunc=jedi#completions
+
+" Cycle completions with Tab and Shift-Tab
+inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<Tab>"
+" }}}
+
+" Sneak {{{
 let g:sneak#streak = 1
-hi link SneakPluginTarget Search
-hi link SneakPluginScope Search
-hi link SneakStreakTarget Search
 " hi SneakStreakMask guifg=03 guibg=03 ctermfg=03 ctermbg=03
 
-" Syntastic
+" https://github.com/justinmk/vim-sneak#how-can-i-replace-f-with-sneak
+nmap s <Plug>Sneak_s
+nmap S <Plug>Sneak_S
+" }}}
+
+" Syntastic {{{
 let g:syntastic_check_on_open = 1
 let g:syntastic_error_symbol = '✗'
 let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_aggregate_errors = 1
 let g:syntastic_html_checkers = []
-" let g:syntastic_python_pylama_args = '--options ~/.config/pylama.ini'
+let g:syntastic_javascript_checkers = ['jsxhint']
 let g:syntastic_python_checkers = ['pylint', 'frosted', 'pep8', 'pep257']
-let g:syntastic_python_pep257_args = '--ignore=D100,D203,D204'
+let g:syntastic_python_pep257_args = '--ignore=D100,D102,D203,D204'
+" }}}
 
-" Virtualenv
+" Tagbar {{{
+nmap <Leader>t :TagbarToggle<CR>
+" }}}
+
+" TComment {{{
+" map <Leader>c :TComment<CR>
+" }}}
+
+" Tern {{{
+let tern#is_show_argument_hints_enabled = 'on_hold'
+let tern#tern_show_signature_in_pum = 1
+" }}}
+
+" UltiSnips {{{
+let g:UltiSnipsExpandTrigger = '<C-k>'
+let g:UltiSnipsJumpForwardTrigger = '<C-k>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
+" }}}
+
+" UndoTree {{{
+nnoremap U :UndotreeToggle<CR>
+" }}}
+
+" Unimpaired {{{
+nmap ö [
+nmap ä ]
+omap ö [
+omap ä ]
+xmap ö [
+xmap ä ]
+" }}}
+
+" Unite {{{
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_selecta'])
+nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
+
+" Don't cache, it's fast enough
+let g:unite_source_rec_max_cache_files = 0
+call unite#custom#source('file_rec,file_rec/async', 'max_candidates', 500)
+
+command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
+
+if executable('ag')
+    let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
+    let g:unite_source_grep_recursive_opt = ''
+elseif executable('pt')
+    let g:unite_source_rec_async_command = 'pt --nocolor --nogroup -g .'
+    let g:unite_source_grep_command = 'pt'
+    let g:unite_source_grep_default_opts = '--nogroup --nocolor'
+    let g:unite_source_grep_recursive_opt = ''
+    let g:unite_source_grep_encoding = 'utf-8'
+endif
+
+call unite#custom#profile('default', 'context', {
+\   'direction': 'below',
+\   'winheight': 10,
+\ })
+
+let g:unite_source_history_yank_enable = 1
+nnoremap <C-y> :<C-u>Unite history/yank<CR>
+nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
+nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
+
+autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()
+    " Overwrite settings.
+    imap <silent><buffer><expr> <C-s> unite#do_action('split')
+    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+endfunction
+" }}}
+
+" Virtualenv {{{
 let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
+" }}}
 
-" YouCompleteMe
-let g:ycm_path_to_python_interpreter = '/usr/bin/python'
+" YouCompleteMe {{{
+" let g:ycm_path_to_python_interpreter = '/usr/bin/python'
 
-" EasyAlign
-vmap <Enter> <Plug>(EasyAlign)
+" Looks up the symbol under the cursor and jumps to its definition if
+" possible; if the definition is not accessible from the current translation
+" unit, jumps to the symbol's declaration.
+" nnoremap <leader>jd :YcmCompleter GoTo<CR>
+" }}}
 
-" Replace Vim's search and replace with vim-over
-cabbrev %s OverCommandLine<cr>%s
-cabbrev '<,'>s OverCommandLine<cr>'<,'>s
 " }}}
 
 " Options {{{
@@ -261,20 +341,16 @@ cabbrev '<,'>s OverCommandLine<cr>'<,'>s
 " Use :help 'option' or press 'K' while having the cursor on the option to see
 " documention about it.
 
-filetype plugin indent on
-
-" Load matchit.vim, but only if the user hasn't installed a newer version.
-if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-    runtime! macros/matchit.vim
-endif
-
 " Tree style file listing
 let g:netrw_liststyle = 3
 
-" Highlight trailing whitespace
-let python_space_errors = 1
+" Highlight numers, buitin functions, standard exceptions, doctests and
+" whitespace errors (:h ft-python-syntax)
+let python_highlight_all = 1
 
-syntax on
+" The g:lisp_rainbow option provides 10 levels of individual colorization for
+" the parentheses and backquoted parentheses (:h ft-lisp-syntax)
+let g:lisp_rainbow = 1
 
 " Use the 256 color space instead of 16
 set t_Co=256
@@ -282,33 +358,19 @@ set t_Co=256
 " Make sure dark background is used for colorschemes
 set background=dark
 
-let g:airline_theme = 'bubblegum'
 let base16colorspace = 256
 
-" http://chriskempson.github.io/base16/
-colorscheme base16-eighties
+colorscheme jellybeans
 if has('gui_running')
-    let g:airline_theme = 'badwolf'
     colorscheme base16-default
     set background=light
 endif
-
-highlight Folded ctermfg=240 ctermbg=0
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=400
 
 " Automatically save when moving between buffers (and more)
 set autowrite
-
-" Automatically read file again if external changes have been made
-set autoread
-
-set encoding=utf-8 nobomb
-
-" Copy indent from current line when starting a new line, see doc for more
-" details of additional features
-set autoindent
 
 " Recognize numbered lists when formatting text
 set formatoptions+=n
@@ -323,11 +385,6 @@ endif
 set tabstop=4 softtabstop=4 shiftwidth=4
 set expandtab
 set shiftround
-set smarttab
-
-" When making a change to one line, don't redisplay the line,
-" but put a '$' at the end of the changed text
-"set cpoptions+=$
 
 " Highlight current cursor row
 set cursorline
@@ -335,17 +392,11 @@ set cursorline
 " Highlight one column after 'textwidth'
 " set colorcolumn=+1
 
-" Allow backspacing over everything
-set backspace=indent,eol,start
-
 " Show menu when there's at least one match, and show extra information
 set completeopt=menuone,preview
 
 " Use stronger file encryption
 set cryptmethod=blowfish
-
-" Show as much as possible of the last line in a window
-set display+=lastline
 
 " Remove fold characters
 set fillchars="vert:|,fold:"
@@ -357,15 +408,8 @@ set gdefault
 " Highlight all search matches
 set hlsearch
 
-" Ignore case in search patterns, except when it contains upper case
-" characters
+" Ignore case in search patterns, unless they contains upper case characters
 set ignorecase smartcase
-
-" Search while typing
-set incsearch
-
-" Always show statusline
-set laststatus=2
 
 " Don't redraw screen while executing macros
 set lazyredraw
@@ -375,6 +419,8 @@ set linebreak
 
 " Show some hidden characters ('listchars')
 set list
+
+set listchars=tab:▸\ ,trail:·,extends:>,precedes:<,nbsp:_
 
 " Faster and more precise mouse support
 set ttymouse=xterm2
@@ -387,9 +433,6 @@ set noshowmode
 
 " Don't wrap long lines
 set nowrap
-
-" Treat numbers starting with 0x or 0X as hexadecimals
-set nrformats="hex"
 
 " Show line numbers
 set number
@@ -406,14 +449,14 @@ set report=0
 " Minimal number of screen lines to keep above and below the cursor
 set scrolloff=5
 
+" The minimal number of columns to scroll horizontally
+set sidescroll=10
+
 " Characters to put at the start of wrap lines
 set showbreak=\ \ ↪
 
 " Briefly jump to matching bracket in insert mode
 set showmatch
-
-" The minimal number of columns to scroll horizontally
-set sidescroll=10
 
 " Put the new window on the right when doing :vsplit
 set splitright
@@ -421,29 +464,23 @@ set splitright
 " Set the title of the window to 'titlestring'
 set title
 
-" The time in milliseconds that is waited for a key code or mapped key
-" sequence to complete
-set ttimeout ttimeoutlen=50
-
 " More characters will be sent to the screen for redrawing
 set ttyfast
 
-try
-    set directory=$HOME/.vim/swaps
-    set backupdir=$HOME/.vim/backups
-    set undodir=$HOME/.vim/undos
-    set undofile
-catch
-    for dir in ['swaps', 'backups', 'undos']
-        silent execute '!mkdir -p $HOME/.vim/' . dir
-    endfor
-endtry
+for dir in ['swaps', 'undos', 'backups']
+    let path = expand('~/.vim/'.dir)
+    if !isdirectory(path)
+        silent call mkdir(path)
+    endif
+endfor
+
+set directory=$HOME/.vim/swaps
+set backupdir=$HOME/.vim/backups
+set undodir=$HOME/.vim/undos
+set undofile
 
 " Allow cursor beyond EOL in Visual block mode
 set virtualedit=block
-
-" Enable enhanced command-line completion by showing all matches
-set wildmenu
 
 " Match longest commong string
 set wildmode=list:longest,list:full
@@ -463,20 +500,10 @@ set wildignore+=venv,env,node_modules
 " OS files
 set wildignore+=*.DS_Store
 
-if &listchars ==# 'eol:$'
-    set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-    if !has('win32') && (&termencoding ==# 'utf-8' || &encoding ==# 'utf-8')
-        let &listchars = "tab:\u21e5 ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-    endif
-endif
-
 " }}}
 
 " Mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-" Use a different mapleader (default is '\')
-let mapleader = ','
 
 " My fingers are too fast!
 command W w
@@ -485,8 +512,6 @@ command Q q
 " Make Y behave like D (yank from cursor to EOL)
 nnoremap Y y$
 
-" Paste clipboard content
-inoremap <C-v><C-v> <C-o>"*P
 " Copy to clipboard
 vnoremap <C-c> "*y"
 
@@ -495,11 +520,6 @@ noremap <Space> za
 
 " Don't move on '*', useful when highlighting words
 nnoremap * *<C-o>
-
-" Use <C-L> to clear the highlighting of :set hlsearch.
-if maparg('<C-L>', 'n') ==# ''
-    nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
-endif
 
 " Go to previous file
 map <Leader>p <C-^>
@@ -521,49 +541,30 @@ function! StripWhitespaces()
     let @/ = searchHistory
     call cursor(cursorLine, cursorColumn)
 endfunction
-nnoremap <Leader>ss :call StripWhitespaces()<CR>
-
-" Highlight lines with more than 80 chars (or 'textwidth')
-highlight LongLine ctermfg=0 ctermbg=1
-function! HighlightProblemLines()
-    set nolist!
-    set nolist?
-    if exists('w:long_line_match')
-        silent! call matchdelete(w:long_line_match)
-        unlet w:long_line_match
-    elseif &textwidth > 0
-        let w:long_line_match = matchadd('LongLine', '\%>'.&tw.'v.\+', -1)
-    else
-        let w:long_line_match = matchadd('LongLine', '\%>80v.\+', -1)
-    endif
-endfunction
-nnoremap <silent> <Leader>l :call HighlightProblemLines()<CR>
-
-" Toggle comments (TComment)
-map <Leader>c :TComment<CR>
-
-" Toggle Tagbar
-nmap <Leader>t :TagbarToggle<CR>
-
-" Search for tag within all open buffers
-nmap <C-g> :CtrlPBufTagAll<CR>
-
-" Looks up the symbol under the cursor and jumps to its definition if
-" possible; if the definition is not accessible from the current translation
-" unit, jumps to the symbol's declaration.
-nnoremap <leader>jd :YcmCompleter GoTo<CR>
-
-" Use vim-dispatch to build in the background (uses makeprg)
-nnoremap <C-m> :Make!<CR>
-
-" https://github.com/justinmk/vim-sneak#how-can-i-replace-f-with-sneak
-nmap f <Plug>Sneak_s
-nmap F <Plug>Sneak_S
+command StripWhitespaces :call StripWhitespaces()
 
 " }}}
 
 " Auto commands {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Sets the filetype when using Ctrl-x-e in bash
+autocmd BufRead,BufNewFile bash-* set filetype=sh
+
+" Press K to get documentation about a Vim keyword
+autocmd FileType vim,help setlocal keywordprg=:help
+
+" Resize splits when the window is resized
+autocmd VimResized * :wincmd =
+
+" Only show colorcolumn in the current window
+if (&colorcolumn == '+1')
+    augroup ccol
+        autocmd!
+        autocmd WinLeave * setlocal colorcolumn=0
+        autocmd WinEnter * setlocal colorcolumn=+1
+    augroup END
+endif
 
 " Only show cursorline in the current window and in normal mode
 if (&cursorline)
@@ -576,34 +577,6 @@ if (&cursorline)
     augroup END
 endif
 
-" Only show colorcolumn in the current window
-if (&colorcolumn == '+1')
-    augroup ccol
-        autocmd!
-        autocmd WinLeave * setlocal colorcolumn=0
-        autocmd WinEnter * setlocal colorcolumn=+1
-    augroup END
-endif
-
-" Don't show trailing whitespaces in insert mode
-augroup trailing
-    autocmd!
-    autocmd InsertEnter * :set listchars-=trail:␣
-    autocmd InsertLeave * :set listchars+=trail:␣
-augroup END
-
-" Sets the filetype when using Ctrl-x-e in bash
-autocmd BufRead,BufNewFile bash-* set filetype=sh
-
-" Press K to get documentation about a Vim keyword
-autocmd FileType vim,help setlocal keywordprg=:help
-
-" Resize splits when the window is resized
-autocmd VimResized * :wincmd =
-
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-
 " Visual Mode */# from Scrooloose
 function! s:VSetSearch()
     let temp = @@
@@ -615,7 +588,6 @@ vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
 vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
 
 " When editing a file, always jump to the last known cursor position.
-autocmd BufReadPost * call SetCursorPosition()
 function! SetCursorPosition()
     if &filetype !~ 'svn\|commit\c'
         if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -623,6 +595,7 @@ function! SetCursorPosition()
         endif
     end
 endfunction
+autocmd BufReadPost * call SetCursorPosition()
 
 " Always enable Rainbow Parentheses
 " https://github.com/kien/rainbow_parentheses.vim#always-on
@@ -636,32 +609,6 @@ autocmd Syntax * RainbowParenthesesLoadSquare
 " Filetype settings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-" Encrypted files
-function! SetupEncryption()
-    setlocal viminfo=
-    setlocal bufhidden=wipe
-    setlocal noswapfile
-    setlocal nobackup
-    setlocal nowritebackup
-    setlocal noshelltemp
-    " setlocal foldmethod=indent
-    " setlocal foldlevel=0
-    " setlocal foldclose=all
-    setlocal history=0
-    setlocal secure
-endfunction
-autocmd BufReadPre,BufRead * if &key == '*****' | call SetupEncryption() | endif
-
-" Markdown
-function! SetupMarkdown()
-    setlocal wrap
-    setlocal wrapmargin=2
-    setlocal textwidth=79
-    setlocal formatoptions+=t
-endfunction
-autocmd FileType markdown call SetupMarkdown()
-autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-
 " Plain text
 function! SetupPlainText()
     setlocal wrap
@@ -673,50 +620,28 @@ autocmd FileType text call SetupPlainText()
 
 " Python, PEP8: http://www.python.org/dev/peps/pep-0008/
 function! SetupPython()
-    setlocal cinwords=if,elif,else,for,while,try,except,finally,def,class
-    setlocal cindent
-    setlocal tabstop=4
-    setlocal softtabstop=4
-    setlocal shiftwidth=4
-    setlocal shiftround
-    setlocal smartindent
-    setlocal smarttab
-    setlocal expandtab
-    setlocal autoindent
     setlocal textwidth=79
-    " setlocal formatoptions-=t
-    setlocal nolisp
     setlocal foldmethod=indent
     setlocal foldlevel=1
-    setlocal indentkeys=!^F,o,O,<:>,0),0],0},=elif,=except
-    silent! call HighlightProblemLines()
+    setlocal foldnestmax=2
+
+    " Highlight 'print' as function
+    syn keyword pythonBuiltinFunc print
+
+    " Highlight python string format groups
+    highlight pythonStrFormat ctermfg=110
+
+    " Highlight 'NOTE' in comments as well
+    syn keyword pythonTodo NOTE contained
+
+    " Only show colorcolumn in the current window
+    augroup ccol
+        autocmd!
+        autocmd WinLeave * setlocal colorcolumn=0
+        autocmd WinEnter * setlocal colorcolumn=+1
+    augroup END
 endfunction
 autocmd FileType python call SetupPython()
-
-" Ruby
-function! SetupRuby()
-    setlocal expandtab
-    setlocal tabstop=2
-    setlocal softtabstop=2
-    setlocal shiftwidth=2
-endfunction
-autocmd FileType ruby call SetupRuby()
-
-" Go
-function! SetupGolang()
-    " Remove tab characters.
-    let &listchars = "tab:  ,trail:\u2423,extends:\u21c9,precedes:\u21c7,nbsp:\u00b7"
-endfunction
-autocmd FileType go call SetupGolang()
-
-" JSON, LESS, CSS, Stylus and Jade
-function! TwoSpaceIndent()
-    setlocal expandtab
-    setlocal tabstop=2
-    setlocal softtabstop=2
-    setlocal shiftwidth=2
-endfunction
-autocmd FileType json,less,css,stylus,jade call TwoSpaceIndent()
 
 " XML, HTML et al
 function! SetupMarkupLanguage()
@@ -729,7 +654,11 @@ function! SetupMarkupLanguage()
 endfunction
 autocmd FileType html,xml call SetupMarkupLanguage()
 
-" Complement to TwoSpaceIdent()
+function! SetupJSON()
+    setlocal equalprg=python\ -mjson.tool
+endfunction
+autocmd FileType json call SetupJSON()
+
 function! FourSpaceIndent()
     setlocal expandtab
     setlocal tabstop=4
@@ -737,16 +666,13 @@ function! FourSpaceIndent()
     setlocal shiftwidth=4
 endfunction
 
-function! SetupJSON()
-    setlocal syntax=javascript
-    setlocal equalprg=python\ -mjson.tool
+function! TwoSpaceIndent()
+    setlocal expandtab
+    setlocal tabstop=2
+    setlocal softtabstop=2
+    setlocal shiftwidth=2
 endfunction
-autocmd FileType json call SetupJSON()
-autocmd BufNewFile,BufRead *.json setlocal filetype=json
-
-" The g:lisp_rainbow option provides 10 levels of individual colorization for
-" the parentheses and backquoted parentheses.
-let g:lisp_rainbow = 1
+autocmd FileType json,less,css,stylus,jade,ruby call TwoSpaceIndent()
 
 " }}}
 
@@ -798,10 +724,6 @@ if has('gui_macvim')
     " Ctrl-Shift-Tab goes the other way.
     noremap <C-Tab> :tabnext<CR>
     noremap <C-S-Tab> :tabprev<CR>
-
-    " Open goto symbol on all buffers
-    nmap <D-R> :CtrlPBufTagAll<cr>
-    imap <D-R> <esc>:CtrlPBufTagAll<cr>
 endif
 
 " Windows

@@ -7,20 +7,10 @@ unset file
 # http://golang.org/doc/code.html#GOPATH
 export GOPATH="$HOME/.go"
 
-# PATH="/Applications/Postgres93.app/Contents/MacOS/bin:$PATH"
-PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-PATH="/usr/local/opt/gnu-tar/libexec/gnubin:$PATH"
-PATH="$PATH:/usr/local/Cellar/go/1.2.1/libexec/bin"
-PATH="$GOPATH/bin:$PATH"
+PATH="/usr/local/sbin:$PATH"
+PATH="$GOPATH/bin:/usr/local/opt/go/libexec/bin:$PATH"
 PATH="$HOME/.bin:$PATH"
-
 export PATH
-
-for dir in coreutils gnu-sed; do
-    MANPATH="/usr/local/opt/$dir/libexec/gnuman:$MANPATH"
-done
-export MANPATH
 
 # Make vim the default editor
 export EDITOR="vim"
@@ -40,8 +30,8 @@ export HISTIGNORE="&:[bf]g:c:clear:exit:q:ll:ls -l:pwd:* --help"
 export HISTSIZE=5000
 
 # Prefer US English and use UTF-8 encoding
-export LANG="en_GB"
-export LC_ALL="en_GB.UTF-8"
+export LANG="en_US"
+export LC_ALL="en_US.UTF-8"
 
 # Don't clear the screen after quitting a man page
 export MANPAGER="less -X"
@@ -51,7 +41,7 @@ export FIGNORE=.pyc:.o:.class:.beam:__pycache__
 
 # Python won’t try to write .pyc or .pyo files on the import of source modules
 # http://docs.python.org/dev/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
-# export PYTHONDONTWRITEBYTECODE=true
+export PYTHONDONTWRITEBYTECODE=1
 
 # Environment variable for the docker daemon
 export DOCKER_HOST=tcp://
@@ -94,8 +84,14 @@ for option in autocd globstar; do
 done
 
 # Add tab completion for many Bash commands
-if which brew > /dev/null && [ -f "$(brew --prefix)/etc/bash_completion" ]; then
+if [ -f "$(brew --prefix)/etc/bash_completion" ]; then
     source "$(brew --prefix)/etc/bash_completion"
+fi
+
+# Enable FZF
+if [ -e ~/.fzf.bash ]; then
+    source ~/.fzf.bash
+    export FZF_DEFAULT_COMMAND='ag -l -g ""'
 fi
 
 # Enable bash completion for pip
@@ -107,6 +103,11 @@ fi
 # https://github.com/yyuu/pyenv
 if which pyenv > /dev/null; then
     eval "$(pyenv init -)"
+fi
+
+# https://github.com/yyuu/pyenv-virtualenv
+if which pyenv-virtualenv-init > /dev/null; then
+    eval "$(pyenv virtualenv-init -)"
 fi
 
 # Enable z
@@ -162,18 +163,18 @@ else
     RESET="\033[m"
 fi
 
-export BLACK
-export RED
-export GREEN
-export YELLOW
-export BLUE
-export MAGENTA
-export CYAN
-export WHITE
-export GRAY
-export GREY
-export BOLD
-export RESET
+# export BLACK
+# export RED
+# export GREEN
+# export YELLOW
+# export BLUE
+# export MAGENTA
+# export CYAN
+# export WHITE
+# export GRAY
+# export GREY
+# export BOLD
+# export RESET
 
 # Add colors to the man page
 # man() {
@@ -226,7 +227,7 @@ prompt_command () {
 # The value is used as the number of trailing directory components to retain
 # when expanding the \w prompt string escapes. Characters removed are replaced
 # with an ellipsis.
-export PROMPT_DIRTRIM=3
+export PROMPT_DIRTRIM=2
 export PROMPT_COMMAND=prompt_command
 
 export PS2="\[$ORANGE\]→ \[$RESET\]"

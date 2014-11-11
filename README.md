@@ -3,7 +3,8 @@
 ## Vim
 
 ```bash
-$ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+$ curl -fLo ~/.vim/autoload/plug.vim \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
 Run `BundleInstall!` to install and update plugins.

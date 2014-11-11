@@ -1,24 +1,3 @@
-" ┌──────────────────────────────────────────────────────────────────────┐
-" │                                                                      │
-" │                            Vim Settings                              │
-" │                                                                      │
-" │ Some highlights:                                                     │
-" │    K = look for help under cursor                                    │
-" │   ,p = go to previous file                                           │
-" │                                                                      │
-" │   ,i = toggle invisibles                                             │
-" │   <F5> = toggle paste mode on/off                                    │
-" │   <C-l> = clear search highlight                                     │
-" │                                                                      │
-" │   ,c = comment block/line                                            │
-" │                                                                      │
-" │   ,* = search and replace word under cursor                          │
-" │                                                                      │
-" │                                                                      │
-" │ Put machine/user specific settings in ~/.vimrc.local                 │
-" │                                                                      │
-" └──────────────────────────────────────────────────────────────────────┘
-
 " Plugins {{{
 call plug#begin()
 
@@ -26,22 +5,21 @@ Plug 'tpope/vim-sensible'
 
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
-Plug 'aaronbieber/vim-vault'
+" Plug 'Shougo/unite.vim'
+" Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-airline'
-Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
-Plug 'junegunn/fzf'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'gorkunov/smartgf.vim'
 Plug 'jeetsukumaran/vim-filebeagle'
+Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+Plug 'justinmk/vim-matchparenalways'
 Plug 'justinmk/vim-sneak'
-Plug 'kien/rainbow_parentheses.vim'
+Plug 'kristijanhusak/vim-multiple-cursors'
 Plug 'kshenoy/vim-signature'
-Plug 'majutsushi/tagbar', {'on': 'TagbarToggle'}
-"Plug 'marijnh/tern_for_vim' " Not working in Python 3
 Plug 'mattn/emmet-vim'
-Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
-Plug 'mileszs/ack.vim', {'on': 'Ack'}
+Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
 Plug 'osyo-manga/vim-over'
 Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
@@ -55,48 +33,30 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
 Plug 'tpope/vim-unimpaired'
-Plug 'tsukkee/unite-tag'
+" Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
-" Plug 'wellle/tmux-complete.vim'
-
-if has('python') || has('python3')
-    Plug 'SirVer/ultisnips'
-    Plug 'Valloric/MatchTagAlways'
-    " Plug 'Valloric/YouCompleteMe'
-    Plug 'davidhalter/jedi-vim', {'for': 'python'}
-    Plug 'honza/vim-snippets'
-
-    Plug 'lambdalisue/vim-pyenv', {'for': 'python'}
-    Plug 'jmcantrell/vim-virtualenv', {'for': 'python'}
-endif
-
-if has('python3')
-    let g:jedi#force_py_version = 3
-    let g:pyenv#force_py_version = 3
-    "let g:pyenv#auto_force_py_version = 1
-    let g:pyenv#python_exec = 'python3'
-  endif
-
-if has('python')
-    " Will explode because Vim is compiled with Python3
-    let g:pyenv#auto_activate = 0
-endif
-
-if has('ruby')
-endif
-
-if has('lua')
-    if v:version > 703 || v:version == 703 && has('patch885')
-        Plug 'Shougo/neocomplete.vim'
-    endif
-endif
 
 " Filetype specific {{{
 Plug 'fatih/vim-go'
 
+if has('python')
+    Plug 'SirVer/ultisnips'
+    Plug 'Valloric/MatchTagAlways'
+    Plug 'Valloric/YouCompleteMe'
+    " Plug 'davidhalter/jedi-vim'
+    Plug 'honza/vim-snippets'
+    " Plug 'lambdalisue/vim-pyenv'
+    " Plug 'jmcantrell/vim-virtualenv'
+endif
+
+if has('lua')
+    " Plug 'Shougo/neocomplete.vim'
+endif
+
+Plug 'clausreinke/typescript-tools', {'for': 'typescript'}
+
 Plug 'dag/vim-fish'
 Plug 'hynek/vim-python-pep8-indent'
-Plug 'moll/vim-node'
 Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 Plug 'sheerun/vim-polyglot'
@@ -104,14 +64,15 @@ Plug 'sheerun/vim-polyglot'
 " }}}
 
 " Color schemes {{{
-"Plug 'Diablo3'
-"Plug 'Pychimp/vim-luna'
-"Plug 'jonathanfilip/vim-lucius'
-Plug 'chriskempson/base16-vim'
-"Plug 'junegunn/seoul256.vim'
-Plug 'nanotech/jellybeans.vim'
-"Plug 'w0ng/vim-hybrid'
-"Plug 'wombat256.vim'
+Plug 'godlygeek/csapprox'
+
+" Plug 'Pychimp/vim-luna'
+" Plug 'chriskempson/base16-vim'
+" Plug 'guns/jellyx.vim'
+" Plug 'nanotech/jellybeans.vim'
+Plug 'w0ng/vim-hybrid'
+
+let base16colorspace = 256
 " }}}
 
 call plug#end()
@@ -124,7 +85,6 @@ call plug#end()
 let mapleader = ','
 
 " Airline {{{
-"let g:airline_theme = 'badwolf'
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
@@ -147,6 +107,17 @@ let delimitMate_expand_cr = 1                " Enable expansion of <CR>
 map <Leader>c :Commentary<CR>
 " }}}
 
+" {{{ Ctrlp
+nnoremap <C-t> :CtrlPBufTag<CR>
+
+let g:ctrlp_custom_ignore = { 'dir': '\v[\/](venv|env)$' }
+
+if executable('ag')
+    let g:ctrlp_user_command = 'ag %s -l -g ""'
+    let g:ctrlp_use_caching = 0
+endif
+" }}}
+
 " Dispatch {{{
 " Use vim-dispatch to build in the background (uses makeprg)
 nnoremap <F6> :Dispatch<CR>
@@ -156,29 +127,36 @@ nnoremap <F6> :Dispatch<CR>
 vmap <Enter> <Plug>(EasyAlign)
 " }}}
 
-" FZF {{{
-nnoremap <silent> <Leader><Leader> :FZF -m<CR>
+" Go {{{
+let g:go_fmt_command = 'goimports'
+" }}}
 
-nnoremap <silent> <Leader>s :call fzf#run({ 'tmux_height': '40%', 'sink': 'botright split' })<CR>
-nnoremap <silent> <Leader>v :call fzf#run({ 'tmux_width': winwidth('.') / 2, 'sink': 'vertical botright split' })<CR>
+" {{{ Jedi
+let g:jedi#popup_select_first = 0
+let g:jedi#show_call_signatures = 0
+" }}}
 
-function! BufList()
-  redir => ls
-  silent ls
-  redir END
-  return split(ls, '\n')
-endfunction
+" JSON {{{
+let g:vim_json_syntax_conceal = 0
+" }}}
 
-function! BufOpen(e)
-  execute 'buffer '. matchstr(a:e, '^[ 0-9]*')
-endfunction
+" lengthmatters {{{
+" let g:lengthmatters_on_by_default = 0
+" }}}
 
-nnoremap <silent> <Leader>b :call fzf#run({
-\   'source':      reverse(BufList()),
-\   'sink':        function('BufOpen'),
-\   'options':     '+m',
-\   'tmux_height': '40%'
-\ })<CR>
+" {{{ Neosnippet
+" imap <C-k> <Plug>(neosnippet_expand_or_jump)
+" smap <C-k> <Plug>(neosnippet_expand_or_jump)
+" xmap <C-k> <Plug>(neosnippet_expand_target)
+
+" " For snippet_complete marker.
+" if has('conceal')
+"     set conceallevel=2 concealcursor=i
+" endif
+
+" " SuperTab like snippets behavior.
+" imap <expr><Tab> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<Tab>"
+" smap <expr><Tab> neosnippet#expandable_or_jumpable() ?  "\<Plug>(neosnippet_expand_or_jump)" : "\<Tab>"
 " }}}
 
 " Over {{{
@@ -192,46 +170,48 @@ let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
 " }}}
 
 " Neocomplete (and related) {{{
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplete#enable_smart_case = 1
+" let g:neocomplete#enable_at_startup = 1
+" let g:neocomplete#enable_smart_case = 1
 
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
+" if !exists('g:neocomplete#sources#omni#input_patterns')
+"     let g:neocomplete#sources#omni#input_patterns = {}
+" endif
 
-if !exists('g:neocomplete#force_omni_input_patterns')
-    let g:neocomplete#force_omni_input_patterns = {}
-endif
+" if !exists('g:neocomplete#force_omni_input_patterns')
+"     let g:neocomplete#force_omni_input_patterns = {}
+" endif
 
-if !exists('g:neocomplete#sources#omni#functions')
-  let g:neocomplete#sources#omni#functions = {}
-endif
+" if !exists('g:neocomplete#sources#omni#functions')
+"   let g:neocomplete#sources#omni#functions = {}
+" endif
 
 
-let g:jedi#completions_enabled = 0
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#show_call_signatures = 0
-let g:tmuxcomplete#trigger = ''
+" let g:jedi#completions_enabled = 0
+" let g:jedi#auto_vim_configuration = 0
+" let g:jedi#show_call_signatures = 0
 
-let g:neocomplete#sources#omni#functions.go = 'go#complete#Complete'
-let g:neocomplete#force_omni_input_patterns.python =
-    \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
+" let g:neocomplete#sources#omni#functions.go = 'go#complete#Complete'
+" let g:neocomplete#force_omni_input_patterns.python =
+"     \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+" let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
 
-autocmd FileType python setlocal omnifunc=jedi#completions
+" autocmd FileType python setlocal omnifunc=jedi#completions
 
-" Cycle completions with Tab and Shift-Tab
-inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<Tab>"
+" " Cycle completions with Tab and Shift-Tab
+" inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<Tab>"
 " }}}
 
 " Sneak {{{
 let g:sneak#streak = 1
-" hi SneakStreakMask guifg=03 guibg=03 ctermfg=03 ctermbg=03
-
-" https://github.com/justinmk/vim-sneak#how-can-i-replace-f-with-sneak
 nmap s <Plug>Sneak_s
 nmap S <Plug>Sneak_S
+" }}}
+
+" Supertab {{{
+let g:SuperTabDefaultCompletionType = 'context'
+let g:SuperTabContextDefaultCompletionType = '<C-n>'
+" let g:SuperTabContextDefaultCompletionType = '<C-x><C-o>'
 " }}}
 
 " Syntastic {{{
@@ -241,7 +221,8 @@ let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_aggregate_errors = 1
 let g:syntastic_html_checkers = []
 let g:syntastic_javascript_checkers = ['jsxhint']
-let g:syntastic_python_checkers = ['pylint', 'frosted', 'pep8', 'pep257']
+" let g:syntastic_python_checkers = ['pylint', 'frosted', 'pep8', 'pep257']
+let g:syntastic_python_checkers = ['frosted', 'pep8']
 let g:syntastic_python_pep257_args = '--ignore=D100,D102,D203,D204'
 " }}}
 
@@ -253,19 +234,10 @@ nmap <Leader>t :TagbarToggle<CR>
 " map <Leader>c :TComment<CR>
 " }}}
 
-" Tern {{{
-let tern#is_show_argument_hints_enabled = 'on_hold'
-let tern#tern_show_signature_in_pum = 1
-" }}}
-
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<C-k>'
 let g:UltiSnipsJumpForwardTrigger = '<C-k>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
-" }}}
-
-" UndoTree {{{
-nnoremap U :UndotreeToggle<CR>
 " }}}
 
 " Unimpaired {{{
@@ -278,46 +250,46 @@ xmap ä ]
 " }}}
 
 " Unite {{{
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_selecta'])
-nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
+" call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" call unite#filters#sorter_default#use(['sorter_selecta'])
+" nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
 
-" Don't cache, it's fast enough
-let g:unite_source_rec_max_cache_files = 0
-call unite#custom#source('file_rec,file_rec/async', 'max_candidates', 500)
+" " Don't cache, it's fast enough
+" let g:unite_source_rec_max_cache_files = 0
+" call unite#custom#source('file_rec,file_rec/async', 'max_candidates', 500)
 
-command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
+" command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
 
-if executable('ag')
-    let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
-    let g:unite_source_grep_recursive_opt = ''
-elseif executable('pt')
-    let g:unite_source_rec_async_command = 'pt --nocolor --nogroup -g .'
-    let g:unite_source_grep_command = 'pt'
-    let g:unite_source_grep_default_opts = '--nogroup --nocolor'
-    let g:unite_source_grep_recursive_opt = ''
-    let g:unite_source_grep_encoding = 'utf-8'
-endif
+" if executable('ag')
+"     let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
+"     let g:unite_source_grep_command = 'ag'
+"     let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
+"     let g:unite_source_grep_recursive_opt = ''
+" elseif executable('pt')
+"     let g:unite_source_rec_async_command = 'pt --nocolor --nogroup -g .'
+"     let g:unite_source_grep_command = 'pt'
+"     let g:unite_source_grep_default_opts = '--nogroup --nocolor'
+"     let g:unite_source_grep_recursive_opt = ''
+"     let g:unite_source_grep_encoding = 'utf-8'
+" endif
 
-call unite#custom#profile('default', 'context', {
-\   'direction': 'below',
-\   'winheight': 10,
-\ })
+" call unite#custom#profile('default', 'context', {
+" \   'direction': 'below',
+" \   'winheight': 10,
+" \ })
 
-let g:unite_source_history_yank_enable = 1
-nnoremap <C-y> :<C-u>Unite history/yank<CR>
-nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
-nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
+" let g:unite_source_history_yank_enable = 1
+" nnoremap <C-y> :<C-u>Unite history/yank<CR>
+" nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
+" nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
 
-autocmd FileType unite call s:unite_my_settings()
-function! s:unite_my_settings()
-    " Overwrite settings.
-    imap <silent><buffer><expr> <C-s> unite#do_action('split')
-    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-endfunction
+" autocmd FileType unite call s:unite_my_settings()
+" function! s:unite_my_settings()
+"     " Overwrite settings.
+"     imap <silent><buffer><expr> <C-s> unite#do_action('split')
+"     imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+"     imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+" endfunction
 " }}}
 
 " Virtualenv {{{
@@ -358,9 +330,10 @@ set t_Co=256
 " Make sure dark background is used for colorschemes
 set background=dark
 
-let base16colorspace = 256
-
-colorscheme jellybeans
+" let g:airline_theme = 'powerlineish'
+" let g:hybrid_use_iTerm_colors = 1
+let g:hybrid_use_Xresources = 1
+colorscheme hybrid
 if has('gui_running')
     colorscheme base16-default
     set background=light
@@ -376,9 +349,7 @@ set autowrite
 set formatoptions+=n
 
 " Delete comment character when joining commented lines
-if v:version > 703 || v:version == 703 && has('patch541')
-    set formatoptions+=j
-endif
+set formatoptions+=j
 
 " Use 4-space indentation, this might be overriden by language specific
 " indentation
@@ -394,9 +365,6 @@ set cursorline
 
 " Show menu when there's at least one match, and show extra information
 set completeopt=menuone,preview
-
-" Use stronger file encryption
-set cryptmethod=blowfish
 
 " Remove fold characters
 set fillchars="vert:|,fold:"
@@ -416,6 +384,10 @@ set lazyredraw
 
 " Break long lines on more natural break points
 set linebreak
+
+" Every wrapped line will continue visually indented (same amount of space as
+" the beginning of that line), thus preserving horizontal blocks of text.
+set breakindent
 
 " Show some hidden characters ('listchars')
 set list
@@ -524,9 +496,6 @@ nnoremap * *<C-o>
 " Go to previous file
 map <Leader>p <C-^>
 
-" Toggle invisible characters
-noremap <Leader>i :set list!<CR>
-
 " Strip whitespace
 function! StripWhitespaces()
     " Save last search and cursor position
@@ -597,12 +566,8 @@ function! SetCursorPosition()
 endfunction
 autocmd BufReadPost * call SetCursorPosition()
 
-" Always enable Rainbow Parentheses
-" https://github.com/kien/rainbow_parentheses.vim#always-on
-autocmd VimEnter * RainbowParenthesesToggle
-autocmd Syntax * RainbowParenthesesLoadRound
-autocmd Syntax * RainbowParenthesesLoadSquare
-" autocmd Syntax * RainbowParenthesesLoadBraces
+" Always enable rainbow colors
+au VimEnter * RainbowParentheses
 
 " }}}
 
@@ -631,8 +596,8 @@ function! SetupPython()
     " Highlight python string format groups
     highlight pythonStrFormat ctermfg=110
 
-    " Highlight 'NOTE' in comments as well
-    syn keyword pythonTodo NOTE contained
+    " Highlight 'NOTE' and 'HACK' in comments
+    syn keyword pythonTodo NOTE HACK contained
 
     " Only show colorcolumn in the current window
     augroup ccol

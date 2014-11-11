@@ -239,9 +239,10 @@ __prompt() {
 
     echo -n "$white%2~$reset"
     if [[ -n $SSH_TTY ]]; then
-        echo -n " $magenta%m$reset"
+        echo -n " $magenta_bold%m$reset"
     fi
-    echo -n ' ➜ '
+
+    echo -n " $cyan_bold❯$reset "
 }
 
 __right_prompt() {

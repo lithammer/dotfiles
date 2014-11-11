@@ -3,12 +3,15 @@ export ZSH=$HOME/.zsh
 export LANG='en_US'
 export LC_ALL='en_US.UTF-8'
 
-export GOPATH="$HOME/.go:$HOME/Code/Go"
+GOPATH="$HOME/.go"
 
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:/usr/local/sbin"
 PATH="$PATH:$GOPATH/bin:$(brew --prefix go)/libexec/bin"
 export PATH
+
+GOPATH="$GOPATH:$HOME/Code/.go"
+export GOPATH
 
 # Path to man pages
 export MANPATH="/usr/local/man:$MANPATH"

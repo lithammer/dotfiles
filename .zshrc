@@ -346,8 +346,10 @@ alias grep='grep --color'
 
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 
-# Use Neovim
-alias vim='nvim'
+# Use Neovim if available
+if command -v nvim > /dev/null; then
+    alias vim='nvim'
+fi
 
 # }}}
 

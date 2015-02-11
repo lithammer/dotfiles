@@ -218,7 +218,6 @@ function +vi-git-aheadbehind() {
     behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l | tr -d ' ')
     (( $behind )) && gitstatus+=( "%F{red}↓${behind}%f" )
 
-
     hook_com[misc]+=${(j::)gitstatus}
 }
 
@@ -237,7 +236,8 @@ __prompt() {
         echo -n "$yellow_bold$version_name$reset "
     fi
 
-    echo -n "$white%2~$reset"
+    # echo -n "$black_bold%2~$reset"
+    echo -n "%F{8}%2~%f"
     if [[ -n $SSH_TTY ]]; then
         echo -n " $magenta_bold%m$reset"
     fi
@@ -329,6 +329,7 @@ bindkey '^[[F' end-of-line                            # [fn-RightArrow] - Go to 
 
 # Basic directory operations
 alias ...='cd ../..'
+alias ....='cd ../../..'
 
 # List direcory contents
 alias l='ls -lh'
@@ -341,10 +342,12 @@ alias tree='tree -C'
 # History timestamps as "yyyy-mm-dd"
 alias history='fc -il 1'
 
+alias grep='grep --color'
+
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 
 # Use Neovim
-# alias vim='nvim'
+alias vim='nvim'
 
 # }}}
 

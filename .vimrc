@@ -5,13 +5,14 @@ Plug 'tpope/vim-sensible'
 
 Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/unite.vim'
+" Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 Plug 'airblade/vim-gitgutter'
 Plug 'benekastah/neomake'
 Plug 'bling/vim-airline'
-" Plug 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'jeetsukumaran/vim-filebeagle'
+Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 Plug 'justinmk/vim-matchparenalways'
@@ -27,15 +28,18 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-haystack'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
-Plug 'tpope/vim-unimpaired'
+" Plug 'tpope/vim-unimpaired'
 " Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
 " Plug 'whatyouhide/vim-lengthmatters'
+
+Plug 'vim-scripts/LargeFile'
 
 " Filetype specific {{{
 Plug 'fatih/vim-go'
@@ -44,11 +48,13 @@ Plug 'rhysd/vim-go-impl'
 if has('python')
     Plug 'SirVer/ultisnips'
     Plug 'Valloric/MatchTagAlways'
-    Plug 'Valloric/YouCompleteMe'
+    if has('patch-7.3.584')
+        Plug 'Valloric/YouCompleteMe'
+    end
     " Plug 'davidhalter/jedi-vim'
     Plug 'honza/vim-snippets'
     " Plug 'lambdalisue/vim-pyenv'
-    Plug 'jmcantrell/vim-virtualenv'
+    " Plug 'jmcantrell/vim-virtualenv'
 endif
 
 if has('lua')
@@ -65,13 +71,13 @@ Plug 'sheerun/vim-polyglot'
 " }}}
 
 " Color schemes {{{
-Plug 'godlygeek/csapprox'
+" Plug 'godlygeek/csapprox'
 
-Plug 'MaxSt/FlatColor'
+" Plug 'MaxSt/FlatColor'
 " Plug 'Pychimp/vim-luna'
-Plug 'chriskempson/base16-vim'
-Plug 'freeo/vim-kalisi'
-Plug 'guns/jellyx.vim'
+" Plug 'chriskempson/base16-vim'
+" Plug 'freeo/vim-kalisi'
+" Plug 'guns/jellyx.vim'
 " Plug 'nanotech/jellybeans.vim'
 Plug 'w0ng/vim-hybrid'
 
@@ -101,12 +107,13 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#buffer_min_count = 2
 " }}}
 " Brightest {{{
-let g:brightest#highlight = {"group": "BrightestUnderline"}
+" let g:brightest#highlight = {'group': 'BrightestUnderline'}
+let g:brightest#highlight = {'group': 'BrightestReverse'}
 let g:brightest#enable_filetypes = {
-\   "_": 0,
-\   "python": 1,
-\   "go": 1,
-\   "javascript": 1,
+\   '_': 0,
+\   'python': 1,
+\   'go': 1,
+\   'javascript': 1,
 \}
 " }}}
 " delimitMate {{{
@@ -116,10 +123,20 @@ let delimitMate_expand_cr = 1                " Enable expansion of <CR>
 map <Leader>c :Commentary<CR>
 " }}}
 " Ctrlp {{{
-" nnoremap <C-t> :CtrlPBufTag<CR>
-" nnoremap <C-b> :CtrlPBuffer<CR>
+nnoremap <C-t> :CtrlPBufTag<CR>
+nnoremap <C-b> :CtrlPBuffer<CR>
 
-let g:ctrlp_custom_ignore = { 'dir': '\v[\/](venv|env|node_modules)$' }
+function! CtrlPMatch(items, str, limit, mmode, ispath, crfile, regex) abort
+    let items = copy(a:items)
+    if a:ispath
+      call filter(items, 'v:val !=# a:crfile')
+    endif
+    return haystack#filter(items, a:str)
+endfunction
+let g:ctrlp_match_func = {'match': function('CtrlPMatch')}
+
+" let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
+let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
 
 if executable('ag')
     let g:ctrlp_user_command = 'ag %s -l -g ""'
@@ -210,7 +227,7 @@ let g:SuperTabContextDefaultCompletionType = '<C-n>'
 highlight link SyntasticErrorSign ErrorMsg
 highlight link SyntasticWarningSign Type
 
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_always_populate_loc_list = 1
 
 let g:syntastic_error_symbol = 'E>'
@@ -235,60 +252,60 @@ let g:UltiSnipsJumpForwardTrigger = '<C-k>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " }}}
 " Unimpaired {{{
-nmap ö [
-nmap ä ]
-omap ö [
-omap ä ]
-xmap ö [
-xmap ä ]
+" nmap ö [
+" nmap ä ]
+" omap ö [
+" omap ä ]
+" xmap ö [
+" xmap ä ]
 " }}}
 " Unite {{{
 " call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " call unite#filters#sorter_default#use(['sorter_selecta'])
-nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
-nnoremap <C-g> :<C-u>Unite -start-insert file_rec/git<CR>
-nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
+" nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
+" nnoremap <C-g> :<C-u>Unite -start-insert file_rec/git<CR>
+" nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
-" Don't cache, it's fast enough
-let g:unite_source_rec_max_cache_files = 0
-call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'max_candidates', 500)
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy', 'matcher_default'])
-call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy'])
-call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'sorters', 'sorter_rank')
-call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'converters', 'converter_relative_word')
+" " Don't cache, it's fast enough
+" let g:unite_source_rec_max_cache_files = 0
+" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'max_candidates', 500)
+" " call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy', 'matcher_default'])
+" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy'])
+" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'sorters', 'sorter_rank')
+" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'converters', 'converter_relative_word')
 
-" command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
+" " command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
 
-if executable('ag')
-    let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
-    let g:unite_source_grep_recursive_opt = ''
-elseif executable('pt')
-    let g:unite_source_rec_async_command = 'pt --nocolor --nogroup -g .'
-    let g:unite_source_grep_command = 'pt'
-    let g:unite_source_grep_default_opts = '--nogroup --nocolor'
-    let g:unite_source_grep_recursive_opt = ''
-    let g:unite_source_grep_encoding = 'utf-8'
-endif
+" if executable('ag')
+"     let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
+"     let g:unite_source_grep_command = 'ag'
+"     let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
+"     let g:unite_source_grep_recursive_opt = ''
+" elseif executable('pt')
+"     let g:unite_source_rec_async_command = 'pt --nocolor --nogroup -g .'
+"     let g:unite_source_grep_command = 'pt'
+"     let g:unite_source_grep_default_opts = '--nogroup --nocolor'
+"     let g:unite_source_grep_recursive_opt = ''
+"     let g:unite_source_grep_encoding = 'utf-8'
+" endif
 
-call unite#custom#profile('default', 'context', {
-\   'direction': 'below',
-\   'winheight': 15,
-\ })
+" call unite#custom#profile('default', 'context', {
+" \   'direction': 'below',
+" \   'winheight': 15,
+" \ })
 
-let g:unite_source_history_yank_enable = 1
-nnoremap <C-y> :<C-u>Unite history/yank<CR>
-" nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
-" nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
+" let g:unite_source_history_yank_enable = 1
+" nnoremap <C-y> :<C-u>Unite history/yank<CR>
+" " nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
+" " nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
 
-function! s:unite_my_settings()
-    " Overwrite settings.
-    imap <silent><buffer><expr> <C-s> unite#do_action('split')
-    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-endfunction
-autocmd FileType unite call s:unite_my_settings()
+" function! s:unite_my_settings()
+"     " Overwrite settings.
+"     imap <silent><buffer><expr> <C-s> unite#do_action('split')
+"     imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+"     imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+" endfunction
+" autocmd FileType unite call s:unite_my_settings()
 " }}}
 " Virtualenv {{{
 let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
@@ -362,7 +379,9 @@ set autowrite
 set formatoptions+=n
 
 " Delete comment character when joining commented lines
-set formatoptions+=j
+if has('patch-7.3.541')
+    set formatoptions+=j
+endif
 
 " Use 4-space indentation, this might be overriden by language specific
 " indentation
@@ -410,7 +429,9 @@ set linebreak
 
 " Every wrapped line will continue visually indented (same amount of space as
 " the beginning of that line), thus preserving horizontal blocks of text.
-set breakindent
+if has('patch-7.4.338')
+    set breakindent
+end
 
 " Show some hidden characters ('listchars')
 set list
@@ -430,7 +451,7 @@ set noshowmode
 set wrap
 
 " Characters to put at the start of wrap lines
-set showbreak=\ \ ↪\  " Trailing whitespace because the arrow is too wide
+let &showbreak = '  ↪ '
 
 " Show line numbers
 set number
@@ -459,9 +480,6 @@ set splitright
 " Set the title of the window to 'titlestring'
 set title
 
-" More characters will be sent to the screen for redrawing
-set ttyfast
-
 for dir in ['swaps', 'undos', 'backups']
     let path = expand('~/.vim/'.dir)
     if !isdirectory(path)
@@ -478,7 +496,9 @@ set undofile
 set virtualedit=block
 
 " Case-insensitive completion for file names and directories
-set wildignorecase
+if has('patch-7.3.072')
+    set wildignorecase
+end
 
 " Match longest commong string
 set wildmode=list:longest,list:full
@@ -492,8 +512,8 @@ set wildignore+=*.py[co],*.luac,*.beam,*.class,*.o
 " Images
 set wildignore+=*.jpe?g,*.png,*.gif,*.bmp,*.ico
 
-" Virtualenv and npm
-set wildignore+=venv,env,node_modules
+" Virtualenv, npm and bower
+set wildignore+=venv,env,node_modules,bower_components
 
 " OS files
 set wildignore+=*.DS_Store
@@ -509,6 +529,9 @@ command Q q
 " Make Y behave like D (yank from cursor to EOL)
 nnoremap Y y$
 
+" qq to record, Q to replay
+nnoremap Q @q
+
 " Copy to clipboard
 vnoremap <C-c> "*y"
 
@@ -518,8 +541,13 @@ noremap <Space> za
 " Don't move on '*', useful when highlighting words
 nnoremap * *<C-o>
 
-" Go to next item in locationlist using <tab> in normal mode
-nnoremap <Tab> :ll<CR>
+" Go to next/previous item in location-list using <Tab>/<S-Tab> in normal mode
+" nnoremap <Tab> :lnext<CR>
+" nnoremap <S-Tab> :lprevious<CR>
+
+" Circular windows navigation
+nnoremap <Tab> <C-w>w
+nnoremap <S-Tab> <C-w>W
 
 " Strip whitespace
 function! StripWhitespaces()

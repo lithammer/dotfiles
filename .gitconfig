@@ -1,5 +1,6 @@
 [color]
 	ui = true
+
 [color "branch"]
 	current = green bold
 	local = green
@@ -15,34 +16,52 @@
 	added = green reverse
 	changed = yellow reverse
 	untracked = red reverse
+
 [user]
 	name = Peter Renström
 	email = renstrom.peter@gmail.com
+
 [core]
 	autocrlf = input
-	editor = vim
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
+
 [alias]
-	#l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	# l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	l  = log --pretty=custom -n 20
 	g  = log --graph --pretty=custom -n 20
 	d = diff
 	s = status -sb
 	st = status
 	c = commit --untracked-files=no -v
+	co = checkout
 	standup = "!git log --since yesterday --author `git config user.email` --pretty=short"
 	wdiff = diff --color-words
+	rdiff = submodule foreach --recursive git diff
+
 [push]
-	default = simple
+	default = current
+
+[pull]
+	autosetupmerge = true
+	autosetuprebase = always
+	# rebase = preserve
+
 [pretty]
-    # Custom log output
-    custom = "%C(magenta)%h%C(red)%d %C(yellow)%ar %C(reset)%s %C(yellow)(%an)"
-    #                     │        │            │            │  author name ┘
-    #                     │        │            │            └─ message
-    #                     │        │            └─ date (relative)
-    #                     │        └─ decorations (branch, heads or tags)
-    #                     └─ hash (abbreviated)
+	# Custom log output
+	custom = "%C(magenta)%h%C(auto)%d %C(yellow)%ar %C(reset)%s %C(yellow)(%an)"
+	#                     │         │            │            │  author name ┘
+	#                     │         │            │            └─ message
+	#                     │         │            └─ date (relative)
+	#                     │         └─ decorations (branch, heads or tags)
+	#                     └─ hash (abbreviated)
+
 [filter "media"]
-	clean = git-media-clean %f
-	smudge = git-media-smudge %f
+	required = true
+	clean = git media clean %f
+	smudge = git media smudge %f
+
+[remote "origin"]
+	prune = true
+
+# vim: set commentstring=#\ %s:

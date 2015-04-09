@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 if [[ "$TERM" == 'dumb' ]]; then
     return 1
 fi
@@ -52,7 +53,7 @@ setopt COMBINING_CHARS      # Combine zero-length punctuation characters (accent
 
 # Enable z
 if command -v brew > /dev/null; then
-    . $(brew --prefix)/etc/profile.d/z.sh
+    . "$(brew --prefix)/etc/profile.d/z.sh"
 fi
 
 # }}}
@@ -108,14 +109,14 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 
 
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+zstyle ':completion:*:*:*:*:processes' command "ps -u $(whoami) -o pid,user,comm -w -w"
 
 # Disable named-directories autocompletion
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 
 # Use caching so that commands like apt and dpkg complete are useable
 zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path $ZSH/cache/
+zstyle ':completion::complete:*' cache-path "$ZSH/cache/"
 
 # Don't complete uninteresting users
 zstyle ':completion:*:*:*:users' ignored-patterns \
@@ -365,7 +366,7 @@ fi
 
 # }}}
 
-if [[ -f ~/.zshrc.local ]]; then
-    . ~/.zshrc.local
+if [ -f ~/.zshrc.local ]; then
+    source ~/.zshrc.local
 fi
 # vim: foldmethod=marker:

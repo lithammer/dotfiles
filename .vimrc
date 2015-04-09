@@ -3,38 +3,47 @@ call plug#begin()
 
 Plug 'tpope/vim-sensible'
 
-Plug 'ConradIrwin/vim-bracketed-paste'
+if !has('nvim')
+  " This functionality is built into Neovim
+  Plug 'ConradIrwin/vim-bracketed-paste'
+end
 Plug 'Raimondi/delimitMate'
 " Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
+" Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 Plug 'airblade/vim-gitgutter'
 Plug 'benekastah/neomake'
 Plug 'bling/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'jeetsukumaran/vim-filebeagle'
+" Plug 'jeetsukumaran/vim-filebeagle'
+Plug 'junegunn/fzf'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+" Plug 'justinmk/vim-dirvish'
 Plug 'justinmk/vim-matchparenalways'
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'mattn/emmet-vim'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
-Plug 'osyo-manga/vim-brightest'
+" Plug 'mhinz/vim-signify'
+Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 Plug 'osyo-manga/vim-over'
 Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-eunuch'
+" Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-haystack'
+" Plug 'tpope/vim-haystack'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
 " Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'
 " Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
 " Plug 'whatyouhide/vim-lengthmatters'
@@ -46,26 +55,25 @@ Plug 'fatih/vim-go'
 Plug 'rhysd/vim-go-impl'
 
 if has('python')
-    Plug 'SirVer/ultisnips'
-    Plug 'Valloric/MatchTagAlways'
-    if has('patch-7.3.584')
-        Plug 'Valloric/YouCompleteMe'
-    end
-    " Plug 'davidhalter/jedi-vim'
-    Plug 'honza/vim-snippets'
-    " Plug 'lambdalisue/vim-pyenv'
-    " Plug 'jmcantrell/vim-virtualenv'
+  Plug 'SirVer/ultisnips'
+  Plug 'Valloric/MatchTagAlways'
+  if has('patch-7.3.584')
+    Plug 'Valloric/YouCompleteMe'
+  end
+  " Plug 'davidhalter/jedi-vim'
+  Plug 'honza/vim-snippets'
+  " Plug 'lambdalisue/vim-pyenv'
+  " Plug 'jmcantrell/vim-virtualenv'
 endif
 
 if has('lua')
-    " Plug 'Shougo/neocomplete.vim'
+  " Plug 'Shougo/neocomplete.vim'
 endif
 
-Plug 'clausreinke/typescript-tools', {'for': 'typescript'}
+Plug 'clausreinke/typescript-tools.vim', {'for': 'typescript'}
 
 Plug 'hynek/vim-python-pep8-indent'
 Plug 'mxw/vim-jsx'
-Plug 'elzr/vim-json'
 Plug 'sheerun/vim-polyglot'
 " Plug 'othree/javascript-libraries-syntax.vim'
 " }}}
@@ -73,15 +81,15 @@ Plug 'sheerun/vim-polyglot'
 " Color schemes {{{
 " Plug 'godlygeek/csapprox'
 
-" Plug 'MaxSt/FlatColor'
 " Plug 'Pychimp/vim-luna'
-" Plug 'chriskempson/base16-vim'
+Plug 'chriskempson/base16-vim'
 " Plug 'freeo/vim-kalisi'
 " Plug 'guns/jellyx.vim'
+Plug 'morhetz/gruvbox'
 " Plug 'nanotech/jellybeans.vim'
-Plug 'w0ng/vim-hybrid'
-
-let base16colorspace = 256
+Plug 'romainl/Apprentice'
+" Plug 'w0ng/vim-hybrid'
+Plug 'renstrom/vim-hybrid'
 " }}}
 
 call plug#end()
@@ -100,7 +108,7 @@ let g:airline#extensions#tagbar#enabled = 0
 let g:airline#extensions#branch#enabled = 0
 let g:airline#extensions#hunks#enabled = 0
 
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#left_sep = ''
 let g:airline#extensions#tabline#left_alt_sep = ''
 let g:airline#extensions#tabline#buffer_nr_show = 1
@@ -110,10 +118,10 @@ let g:airline#extensions#tabline#buffer_min_count = 2
 " let g:brightest#highlight = {'group': 'BrightestUnderline'}
 let g:brightest#highlight = {'group': 'BrightestReverse'}
 let g:brightest#enable_filetypes = {
-\   '_': 0,
-\   'python': 1,
-\   'go': 1,
-\   'javascript': 1,
+\  '_': 0,
+\  'python': 1,
+\  'go': 1,
+\  'javascript': 1,
 \}
 " }}}
 " delimitMate {{{
@@ -126,21 +134,16 @@ map <Leader>c :Commentary<CR>
 nnoremap <C-t> :CtrlPBufTag<CR>
 nnoremap <C-b> :CtrlPBuffer<CR>
 
-function! CtrlPMatch(items, str, limit, mmode, ispath, crfile, regex) abort
-    let items = copy(a:items)
-    if a:ispath
-      call filter(items, 'v:val !=# a:crfile')
-    endif
-    return haystack#filter(items, a:str)
-endfunction
-let g:ctrlp_match_func = {'match': function('CtrlPMatch')}
-
 " let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
 let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
 
 if executable('ag')
-    let g:ctrlp_user_command = 'ag %s -l -g ""'
-    let g:ctrlp_use_caching = 0
+  let g:ctrlp_user_command = [
+    \ '.git',
+    \ 'git ls-files --cached --others --exclude-standard %s',
+    \ 'ag %s --nocolor --nogroup --files-with-matches -g ""'
+  \ ]
+  let g:ctrlp_use_caching = 0
 endif
 " }}}
 " Dispatch {{{
@@ -153,23 +156,37 @@ vmap <Enter> <Plug>(EasyAlign)
 " Go {{{
 let g:go_fmt_command = 'goimports'
 " }}}
-" Jedi {{{
-let g:jedi#popup_select_first = 0
-let g:jedi#show_call_signatures = 0
+" Gutentags {{{
+let g:gutentags_tagfile = '.tags'
 " }}}
-" JSON {{{
-let g:vim_json_syntax_conceal = 0
+" Jedi {{{
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#completions_command = ""
+let g:jedi#completions_enabled = 0
+let g:jedi#popup_on_dot = 0
+let g:jedi#popup_select_first = 0
+
+let g:jedi#show_call_signatures = 2
+" }}}
+" MatchTagAlways {{{
+let g:mta_filetypes = {
+\  'html': 1,
+\  'xhtml': 1,
+\  'xml': 1,
+\  'jinja': 1,
+\  'htmldjango': 1
+\ }
 " }}}
 " Neocomplete (and related) {{{
 " let g:neocomplete#enable_at_startup = 1
 " let g:neocomplete#enable_smart_case = 1
 
 " if !exists('g:neocomplete#sources#omni#input_patterns')
-"     let g:neocomplete#sources#omni#input_patterns = {}
+"   let g:neocomplete#sources#omni#input_patterns = {}
 " endif
 
 " if !exists('g:neocomplete#force_omni_input_patterns')
-"     let g:neocomplete#force_omni_input_patterns = {}
+"   let g:neocomplete#force_omni_input_patterns = {}
 " endif
 
 " if !exists('g:neocomplete#sources#omni#functions')
@@ -183,7 +200,7 @@ let g:vim_json_syntax_conceal = 0
 
 " let g:neocomplete#sources#omni#functions.go = 'go#complete#Complete'
 " let g:neocomplete#force_omni_input_patterns.python =
-"     \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+"   \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 " let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
 
 " autocmd FileType python setlocal omnifunc=jedi#completions
@@ -204,6 +221,12 @@ let g:neomake_warning_sign = {
     \ 'text': 'W>',
     \ 'texthl': 'NeomakeWarningSign',
     \ }
+
+let g:neomake_open_list = 1
+let g:neomake_verbose = 0  " Log only errors
+
+let g:neomake_python_enabled_makers = ['pep8', 'frosted']
+
 " }}}
 " Over {{{
 cabbrev %s OverCommandLine<CR>%s
@@ -217,6 +240,10 @@ let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
 let g:sneak#streak = 1
 nmap s <Plug>Sneak_s
 nmap S <Plug>Sneak_S
+highlight link SneakPluginTarget Search
+highlight link SneakStreakTarget Error
+highlight link SneakStreakMask Normal
+highlight link SneakPluginScope Search
 " }}}
 " Supertab {{{
 let g:SuperTabDefaultCompletionType = 'context'
@@ -235,12 +262,15 @@ let g:syntastic_warning_symbol = 'W>'
 let g:syntastic_aggregate_errors = 1
 
 let g:syntastic_html_checkers = []
+
 let g:syntastic_javascript_checkers = ['jsxhint']
+let g:syntastic_javascript_jsxhint_args = '--harmony'
+
 let g:syntastic_lua_checkers = ['luac', 'luacheck']
-" let g:syntastic_python_checkers = ['pylint', 'frosted', 'pep8', 'pep257']
-" let g:syntastic_python_checkers = ['pylint', 'pep8']
+
 let g:syntastic_python_checkers = ['frosted', 'pep8']
 let g:syntastic_python_pylint_exec = $HOME.'/.vim/venv/bin/pylint'
+
 let g:syntastic_typescript_checkers = ['tslint']
 " }}}
 " TComment {{{
@@ -266,32 +296,25 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " nnoremap <C-g> :<C-u>Unite -start-insert file_rec/git<CR>
 " nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
-" " Don't cache, it's fast enough
-" let g:unite_source_rec_max_cache_files = 0
+" Don't cache, it's fast enough
+let g:unite_source_rec_max_cache_files = 0
 " call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'max_candidates', 500)
-" " call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy', 'matcher_default'])
 " call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy'])
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'sorters', 'sorter_rank')
+" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'sorters', ['sorter_rank', 'sorter_length'])
 " call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'converters', 'converter_relative_word')
+" This might not work since `wildignore` is empty here
+" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
 
-" " command! -nargs=* -complete=file Grep execute 'Unite grep:.::<q-args> -buffer-name=search-buffer'
-
-" if executable('ag')
-"     let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
-"     let g:unite_source_grep_command = 'ag'
-"     let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
-"     let g:unite_source_grep_recursive_opt = ''
-" elseif executable('pt')
-"     let g:unite_source_rec_async_command = 'pt --nocolor --nogroup -g .'
-"     let g:unite_source_grep_command = 'pt'
-"     let g:unite_source_grep_default_opts = '--nogroup --nocolor'
-"     let g:unite_source_grep_recursive_opt = ''
-"     let g:unite_source_grep_encoding = 'utf-8'
-" endif
+if executable('ag')
+  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
+  let g:unite_source_grep_recursive_opt = ''
+endif
 
 " call unite#custom#profile('default', 'context', {
-" \   'direction': 'below',
-" \   'winheight': 15,
+" \  'direction': 'below',
+" \  'winheight': 15,
 " \ })
 
 " let g:unite_source_history_yank_enable = 1
@@ -299,13 +322,13 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " " nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
 " " nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
 
-" function! s:unite_my_settings()
-"     " Overwrite settings.
-"     imap <silent><buffer><expr> <C-s> unite#do_action('split')
-"     imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-"     imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-" endfunction
-" autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()
+  " Overwrite settings.
+  imap <silent><buffer><expr> <C-s> unite#do_action('split')
+  imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+  imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+endfunction
+autocmd FileType unite call s:unite_my_settings()
 " }}}
 " Virtualenv {{{
 let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
@@ -331,6 +354,9 @@ nnoremap <leader>jd :YcmCompleter GoTo<CR>
 " Tree style file listing
 let g:netrw_liststyle = 3
 
+" <C-^> should go to the last file, not to netrw
+let g:netrw_altfile = 1
+
 " Highlight numers, buitin functions, standard exceptions, doctests and
 " whitespace errors (:h ft-python-syntax)
 let python_highlight_all = 1
@@ -345,29 +371,32 @@ set t_Co=256
 " Make sure dark background is used for colorschemes
 set background=dark
 
-let g:airline_theme = 'wombat'
-" let g:hybrid_use_iTerm_colors = 1
-" let g:hybrid_use_Xresources = 1
+let g:airline_theme = 'hybridline'
 colorscheme hybrid
-" colorscheme base16-tomorrow
-
+" let g:gruvbox_italic = 0
+" colorscheme gruvbox
+" colorscheme base16-eighties
 
 if g:colors_name ==# 'hybrid'
-    " Use same colors as 'Type', highlights special characters in
-    " strings, i.e. %s, %d, {foo}
-    highlight Special ctermfg=173 guifg=#de935f
+  " Use same colors as 'Type', highlights special characters in
+  " strings, i.e. %s, %d, {foo}
+  highlight Special ctermfg=173 guifg=#de935f
+  highlight SpecialKey ctermfg=235 guifg=#444444
 endif
 
 " Make current line number yellow
-if g:colors_name ==# 'base16-tomorrow'
-    " Make current line number more prominent (yellow)
-    hi clear CursorLineNr
-    hi CursorLineNr term=bold ctermfg=3 ctermbg=18 gui=bold guifg=#F0C674 guibg=#282a2e
+" if g:colors_name ==# 'base16-tomorrow'
+if g:colors_name =~ 'base16-'
+  " Make current line number more prominent (yellow)
+  highlight clear CursorLineNr
+  highlight CursorLineNr term=bold ctermfg=3 ctermbg=18 gui=bold guifg=#F0C674 guibg=#282a2e
 
-    " Make 'listchars' darker
-    hi clear SpecialKey
-    hi SpecialKey ctermfg=19 guifg=#969896
+  " Make 'listchars' darker
+  highlight clear SpecialKey
+  highlight SpecialKey ctermfg=19 guifg=#444444
 endif
+
+let g:markdown_fenced_languages = ['python', 'javascript', 'js=javascript', 'json=javascript', 'go']
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=400
@@ -380,7 +409,7 @@ set formatoptions+=n
 
 " Delete comment character when joining commented lines
 if has('patch-7.3.541')
-    set formatoptions+=j
+  set formatoptions+=j
 endif
 
 " Use 4-space indentation, this might be overriden by language specific
@@ -389,11 +418,14 @@ set tabstop=4 softtabstop=4 shiftwidth=4
 set expandtab
 set shiftround
 
-" Highlight current cursor row
-set cursorline
+" Highlight current cursor row (if not in diff mode)
+if ! &diff
+  set cursorline
+endif
 
 " Highlight one column after 'textwidth'
-" set colorcolumn=+1
+set colorcolumn=+1
+" autocmd FileType python setlocal colorcolumn=+1
 
 " Show menu when there's at least one match, and show extra information
 set completeopt=menuone,preview
@@ -405,15 +437,26 @@ set fillchars="vert:|,fold:"
 " Set a nicer foldtext function
 set foldtext=NumLinesEndOfLine()
 function! NumLinesEndOfLine()
-    let maxwidth = 80
-    let lines = (v:foldend - v:foldstart + 1)
-    let linetext = strpart(getline(v:foldstart), 0, -3 + maxwidth - len(lines))
-    return linetext . repeat(' ', maxwidth - len(linetext) - len(lines)) . lines
+  let maxwidth = 80
+  let lines = (v:foldend - v:foldstart + 1)
+  let linetext = strpart(getline(v:foldstart), 0, -3 + maxwidth - len(lines))
+  return linetext . repeat(' ', maxwidth - len(linetext) - len(lines)) . lines
 endfunction
 
 " ':substitute' flag 'g' is on by default, will replace
 " all matches on a line instead of one
 set gdefault
+
+" Include line numbers in grep format
+set grepformat=%f:%l:%c:%m,%f:%l:%m
+
+" Use Ag (The Silver Searcher) instead of grep if available
+if executable('ag')
+  let &grepprg = 'ag --vimgrep'
+else
+  let &grepprg = 'grep --recursive --line-number $* *'
+endif
+command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
 
 " Highlight all search matches
 set hlsearch
@@ -430,7 +473,7 @@ set linebreak
 " Every wrapped line will continue visually indented (same amount of space as
 " the beginning of that line), thus preserving horizontal blocks of text.
 if has('patch-7.4.338')
-    set breakindent
+  set breakindent
 end
 
 " Show some hidden characters ('listchars')
@@ -481,10 +524,10 @@ set splitright
 set title
 
 for dir in ['swaps', 'undos', 'backups']
-    let path = expand('~/.vim/'.dir)
-    if !isdirectory(path)
-        silent call mkdir(path)
-    endif
+  let path = expand('~/.vim/'.dir)
+  if !isdirectory(path)
+    silent call mkdir(path)
+  endif
 endfor
 
 set directory=$HOME/.vim/swaps
@@ -497,7 +540,7 @@ set virtualedit=block
 
 " Case-insensitive completion for file names and directories
 if has('patch-7.3.072')
-    set wildignorecase
+  set wildignorecase
 end
 
 " Match longest commong string
@@ -521,6 +564,13 @@ set wildignore+=*.DS_Store
 " }}}
 " Mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Terminal mappings for Neovim
+if has('nvim')
+  tnoremap <C-a> <C-\><C-n>
+  " tnoremap <C-w><C-w> <C-\><C-n><C-w><C-w>
+  autocmd WinEnter term://* startinsert
+endif
 
 " My fingers are too fast!
 command W w
@@ -551,17 +601,17 @@ nnoremap <S-Tab> <C-w>W
 
 " Strip whitespace
 function! StripWhitespaces()
-    " Save last search and cursor position
-    let searchHistory = @/
-    let cursorLine = line(".")
-    let cursorColumn = col(".")
+  " Save last search and cursor position
+  let searchHistory = @/
+  let cursorLine = line(".")
+  let cursorColumn = col(".")
 
-    " Strip trailing whitespaces
-    %s/\s\+$//e
+  " Strip trailing whitespaces
+  %s/\s\+$//e
 
-    " Restore previous search history and cursor position
-    let @/ = searchHistory
-    call cursor(cursorLine, cursorColumn)
+  " Restore previous search history and cursor position
+  let @/ = searchHistory
+  call cursor(cursorLine, cursorColumn)
 endfunction
 command StripWhitespaces :call StripWhitespaces()
 
@@ -579,53 +629,57 @@ autocmd FileType vim,help setlocal keywordprg=:help
 autocmd VimResized * :wincmd =
 
 " Only show colorcolumn in the current window
-if (&colorcolumn == '+1')
-    augroup ccol
-        autocmd!
-        autocmd WinLeave * setlocal colorcolumn=0
-        autocmd WinEnter * setlocal colorcolumn=+1
-    augroup END
+if &colorcolumn == '+1'
+  augroup ccol
+    autocmd!
+    autocmd WinLeave * setlocal colorcolumn=0
+    autocmd WinEnter * setlocal colorcolumn=+1
+  augroup END
 endif
 
 " Only show cursorline in the current window and in normal mode
-if (&cursorline)
-    augroup cline
-        autocmd!
-        autocmd WinLeave * set nocursorline
-        autocmd WinEnter * set cursorline
-        autocmd InsertEnter * set nocursorline
-        autocmd InsertLeave * set cursorline
-    augroup END
+if &cursorline
+  augroup cline
+    autocmd!
+    autocmd WinLeave * set nocursorline
+    autocmd WinEnter * set cursorline
+    autocmd InsertEnter * set nocursorline
+    autocmd InsertLeave * set cursorline
+  augroup END
 endif
 
 " Visual Mode */# from Scrooloose
 function! s:VSetSearch()
-    let temp = @@
-    norm! gvy
-    let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
-    let @@ = temp
+  let temp = @@
+  norm! gvy
+  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+  let @@ = temp
 endfunction
 vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
 vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
 
 " When editing a file, always jump to the last known cursor position.
 function! SetCursorPosition()
-    if &filetype !~ 'svn\|commit\c'
-        if line("'\"") > 0 && line("'\"") <= line("$") |
-            execute 'normal! g`"zvzz' |
-        endif
-    end
+  if &filetype !~ 'svn\|commit\c'
+    if line("'\"") > 0 && line("'\"") <= line("$") |
+      execute 'normal! g`"zvzz' |
+    endif
+  end
 endfunction
 autocmd BufReadPost * call SetCursorPosition()
 
 " Always close preview window after completion is done.
 " http://stackoverflow.com/a/26022965/1862923
 if v:version > 703
-    autocmd CompleteDone * pclose
+  autocmd CompleteDone * pclose
 endif
 
-" Always enable rainbow colors
-au VimEnter * RainbowParentheses
+augroup lisp
+  let g:rainbow#pairs = [['(', ')'], ['[', ']']]
+  autocmd!
+  autocmd FileType clojure,scheme RainbowParentheses
+augroup END
+" au VimEnter * RainbowParentheses
 
 " }}}
 " Filetype settings {{{
@@ -633,63 +687,56 @@ au VimEnter * RainbowParentheses
 
 " Plain text
 function! SetupPlainText()
-    setlocal wrap
-    setlocal wrapmargin=2
-    setlocal textwidth=79
-    setlocal formatoptions+=t
+  setlocal wrap
+  setlocal wrapmargin=2
+  setlocal textwidth=79
+  setlocal formatoptions+=t
 endfunction
 autocmd FileType text call SetupPlainText()
 
 " Python, PEP8: http://www.python.org/dev/peps/pep-0008/
 function! SetupPython()
-    setlocal textwidth=79
-    setlocal foldmethod=indent
-    setlocal foldlevel=1
-    setlocal foldnestmax=2
+  setlocal textwidth=79
+  setlocal foldmethod=indent
+  setlocal foldlevel=1
+  setlocal foldnestmax=2
 
-    " Highlight 'print' as function
-    syn keyword pythonBuiltinFunc print
+  " Highlight 'print' as function
+  syn keyword pythonBuiltinFunc print
 
-    " Highlight 'NOTE' and 'HACK' in comments
-    syn keyword pythonTodo NOTE HACK contained
-
-    " Only show colorcolumn in the current window
-    augroup ccol
-        autocmd!
-        autocmd WinLeave * setlocal colorcolumn=0
-        autocmd WinEnter * setlocal colorcolumn=+1
-    augroup END
+  " Highlight 'NOTE' and 'HACK' in comments
+  syn keyword pythonTodo NOTE HACK contained
 endfunction
 autocmd FileType python call SetupPython()
 
 " XML, HTML et al
 function! SetupMarkupLanguage()
-    setlocal matchpairs+=<:>
+  setlocal matchpairs+=<:>
 
-    " Set `xmllint` as formatter for XML
-    if &filetype == 'xml'
-        setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
-    endif
+  " Set `xmllint` as formatter for XML
+  if &filetype == 'xml'
+    setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
+  endif
 endfunction
 autocmd FileType html,xml call SetupMarkupLanguage()
 
 function! SetupJSON()
-    setlocal equalprg=python\ -mjson.tool
+  setlocal equalprg=python\ -mjson.tool
 endfunction
 autocmd FileType json call SetupJSON()
 
 function! FourSpaceIndent()
-    setlocal expandtab
-    setlocal tabstop=4
-    setlocal softtabstop=4
-    setlocal shiftwidth=4
+  setlocal expandtab
+  setlocal tabstop=4
+  setlocal softtabstop=4
+  setlocal shiftwidth=4
 endfunction
 
 function! TwoSpaceIndent()
-    setlocal expandtab
-    setlocal tabstop=2
-    setlocal softtabstop=2
-    setlocal shiftwidth=2
+  setlocal expandtab
+  setlocal tabstop=2
+  setlocal softtabstop=2
+  setlocal shiftwidth=2
 endfunction
 autocmd FileType json,less,css,stylus,jade,ruby call TwoSpaceIndent()
 
@@ -703,59 +750,59 @@ autocmd FileType typescript runtime! indent/javascript.vim
 
 " General GUI options
 if has('gui')
-    set guioptions-=m  " Remove menu bar
-    set guioptions-=T  " Remove toolbar
-    set guioptions-=l  " Remove left scrollbar
-    set guioptions-=L
-    set guioptions-=r  " Remove right scrollbar
-    set guioptions-=R
+  set guioptions-=m  " Remove menu bar
+  set guioptions-=T  " Remove toolbar
+  set guioptions-=l  " Remove left scrollbar
+  set guioptions-=L
+  set guioptions-=r  " Remove right scrollbar
+  set guioptions-=R
 endif
 
 " OS X
 if has('gui_macvim')
-    " Fullscreen takes up entire screen
-    set fuoptions=maxhorz,maxvert
+  " Fullscreen takes up entire screen
+  set fuoptions=maxhorz,maxvert
 
-    " Command-Return for fullscreen
-    macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
+  " Command-Return for fullscreen
+  macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
 
-    " MacVIM shift+arrow-keys behaviour
-    "let macvim_hig_shift_movement = 1
+  " MacVIM shift+arrow-keys behaviour
+  "let macvim_hig_shift_movement = 1
 
-    " Map tab switch to cmd-<number>
-    map <D-1> :tabn 1<CR>
-    map <D-2> :tabn 2<CR>
-    map <D-3> :tabn 3<CR>
-    map <D-4> :tabn 4<CR>
-    map <D-5> :tabn 5<CR>
-    map <D-6> :tabn 6<CR>
-    map <D-7> :tabn 7<CR>
-    map <D-8> :tabn 8<CR>
-    map <D-9> :tabn 9<CR>
-    map! <D-1> <C-O>:tabn 1<CR>
-    map! <D-2> <C-O>:tabn 2<CR>
-    map! <D-3> <C-O>:tabn 3<CR>
-    map! <D-4> <C-O>:tabn 4<CR>
-    map! <D-5> <C-O>:tabn 5<CR>
-    map! <D-6> <C-O>:tabn 6<CR>
-    map! <D-7> <C-O>:tabn 7<CR>
-    map! <D-8> <C-O>:tabn 8<CR>
-    map! <D-9> <C-O>:tabn 9<CR>
+  " Map tab switch to cmd-<number>
+  map <D-1> :tabn 1<CR>
+  map <D-2> :tabn 2<CR>
+  map <D-3> :tabn 3<CR>
+  map <D-4> :tabn 4<CR>
+  map <D-5> :tabn 5<CR>
+  map <D-6> :tabn 6<CR>
+  map <D-7> :tabn 7<CR>
+  map <D-8> :tabn 8<CR>
+  map <D-9> :tabn 9<CR>
+  map! <D-1> <C-O>:tabn 1<CR>
+  map! <D-2> <C-O>:tabn 2<CR>
+  map! <D-3> <C-O>:tabn 3<CR>
+  map! <D-4> <C-O>:tabn 4<CR>
+  map! <D-5> <C-O>:tabn 5<CR>
+  map! <D-6> <C-O>:tabn 6<CR>
+  map! <D-7> <C-O>:tabn 7<CR>
+  map! <D-8> <C-O>:tabn 8<CR>
+  map! <D-9> <C-O>:tabn 9<CR>
 
-    " This mapping makes Ctrl-Tab switch between tabs.
-    " Ctrl-Shift-Tab goes the other way.
-    noremap <C-Tab> :tabnext<CR>
-    noremap <C-S-Tab> :tabprev<CR>
+  " This mapping makes Ctrl-Tab switch between tabs.
+  " Ctrl-Shift-Tab goes the other way.
+  noremap <C-Tab> :tabnext<CR>
+  noremap <C-S-Tab> :tabprev<CR>
 endif
 
 " Windows
 if has('gui_win32')
-    " ...
+  " ...
 endif
 
 " Local settings
 if filereadable(glob('$HOME/.vimrc.local'))
-    source $HOME/.vimrc.local
+  source $HOME/.vimrc.local
 endif
 " vim: set foldenable foldmethod=marker foldlevel=0:
 " }}}

@@ -1,21 +1,25 @@
 " vim: set foldenable foldmethod=marker foldlevel=0:
-if has('nvim')
-    let g:python_interpreter = '/Users/Peter/.nvim/venv/bin/python'
-    let g:ycm_path_to_python_interpreter = '/Users/Peter/.nvim/venv/bin/python'
-    runtime! python_setup.vim
-endif
+" if 'ImportError' !~ system('python -c "import neovim"')
+"     let g:python_host_prog = $HOME.'/.vim/venv/bin/python'
+" endif
+let g:python_host_prog = $HOME.'/.vim/venv/bin/python'
+let g:ycm_path_to_python_interpreter = $HOME.'/.vim/venv/bin/python'
+let g:pyenv#python_exec = $HOME.'/.vim/venv/bin/python'
 
 " Source vanilla Vim settings
 source $HOME/.vimrc
 
+" Make current line number yellow
+if g:colors_name =~ 'base16-'
+  " Make current line number more prominent (yellow)
+  hi clear CursorLineNr
+  hi CursorLineNr term=bold ctermfg=8 ctermbg=10 gui=bold guifg=#F0C674 guibg=#393939
 
-for dir in ['swaps', 'undos', 'backups']
-    let path = expand('~/.nvim/'.dir)
-    if !isdirectory(path)
-        silent call mkdir(path)
-    endif
-endfor
+  " Make 'listchars' darker
+  hi clear SpecialKey
+  hi SpecialKey ctermfg=19 guifg=#444444
+endif
 
-set directory=$HOME/.nvim/swaps
-set backupdir=$HOME/.nvim/backups
-set undodir=$HOME/.nvim/undos
+if $NVIM_TUI_ENABLE_TRUE_COLOR == 1
+  " autocmd VimEnter * colorscheme hybrid
+endif

@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 export ZSH=$HOME/.zsh
 
-export LANG='en_US'
+export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 
 GOPATH="$HOME/.go"
@@ -36,5 +36,7 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Report CPU usage for commands running longer than 10 seconds
 export REPORTTIME=10
 
-export GREP_COLOR='30;41' # black on red
-export GREP_COLORS='ms=30;41:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36'
+# https://github.com/neovim/neovim/pull/2198
+if [ -z "$TMUX" ]; then
+    export NVIM_TUI_ENABLE_TRUE_COLOR=1
+fi

@@ -36,7 +36,15 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Report CPU usage for commands running longer than 10 seconds
 export REPORTTIME=10
 
+# Load custom Python start-up script (enables tab-completion)
+export PYTHONSTARTUP="$HOME/.pythonrc"
+
+# Make FZF read gitignore
+export FZF_DEFAULT_COMMAND='ag -l -g ""'
+
 # https://github.com/neovim/neovim/pull/2198
-if [ -z "$TMUX" ]; then
-    export NVIM_TUI_ENABLE_TRUE_COLOR=1
-fi
+# if [ -z "$TMUX" ]; then
+#     export NVIM_TUI_ENABLE_TRUE_COLOR=1
+# else
+#     unset NVIM_TUI_ENABLE_TRUE_COLOR
+# fi

@@ -360,7 +360,6 @@ fi
 # FZF {{{
 
 if [ -e ~/.fzf.zsh ]; then
-    export FZF_DEFAULT_COMMAND='ag -l -g ""'
     source ~/.fzf.zsh
 fi
 

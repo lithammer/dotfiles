@@ -1,3 +1,13 @@
+" Neovim {{{
+if has('nvim')
+  let g:python_host_prog = $HOME.'/.vim/venv/bin/python'
+  " let g:python_host_skip_check = 1
+
+  let g:python3_host_prog = '/usr/local/bin/python3'
+  " let g:python3_host_skip_check = 1
+  let g:loaded_python3_provider = 0
+end
+" }}}
 " Plugins {{{
 call plug#begin()
 
@@ -8,14 +18,15 @@ if !has('nvim')
   Plug 'ConradIrwin/vim-bracketed-paste'
 end
 Plug 'Raimondi/delimitMate'
-" Plug 'Shougo/unite.vim'
-" Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
-Plug 'airblade/vim-gitgutter'
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 Plug 'benekastah/neomake'
 Plug 'bling/vim-airline'
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'itchyny/lightline.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'jeetsukumaran/vim-filebeagle'
-Plug 'junegunn/fzf'
+" Plug 'junegunn/fzf'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -23,76 +34,79 @@ Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 Plug 'justinmk/vim-matchparenalways'
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
-" Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'mattn/emmet-vim'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
-" Plug 'mhinz/vim-signify'
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 Plug 'osyo-manga/vim-over'
 Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
+" Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-eunuch'
-" Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
-" Plug 'tpope/vim-haystack'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
-" Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-" Plug 'tsukkee/unite-tag'
+Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
 " Plug 'whatyouhide/vim-lengthmatters'
 
 Plug 'vim-scripts/LargeFile'
 
-" Filetype specific {{{
 Plug 'fatih/vim-go'
 Plug 'rhysd/vim-go-impl'
 
 if has('python')
-  Plug 'SirVer/ultisnips'
+  " Plug 'FelikZ/ctrlp-py-matcher'
+  " Plug 'SirVer/ultisnips'
   Plug 'Valloric/MatchTagAlways'
   if has('patch-7.3.584')
     Plug 'Valloric/YouCompleteMe'
+  else
+    Plug 'ajh17/VimCompletesMe'
   end
   " Plug 'davidhalter/jedi-vim'
   Plug 'honza/vim-snippets'
   " Plug 'lambdalisue/vim-pyenv'
   " Plug 'jmcantrell/vim-virtualenv'
+else
+  Plug 'ajh17/VimCompletesMe'
 endif
 
-if has('lua')
-  " Plug 'Shougo/neocomplete.vim'
-endif
+" Plug 'clausreinke/typescript-tools.vim', {'for': 'typescript'}
+Plug 'Quramy/tsuquyomi', {'for': 'typescript'}
 
-Plug 'clausreinke/typescript-tools.vim', {'for': 'typescript'}
-
+" Plug 'facebook/vim-flow'
 Plug 'hynek/vim-python-pep8-indent'
 Plug 'mxw/vim-jsx'
 Plug 'sheerun/vim-polyglot'
 " Plug 'othree/javascript-libraries-syntax.vim'
-" }}}
 
-" Color schemes {{{
+" Color schemes
 " Plug 'godlygeek/csapprox'
 
-" Plug 'Pychimp/vim-luna'
-Plug 'chriskempson/base16-vim'
-" Plug 'freeo/vim-kalisi'
+" Plug 'abra/vim-abra'
+" Plug 'chriskempson/base16-vim'
+" Plug 'chriskempson/vim-tomorrow-theme'
+" Plug 'cschlueter/vim-wombat
 " Plug 'guns/jellyx.vim'
-Plug 'morhetz/gruvbox'
-" Plug 'nanotech/jellybeans.vim'
-Plug 'romainl/Apprentice'
+Plug 'renstrom/jellyx.vim'
+" Plug 'jonathanfilip/vim-lucius'
+Plug 'junegunn/seoul256.vim'
+" Plug 'morhetz/gruvbox'
+Plug 'michalbachowski/vim-wombat256mod'
+Plug 'nanotech/jellybeans.vim'
+" Plug 'notpratheek/vim-luna'
+" Plug 'romainl/Apprentice'
 " Plug 'w0ng/vim-hybrid'
 Plug 'renstrom/vim-hybrid'
-" }}}
 
 call plug#end()
+
 " }}}
 " Plugin settings and mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,21 +115,21 @@ call plug#end()
 let mapleader = ','
 
 " Airline {{{
+
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
-let g:airline#extensions#tagbar#enabled = 0
 let g:airline#extensions#branch#enabled = 0
-let g:airline#extensions#hunks#enabled = 0
+" let g:airline_extensions = ['ctrlp', 'netrw', 'syntastic', 'unite', 'whitespace']
 
-let g:airline#extensions#tabline#enabled = 0
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#tabline#buffer_min_count = 2
 " }}}
+" Ag {{{
+
+let g:ag_prg = 'ag --vimgrep'
+
+" "}}}
 " Brightest {{{
-" let g:brightest#highlight = {'group': 'BrightestUnderline'}
+
 let g:brightest#highlight = {'group': 'BrightestReverse'}
 let g:brightest#enable_filetypes = {
 \  '_': 0,
@@ -123,16 +137,21 @@ let g:brightest#enable_filetypes = {
 \  'go': 1,
 \  'javascript': 1,
 \}
+
 " }}}
 " delimitMate {{{
-let delimitMate_expand_cr = 1                " Enable expansion of <CR>
+
+" Enable expansion of <CR>
+let delimitMate_expand_cr = 1
+
 " }}}
 " Commentary {{{
 map <Leader>c :Commentary<CR>
 " }}}
 " Ctrlp {{{
-nnoremap <C-t> :CtrlPBufTag<CR>
-nnoremap <C-b> :CtrlPBuffer<CR>
+
+" nnoremap <C-t> :CtrlPBufTag<CR>
+" nnoremap <C-b> :CtrlPBuffer<CR>
 
 " let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
 let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
@@ -143,12 +162,13 @@ if executable('ag')
     \ 'git ls-files --cached --others --exclude-standard %s',
     \ 'ag %s --nocolor --nogroup --files-with-matches -g ""'
   \ ]
-  let g:ctrlp_use_caching = 0
+  " let g:ctrlp_use_caching = 0
 endif
-" }}}
-" Dispatch {{{
-" Use vim-dispatch to build in the background (uses makeprg)
-nnoremap <F6> :Dispatch<CR>
+
+if has('python')
+  let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
+endif
+
 " }}}
 " EasyAlign {{{
 vmap <Enter> <Plug>(EasyAlign)
@@ -157,16 +177,10 @@ vmap <Enter> <Plug>(EasyAlign)
 let g:go_fmt_command = 'goimports'
 " }}}
 " Gutentags {{{
-let g:gutentags_tagfile = '.tags'
-" }}}
-" Jedi {{{
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#completions_command = ""
-let g:jedi#completions_enabled = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#popup_select_first = 0
 
-let g:jedi#show_call_signatures = 2
+let g:gutentags_cache_dir = $HOME.'/.vim/tags'
+let g:gutentags_exclude = ['/usr/local']
+
 " }}}
 " MatchTagAlways {{{
 let g:mta_filetypes = {
@@ -176,38 +190,6 @@ let g:mta_filetypes = {
 \  'jinja': 1,
 \  'htmldjango': 1
 \ }
-" }}}
-" Neocomplete (and related) {{{
-" let g:neocomplete#enable_at_startup = 1
-" let g:neocomplete#enable_smart_case = 1
-
-" if !exists('g:neocomplete#sources#omni#input_patterns')
-"   let g:neocomplete#sources#omni#input_patterns = {}
-" endif
-
-" if !exists('g:neocomplete#force_omni_input_patterns')
-"   let g:neocomplete#force_omni_input_patterns = {}
-" endif
-
-" if !exists('g:neocomplete#sources#omni#functions')
-"   let g:neocomplete#sources#omni#functions = {}
-" endif
-
-
-" let g:jedi#completions_enabled = 0
-" let g:jedi#auto_vim_configuration = 0
-" let g:jedi#show_call_signatures = 0
-
-" let g:neocomplete#sources#omni#functions.go = 'go#complete#Complete'
-" let g:neocomplete#force_omni_input_patterns.python =
-"   \ '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
-" let g:neocomplete#force_omni_input_patterns.javascript = '[^. \t]\.\w*'
-
-" autocmd FileType python setlocal omnifunc=jedi#completions
-
-" " Cycle completions with Tab and Shift-Tab
-" inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<Tab>"
 " }}}
 " Neomake {{{
 highlight link NeomakeErrorSign ErrorMsg
@@ -228,13 +210,26 @@ let g:neomake_verbose = 0  " Log only errors
 let g:neomake_python_enabled_makers = ['pep8', 'frosted']
 
 " }}}
-" Over {{{
-cabbrev %s OverCommandLine<CR>%s
-cabbrev '<,'>s OverCommandLine<CR>'<,'>s
+" Neosnippets {{{
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory='~/.vim/plugged/vim-snippets/snippets'
+
+" Disable runtime snippets
+let g:neosnippet#disable_runtime_snippets = {'_' : 1}
 " }}}
-" HTML 5 {{{
-let g:html5_aria_attributes_complete = 0     " Disable WAI-ARIA attribute support
-let g:html5_rdfa_attributes_complete = 0     " Disable RDFa attribute support
+" Pyenv {{{
+" let g:pyenv#auto_force_py_version_jedi = 0
+" let g:pyenv#auto_force_py_version = 0
+" let g:pyenv#jedi#auto_force_py_version = 0
 " }}}
 " Sneak {{{
 let g:sneak#streak = 1
@@ -244,11 +239,6 @@ highlight link SneakPluginTarget Search
 highlight link SneakStreakTarget Error
 highlight link SneakStreakMask Normal
 highlight link SneakPluginScope Search
-" }}}
-" Supertab {{{
-let g:SuperTabDefaultCompletionType = 'context'
-let g:SuperTabContextDefaultCompletionType = '<C-n>'
-" let g:SuperTabContextDefaultCompletionType = '<C-x><C-o>'
 " }}}
 " Syntastic {{{
 highlight link SyntasticErrorSign ErrorMsg
@@ -260,55 +250,43 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_error_symbol = 'E>'
 let g:syntastic_warning_symbol = 'W>'
 let g:syntastic_aggregate_errors = 1
-
-let g:syntastic_html_checkers = []
-
+" let g:syntastic_html_checkers = []
 let g:syntastic_javascript_checkers = ['jsxhint']
 let g:syntastic_javascript_jsxhint_args = '--harmony'
-
 let g:syntastic_lua_checkers = ['luac', 'luacheck']
-
-let g:syntastic_python_checkers = ['frosted', 'pep8']
-let g:syntastic_python_pylint_exec = $HOME.'/.vim/venv/bin/pylint'
-
+let g:syntastic_python_checkers = ['pep8', 'frosted']
 let g:syntastic_typescript_checkers = ['tslint']
-" }}}
-" TComment {{{
-" map <Leader>c :TComment<CR>
 " }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<C-k>'
 let g:UltiSnipsJumpForwardTrigger = '<C-k>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " }}}
-" Unimpaired {{{
-" nmap ö [
-" nmap ä ]
-" omap ö [
-" omap ä ]
-" xmap ö [
-" xmap ä ]
-" }}}
 " Unite {{{
-" call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" call unite#filters#sorter_default#use(['sorter_selecta'])
-" nnoremap <C-p> :<C-u>Unite -start-insert file_rec/async:!<CR>
-" nnoremap <C-g> :<C-u>Unite -start-insert file_rec/git<CR>
-" nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
+
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
+nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
+nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
+" nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
+nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
 " Don't cache, it's fast enough
-let g:unite_source_rec_max_cache_files = 0
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'max_candidates', 500)
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy'])
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'sorters', ['sorter_rank', 'sorter_length'])
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'converters', 'converter_relative_word')
+" let g:unite_source_rec_max_cache_files = 0
+" let g:unite_source_tag_show_location = 0
+" let g:unite_source_tag_show_fname = 0
+
+" call unite#custom#source('file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy'])
+call unite#custom#source('file_rec/async,file_rec/git', 'sorters', ['sorter_rank'])
+call unite#custom#source('file_rec/async,file_rec/git,grep', 'converters', ['converter_relative_word'])
+" call unite#custom#source('tag', 'converters', ['converter_relative_abbr'])
 " This might not work since `wildignore` is empty here
-" call unite#custom#source('file_rec,file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
+call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
 
 if executable('ag')
   let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --hidden'
+  let g:unite_source_grep_default_opts = '--vimgrep'
   let g:unite_source_grep_recursive_opt = ''
 endif
 
@@ -322,26 +300,27 @@ endif
 " " nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
 " " nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
 
-function! s:unite_my_settings()
+function! s:custom_unite_settings()
   " Overwrite settings.
+  " imap <silent><buffer> <Esc> :UniteClose<CR>
   imap <silent><buffer><expr> <C-s> unite#do_action('split')
   imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
   imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
 endfunction
-autocmd FileType unite call s:unite_my_settings()
-" }}}
-" Virtualenv {{{
-let g:virtualenv_auto_activate = 1           " Automatically activate virtualenv if possible
+autocmd FileType unite call s:custom_unite_settings()
+
 " }}}
 " YouCompleteMe {{{
-" let g:ycm_path_to_python_interpreter = '/usr/bin/python'
 
+let g:ycm_path_to_python_interpreter = $HOME.'/.vim/venv/bin/python'
 let g:ycm_semantic_triggers = {'typescript': ['.']}
+let g:ycm_min_num_of_chars_for_completion = 3
 
 " Looks up the symbol under the cursor and jumps to its definition if
 " possible; if the definition is not accessible from the current translation
 " unit, jumps to the symbol's declaration.
 nnoremap <leader>jd :YcmCompleter GoTo<CR>
+
 " }}}
 
 " }}}
@@ -372,10 +351,11 @@ set t_Co=256
 set background=dark
 
 let g:airline_theme = 'hybridline'
-colorscheme hybrid
-" let g:gruvbox_italic = 0
-" colorscheme gruvbox
-" colorscheme base16-eighties
+let g:seoul256_background = 235  " Default is 237
+let g:gruvbox_italic = 0
+let base16colorspace = 256  " Access colors present in 256 colorspace
+" colorscheme hybrid
+colorscheme jellyx
 
 if g:colors_name ==# 'hybrid'
   " Use same colors as 'Type', highlights special characters in
@@ -394,6 +374,10 @@ if g:colors_name =~ 'base16-'
   " Make 'listchars' darker
   highlight clear SpecialKey
   highlight SpecialKey ctermfg=19 guifg=#444444
+
+  " Syntastic markers
+  " highlight link SyntasticErrorSign ErrorMsg
+  " highlight link SyntasticWarningSign Type
 endif
 
 let g:markdown_fenced_languages = ['python', 'javascript', 'js=javascript', 'json=javascript', 'go']
@@ -418,11 +402,6 @@ set tabstop=4 softtabstop=4 shiftwidth=4
 set expandtab
 set shiftround
 
-" Highlight current cursor row (if not in diff mode)
-if ! &diff
-  set cursorline
-endif
-
 " Highlight one column after 'textwidth'
 set colorcolumn=+1
 " autocmd FileType python setlocal colorcolumn=+1
@@ -433,15 +412,6 @@ set completeopt=menuone,preview
 
 " Remove fold characters
 set fillchars="vert:|,fold:"
-
-" Set a nicer foldtext function
-set foldtext=NumLinesEndOfLine()
-function! NumLinesEndOfLine()
-  let maxwidth = 80
-  let lines = (v:foldend - v:foldstart + 1)
-  let linetext = strpart(getline(v:foldstart), 0, -3 + maxwidth - len(lines))
-  return linetext . repeat(' ', maxwidth - len(linetext) - len(lines)) . lines
-endfunction
 
 " ':substitute' flag 'g' is on by default, will replace
 " all matches on a line instead of one
@@ -467,19 +437,10 @@ set ignorecase smartcase
 " Don't redraw screen while executing macros
 set lazyredraw
 
-" Break long lines on more natural break points
-set linebreak
-
-" Every wrapped line will continue visually indented (same amount of space as
-" the beginning of that line), thus preserving horizontal blocks of text.
-if has('patch-7.4.338')
-  set breakindent
-end
-
 " Show some hidden characters ('listchars')
 set list
 
-set listchars=tab:▸\ ,trail:·,extends:>,precedes:<,nbsp:_
+set listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:_
 
 " Faster and more precise mouse support
 set ttymouse=xterm2
@@ -494,7 +455,17 @@ set noshowmode
 set wrap
 
 " Characters to put at the start of wrap lines
-let &showbreak = '  ↪ '
+let &showbreak = '↪ '
+
+" Break long lines on more natural break points
+set linebreak
+
+" Every wrapped line will continue visually indented (same amount of space as
+" the beginning of that line), thus preserving horizontal blocks of text.
+if has('patch-7.4.338')
+  set breakindent
+  set breakindentopt=shift:2
+end
 
 " Show line numbers
 set number
@@ -503,7 +474,9 @@ set number
 set pastetoggle=<F5>
 
 " Use current line as starting point for line numbering
-set relativenumber
+if has('patch-7.3.787')
+  set relativenumber
+endif
 
 " Always report number of lines changes
 set report=0
@@ -515,7 +488,7 @@ set scrolloff=5
 set sidescroll=10
 
 " Briefly jump to matching bracket in insert mode
-set showmatch
+" set showmatch
 
 " Put the new window on the right when doing :vsplit
 set splitright
@@ -568,6 +541,7 @@ set wildignore+=*.DS_Store
 " Terminal mappings for Neovim
 if has('nvim')
   tnoremap <C-a> <C-\><C-n>
+  tnoremap <Esc> <C-\><C-n>
   " tnoremap <C-w><C-w> <C-\><C-n><C-w><C-w>
   autocmd WinEnter term://* startinsert
 endif
@@ -599,22 +573,6 @@ nnoremap * *<C-o>
 nnoremap <Tab> <C-w>w
 nnoremap <S-Tab> <C-w>W
 
-" Strip whitespace
-function! StripWhitespaces()
-  " Save last search and cursor position
-  let searchHistory = @/
-  let cursorLine = line(".")
-  let cursorColumn = col(".")
-
-  " Strip trailing whitespaces
-  %s/\s\+$//e
-
-  " Restore previous search history and cursor position
-  let @/ = searchHistory
-  call cursor(cursorLine, cursorColumn)
-endfunction
-command StripWhitespaces :call StripWhitespaces()
-
 " }}}
 " Auto commands {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -634,17 +592,6 @@ if &colorcolumn == '+1'
     autocmd!
     autocmd WinLeave * setlocal colorcolumn=0
     autocmd WinEnter * setlocal colorcolumn=+1
-  augroup END
-endif
-
-" Only show cursorline in the current window and in normal mode
-if &cursorline
-  augroup cline
-    autocmd!
-    autocmd WinLeave * set nocursorline
-    autocmd WinEnter * set cursorline
-    autocmd InsertEnter * set nocursorline
-    autocmd InsertLeave * set cursorline
   augroup END
 endif
 
@@ -670,14 +617,14 @@ autocmd BufReadPost * call SetCursorPosition()
 
 " Always close preview window after completion is done.
 " http://stackoverflow.com/a/26022965/1862923
-if v:version > 703
+if has('patch-7.3.598')
   autocmd CompleteDone * pclose
 endif
 
-augroup lisp
-  let g:rainbow#pairs = [['(', ')'], ['[', ']']]
+augroup rainbow_colors
+  " let g:rainbow#pairs = [['(', ')'], ['[', ']']]
   autocmd!
-  autocmd FileType clojure,scheme RainbowParentheses
+  autocmd FileType clojure,scheme,python RainbowParentheses
 augroup END
 " au VimEnter * RainbowParentheses
 
@@ -706,6 +653,23 @@ function! SetupPython()
 
   " Highlight 'NOTE' and 'HACK' in comments
   syn keyword pythonTodo NOTE HACK contained
+
+  " https://github.com/google/yapf
+  if executable('yapf')
+    function! FormatPython()
+      " Do not run this for automatic formatting
+      if !empty(v:char) || mode() == 'i' || mode() == 'R'
+        return 1
+      end
+
+      let l:line_ranges = v:lnum . '-' . (v:lnum + v:count - 1)
+      execute '0,$!yapf --lines=' . l:line_ranges
+      " Reset cursor to first line of the formatted range
+      call cursor(v:lnum, 1)
+    endfunction
+
+    set formatexpr=FormatPython()
+  endif
 endfunction
 autocmd FileType python call SetupPython()
 
@@ -724,21 +688,6 @@ function! SetupJSON()
   setlocal equalprg=python\ -mjson.tool
 endfunction
 autocmd FileType json call SetupJSON()
-
-function! FourSpaceIndent()
-  setlocal expandtab
-  setlocal tabstop=4
-  setlocal softtabstop=4
-  setlocal shiftwidth=4
-endfunction
-
-function! TwoSpaceIndent()
-  setlocal expandtab
-  setlocal tabstop=2
-  setlocal softtabstop=2
-  setlocal shiftwidth=2
-endfunction
-autocmd FileType json,less,css,stylus,jade,ruby call TwoSpaceIndent()
 
 " Set JavaScript indent settings for TypeScript (leafgarland/typescript-vim
 " doesn't include any indentation)

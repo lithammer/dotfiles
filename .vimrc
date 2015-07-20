@@ -3,7 +3,6 @@ if has('nvim')
   let g:python_host_prog = $HOME.'/.vim/venv/bin/python'
   " let g:python_host_skip_check = 1
 
-  let g:python3_host_prog = '/usr/local/bin/python3'
   " let g:python3_host_skip_check = 1
   let g:loaded_python3_provider = 0
 end
@@ -18,31 +17,26 @@ if !has('nvim')
   Plug 'ConradIrwin/vim-bracketed-paste'
 end
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/unite.vim'
+" Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
-Plug 'benekastah/neomake'
+" Plug 'benekastah/neomake'
 Plug 'bling/vim-airline'
-" Plug 'itchyny/lightline.vim'
-" Plug 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'jeetsukumaran/vim-filebeagle'
 " Plug 'junegunn/fzf'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
-" Plug 'justinmk/vim-dirvish'
-Plug 'justinmk/vim-matchparenalways'
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'mattn/emmet-vim'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 Plug 'osyo-manga/vim-over'
 Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-commentary'
-" Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
@@ -51,26 +45,25 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
 Plug 'tpope/vim-vinegar'
-Plug 'tsukkee/unite-tag'
+let g:netrw_banner = 1
+" Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
-" Plug 'whatyouhide/vim-lengthmatters'
 
 Plug 'vim-scripts/LargeFile'
 
 Plug 'fatih/vim-go'
-Plug 'rhysd/vim-go-impl'
+" Plug 'rhysd/vim-go-impl'
 
 if has('python')
-  " Plug 'FelikZ/ctrlp-py-matcher'
-  " Plug 'SirVer/ultisnips'
-  Plug 'Valloric/MatchTagAlways'
+  " if v:version > 703
+  "   Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+  " endif
   if has('patch-7.3.584')
     Plug 'Valloric/YouCompleteMe'
   else
     Plug 'ajh17/VimCompletesMe'
   end
   " Plug 'davidhalter/jedi-vim'
-  Plug 'honza/vim-snippets'
   " Plug 'lambdalisue/vim-pyenv'
   " Plug 'jmcantrell/vim-virtualenv'
 else
@@ -86,19 +79,16 @@ Plug 'mxw/vim-jsx'
 Plug 'sheerun/vim-polyglot'
 " Plug 'othree/javascript-libraries-syntax.vim'
 
-" Color schemes
-" Plug 'godlygeek/csapprox'
-
+" Color
 " Plug 'abra/vim-abra'
-" Plug 'chriskempson/base16-vim'
+Plug 'chriskempson/base16-vim'
 " Plug 'chriskempson/vim-tomorrow-theme'
 " Plug 'cschlueter/vim-wombat
 " Plug 'guns/jellyx.vim'
-Plug 'renstrom/jellyx.vim'
 " Plug 'jonathanfilip/vim-lucius'
 Plug 'junegunn/seoul256.vim'
 " Plug 'morhetz/gruvbox'
-Plug 'michalbachowski/vim-wombat256mod'
+" Plug 'michalbachowski/vim-wombat256mod'
 Plug 'nanotech/jellybeans.vim'
 " Plug 'notpratheek/vim-luna'
 " Plug 'romainl/Apprentice'
@@ -120,7 +110,6 @@ let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
 let g:airline#extensions#branch#enabled = 0
-" let g:airline_extensions = ['ctrlp', 'netrw', 'syntastic', 'unite', 'whitespace']
 
 " }}}
 " Ag {{{
@@ -150,8 +139,8 @@ map <Leader>c :Commentary<CR>
 " }}}
 " Ctrlp {{{
 
-" nnoremap <C-t> :CtrlPBufTag<CR>
-" nnoremap <C-b> :CtrlPBuffer<CR>
+nnoremap <C-t> :CtrlPTag<CR>
+nnoremap <C-b> :CtrlPBuffer<CR>
 
 " let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
 let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
@@ -162,12 +151,12 @@ if executable('ag')
     \ 'git ls-files --cached --others --exclude-standard %s',
     \ 'ag %s --nocolor --nogroup --files-with-matches -g ""'
   \ ]
-  " let g:ctrlp_use_caching = 0
+  let g:ctrlp_use_caching = 0
 endif
 
-if has('python')
-  let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
-endif
+" if has('python')
+"   let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
+" endif
 
 " }}}
 " EasyAlign {{{
@@ -181,15 +170,6 @@ let g:go_fmt_command = 'goimports'
 let g:gutentags_cache_dir = $HOME.'/.vim/tags'
 let g:gutentags_exclude = ['/usr/local']
 
-" }}}
-" MatchTagAlways {{{
-let g:mta_filetypes = {
-\  'html': 1,
-\  'xhtml': 1,
-\  'xml': 1,
-\  'jinja': 1,
-\  'htmldjango': 1
-\ }
 " }}}
 " Neomake {{{
 highlight link NeomakeErrorSign ErrorMsg
@@ -209,22 +189,6 @@ let g:neomake_verbose = 0  " Log only errors
 
 let g:neomake_python_enabled_makers = ['pep8', 'frosted']
 
-" }}}
-" Neosnippets {{{
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-xmap <C-k> <Plug>(neosnippet_expand_target)
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
-" Enable snipMate compatibility feature.
-let g:neosnippet#enable_snipmate_compatibility = 1
-
-" Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory='~/.vim/plugged/vim-snippets/snippets'
-
-" Disable runtime snippets
-let g:neosnippet#disable_runtime_snippets = {'_' : 1}
 " }}}
 " Pyenv {{{
 " let g:pyenv#auto_force_py_version_jedi = 0
@@ -251,9 +215,10 @@ let g:syntastic_error_symbol = 'E>'
 let g:syntastic_warning_symbol = 'W>'
 let g:syntastic_aggregate_errors = 1
 " let g:syntastic_html_checkers = []
+let g:syntastic_go_checkers = ['go', 'govet']
 let g:syntastic_javascript_checkers = ['jsxhint']
-let g:syntastic_javascript_jsxhint_args = '--harmony'
-let g:syntastic_lua_checkers = ['luac', 'luacheck']
+let g:syntastic_javascript_jsxhint_args = '--babel'
+" let g:syntastic_lua_checkers = ['luac', 'luacheck']
 let g:syntastic_python_checkers = ['pep8', 'frosted']
 let g:syntastic_typescript_checkers = ['tslint']
 " }}}
@@ -264,50 +229,36 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " }}}
 " Unite {{{
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
-nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
-nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
-" nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
-nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
+" call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
+" nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
+" nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
+" " nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
+" nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
-" Don't cache, it's fast enough
+" " Don't cache, it's fast enough
 " let g:unite_source_rec_max_cache_files = 0
-" let g:unite_source_tag_show_location = 0
-" let g:unite_source_tag_show_fname = 0
 
-" call unite#custom#source('file_rec/async,file_rec/git', 'matchers', ['matcher_fuzzy'])
-call unite#custom#source('file_rec/async,file_rec/git', 'sorters', ['sorter_rank'])
-call unite#custom#source('file_rec/async,file_rec/git,grep', 'converters', ['converter_relative_word'])
-" call unite#custom#source('tag', 'converters', ['converter_relative_abbr'])
-" This might not work since `wildignore` is empty here
-call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
+" call unite#custom#source('file_rec/async,file_rec/git', 'sorters', ['sorter_rank'])
+" call unite#custom#source('file_rec/async,file_rec/git,grep', 'converters', ['converter_relative_word'])
+" " This might not work since `wildignore` is empty here
+" call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
 
-if executable('ag')
-  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
-  let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--vimgrep'
-  let g:unite_source_grep_recursive_opt = ''
-endif
+" if executable('ag')
+"   let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
+"   let g:unite_source_grep_command = 'ag'
+"   let g:unite_source_grep_default_opts = '--vimgrep'
+"   let g:unite_source_grep_recursive_opt = ''
+" endif
 
-" call unite#custom#profile('default', 'context', {
-" \  'direction': 'below',
-" \  'winheight': 15,
-" \ })
-
-" let g:unite_source_history_yank_enable = 1
-" nnoremap <C-y> :<C-u>Unite history/yank<CR>
-" " nnoremap <C-b> :<C-u>Unite buffer -quick-match<CR>
-" " nnoremap <C-g> :NeoCompleteIncludeMakeCache<CR>:<C-u>Unite tag/include -silent -start-insert<CR>
-
-function! s:custom_unite_settings()
-  " Overwrite settings.
-  " imap <silent><buffer> <Esc> :UniteClose<CR>
-  imap <silent><buffer><expr> <C-s> unite#do_action('split')
-  imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-  imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-endfunction
-autocmd FileType unite call s:custom_unite_settings()
+" function! s:custom_unite_settings()
+"   " Overwrite settings.
+"   " imap <silent><buffer> <Esc> :UniteClose<CR>
+"   imap <silent><buffer><expr> <C-s> unite#do_action('split')
+"   imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+"   imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+" endfunction
+" autocmd FileType unite call s:custom_unite_settings()
 
 " }}}
 " YouCompleteMe {{{
@@ -350,26 +301,19 @@ set t_Co=256
 " Make sure dark background is used for colorschemes
 set background=dark
 
-let g:airline_theme = 'hybridline'
+" let g:airline_theme = 'hybridline'
 let g:seoul256_background = 235  " Default is 237
 let g:gruvbox_italic = 0
-let base16colorspace = 256  " Access colors present in 256 colorspace
-" colorscheme hybrid
-colorscheme jellyx
-
-if g:colors_name ==# 'hybrid'
-  " Use same colors as 'Type', highlights special characters in
-  " strings, i.e. %s, %d, {foo}
-  highlight Special ctermfg=173 guifg=#de935f
-  highlight SpecialKey ctermfg=235 guifg=#444444
+if has('nvim') && $NVIM_TUI_ENABLE_TRUE_COLOR
+  colorscheme base16-eighties
+else
+  colorscheme hybrid
 endif
 
 " Make current line number yellow
-" if g:colors_name ==# 'base16-tomorrow'
 if g:colors_name =~ 'base16-'
   " Make current line number more prominent (yellow)
-  highlight clear CursorLineNr
-  highlight CursorLineNr term=bold ctermfg=3 ctermbg=18 gui=bold guifg=#F0C674 guibg=#282a2e
+  highlight! link CursorLineNr Todo
 
   " Make 'listchars' darker
   highlight clear SpecialKey
@@ -403,8 +347,7 @@ set expandtab
 set shiftround
 
 " Highlight one column after 'textwidth'
-set colorcolumn=+1
-" autocmd FileType python setlocal colorcolumn=+1
+" set colorcolumn=+1
 
 " Show menu when there's at least one match, and show extra information
 set completeopt=menuone,preview
@@ -443,10 +386,12 @@ set list
 set listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:_
 
 " Faster and more precise mouse support
-set ttymouse=xterm2
+if !has('nvim')
+  set ttymouse=xterm2
+endif
 
 " Allow mouse usage in all modes
-" set mouse=a
+set mouse=""
 
 " Don't show current mode on last line (vim-airline does this instead)
 set noshowmode
@@ -470,9 +415,6 @@ end
 " Show line numbers
 set number
 
-" Shortcut to toggle paste mode
-set pastetoggle=<F5>
-
 " Use current line as starting point for line numbering
 if has('patch-7.3.787')
   set relativenumber
@@ -487,26 +429,29 @@ set scrolloff=5
 " The minimal number of columns to scroll horizontally
 set sidescroll=10
 
-" Briefly jump to matching bracket in insert mode
-" set showmatch
-
 " Put the new window on the right when doing :vsplit
 set splitright
 
 " Set the title of the window to 'titlestring'
 set title
 
-for dir in ['swaps', 'undos', 'backups']
-  let path = expand('~/.vim/'.dir)
-  if !isdirectory(path)
-    silent call mkdir(path)
-  endif
-endfor
+set directory=~/.vim/swaps
+if !isdirectory(&directory)
+  call mkdir(&directory)
+endif
 
-set directory=$HOME/.vim/swaps
-set backupdir=$HOME/.vim/backups
-set undodir=$HOME/.vim/undos
-set undofile
+set backupdir=~/.vim/backups
+if !isdirectory(&backupdir)
+  call mkdir(&backupdir)
+endif
+
+if has('persistent_undo')
+  set undodir=~/.vim/undos
+  set undofile
+  if !isdirectory(&undodir)
+    call mkdir(&undodir)
+  endif
+endif
 
 " Allow cursor beyond EOL in Visual block mode
 set virtualedit=block
@@ -641,6 +586,14 @@ function! SetupPlainText()
 endfunction
 autocmd FileType text call SetupPlainText()
 
+function! TwoSpaceIndent()
+  setlocal expandtab
+  setlocal tabstop=2
+  setlocal softtabstop=2
+  setlocal shiftwidth=2
+endfunction
+autocmd FileType json,less,scss,css,stylus,jade,ruby call TwoSpaceIndent()
+
 " Python, PEP8: http://www.python.org/dev/peps/pep-0008/
 function! SetupPython()
   setlocal textwidth=79
@@ -668,7 +621,7 @@ function! SetupPython()
       call cursor(v:lnum, 1)
     endfunction
 
-    set formatexpr=FormatPython()
+    setlocal formatexpr=FormatPython()
   endif
 endfunction
 autocmd FileType python call SetupPython()
@@ -750,8 +703,7 @@ if has('gui_win32')
 endif
 
 " Local settings
-if filereadable(glob('$HOME/.vimrc.local'))
-  source $HOME/.vimrc.local
-endif
+silent! source ~/.vimrc.local
+
 " vim: set foldenable foldmethod=marker foldlevel=0:
 " }}}

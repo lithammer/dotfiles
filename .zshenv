@@ -8,7 +8,7 @@ GOPATH="$HOME/.go"
 
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:/usr/local/sbin"
-PATH="$PATH:$GOPATH/bin:$(brew --prefix go)/libexec/bin"
+PATH="$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin"
 export PATH
 
 GOPATH="$GOPATH:$HOME/Code/.go"
@@ -37,14 +37,14 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export REPORTTIME=10
 
 # Load custom Python start-up script (enables tab-completion)
-export PYTHONSTARTUP="$HOME/.pythonrc"
+# export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # Make FZF read gitignore
 export FZF_DEFAULT_COMMAND='ag -l -g ""'
 
 # https://github.com/neovim/neovim/pull/2198
-# if [ -z "$TMUX" ]; then
-#     export NVIM_TUI_ENABLE_TRUE_COLOR=1
-# else
-#     unset NVIM_TUI_ENABLE_TRUE_COLOR
-# fi
+if [ -z "$TMUX" ]; then
+    export NVIM_TUI_ENABLE_TRUE_COLOR=1
+else
+    unset NVIM_TUI_ENABLE_TRUE_COLOR
+fi

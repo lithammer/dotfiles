@@ -39,12 +39,6 @@ export REPORTTIME=10
 # Load custom Python start-up script (enables tab-completion)
 # export PYTHONSTARTUP="$HOME/.pythonrc"
 
-# Make FZF read gitignore
+# https://github.com/junegunn/fzf#respecting-gitignore-hgignore-and-svnignore
 export FZF_DEFAULT_COMMAND='ag -l -g ""'
-
-# https://github.com/neovim/neovim/pull/2198
-if [ -z "$TMUX" ]; then
-    export NVIM_TUI_ENABLE_TRUE_COLOR=1
-else
-    unset NVIM_TUI_ENABLE_TRUE_COLOR
-fi
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

@@ -1,11 +1,11 @@
+--tag-relative=yes
+
 --exclude=.*
 --exclude=build
 --exclude=dist
 --exclude=venv
 --exclude=env
 --exclude=node_modules
-
---tag-relative=yes
 
 --python-kinds=-iv
 

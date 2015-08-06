@@ -1,12 +1,3 @@
-" Neovim {{{
-if has('nvim')
-  let g:python_host_prog = $HOME.'/.vim/venv/bin/python'
-  " let g:python_host_skip_check = 1
-
-  " let g:python3_host_skip_check = 1
-  let g:loaded_python3_provider = 0
-end
-" }}}
 " Plugins {{{
 call plug#begin()
 
@@ -23,7 +14,7 @@ Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 Plug 'bling/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'jeetsukumaran/vim-filebeagle'
-" Plug 'junegunn/fzf'
+Plug 'junegunn/fzf'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -31,6 +22,7 @@ Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
+Plug 'mhinz/vim-grepper'
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 Plug 'osyo-manga/vim-over'
 Plug 'rking/ag.vim', {'on': 'Ag'}
@@ -45,6 +37,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
 Plug 'tpope/vim-vinegar'
+" Plug 'unblevable/quick-scope'
 let g:netrw_banner = 1
 " Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
@@ -55,9 +48,9 @@ Plug 'fatih/vim-go'
 " Plug 'rhysd/vim-go-impl'
 
 if has('python')
-  " if v:version > 703
-  "   Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-  " endif
+  if v:version > 703
+    Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+  endif
   if has('patch-7.3.584')
     Plug 'Valloric/YouCompleteMe'
   else
@@ -70,13 +63,10 @@ else
   Plug 'ajh17/VimCompletesMe'
 endif
 
-" Plug 'clausreinke/typescript-tools.vim', {'for': 'typescript'}
-Plug 'Quramy/tsuquyomi', {'for': 'typescript'}
-
 " Plug 'facebook/vim-flow'
 Plug 'hynek/vim-python-pep8-indent'
-Plug 'mxw/vim-jsx'
 Plug 'sheerun/vim-polyglot'
+" Plug 'ap/vim-css-color'
 " Plug 'othree/javascript-libraries-syntax.vim'
 
 " Color
@@ -196,7 +186,7 @@ let g:neomake_python_enabled_makers = ['pep8', 'frosted']
 " let g:pyenv#jedi#auto_force_py_version = 0
 " }}}
 " Sneak {{{
-let g:sneak#streak = 1
+" let g:sneak#streak = 1
 nmap s <Plug>Sneak_s
 nmap S <Plug>Sneak_S
 highlight link SneakPluginTarget Search
@@ -216,11 +206,13 @@ let g:syntastic_warning_symbol = 'W>'
 let g:syntastic_aggregate_errors = 1
 " let g:syntastic_html_checkers = []
 let g:syntastic_go_checkers = ['go', 'govet']
-let g:syntastic_javascript_checkers = ['jsxhint']
-let g:syntastic_javascript_jsxhint_args = '--babel'
+let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_javascript_jsxhint_args = '--babel'
 " let g:syntastic_lua_checkers = ['luac', 'luacheck']
+let g:syntastic_lua_checkers = ['luac']
 let g:syntastic_python_checkers = ['pep8', 'frosted']
-let g:syntastic_typescript_checkers = ['tslint']
+let g:syntastic_typescript_checkers = ['tsc', 'tslint']
+let g:syntastic_typescript_tslint_args = '--config ~/.tslint.json'
 " }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<C-k>'
@@ -265,7 +257,6 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 
 let g:ycm_path_to_python_interpreter = $HOME.'/.vim/venv/bin/python'
 let g:ycm_semantic_triggers = {'typescript': ['.']}
-let g:ycm_min_num_of_chars_for_completion = 3
 
 " Looks up the symbol under the cursor and jumps to its definition if
 " possible; if the definition is not accessible from the current translation
@@ -304,25 +295,8 @@ set background=dark
 " let g:airline_theme = 'hybridline'
 let g:seoul256_background = 235  " Default is 237
 let g:gruvbox_italic = 0
-if has('nvim') && $NVIM_TUI_ENABLE_TRUE_COLOR
-  colorscheme base16-eighties
-else
-  colorscheme hybrid
-endif
 
-" Make current line number yellow
-if g:colors_name =~ 'base16-'
-  " Make current line number more prominent (yellow)
-  highlight! link CursorLineNr Todo
-
-  " Make 'listchars' darker
-  highlight clear SpecialKey
-  highlight SpecialKey ctermfg=19 guifg=#444444
-
-  " Syntastic markers
-  " highlight link SyntasticErrorSign ErrorMsg
-  " highlight link SyntasticWarningSign Type
-endif
+colorscheme hybrid
 
 let g:markdown_fenced_languages = ['python', 'javascript', 'js=javascript', 'json=javascript', 'go']
 
@@ -384,11 +358,6 @@ set lazyredraw
 set list
 
 set listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:_
-
-" Faster and more precise mouse support
-if !has('nvim')
-  set ttymouse=xterm2
-endif
 
 " Allow mouse usage in all modes
 set mouse=""
@@ -482,14 +451,6 @@ set wildignore+=*.DS_Store
 " }}}
 " Mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-" Terminal mappings for Neovim
-if has('nvim')
-  tnoremap <C-a> <C-\><C-n>
-  tnoremap <Esc> <C-\><C-n>
-  " tnoremap <C-w><C-w> <C-\><C-n><C-w><C-w>
-  autocmd WinEnter term://* startinsert
-endif
 
 " My fingers are too fast!
 command W w

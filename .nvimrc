@@ -13,9 +13,9 @@ silent! source ~/.vimrc
 
 " Mappings {{{
 " Terminal mappings for Neovim
-tnoremap <C-a> <C-\><C-n>
+" tnoremap <C-a> <C-\><C-n>
 tnoremap <Esc> <C-\><C-n>
-" tnoremap <C-w><C-w> <C-\><C-n><C-w><C-w>
+tnoremap <C-w><C-w> <C-\><C-n><C-w><C-w>
 " }}}
 
 autocmd WinEnter term://* startinsert
@@ -48,5 +48,25 @@ if $NVIM_TUI_ENABLE_TRUE_COLOR
     highlight link SyntasticWarningSign pythonTodo
     highlight link SyntasticError Error
     highlight link SyntasticWarning Error
+
+    " Terminal color definitions (24-bit)
+    let g:terminal_color_0 = '#3B3228'
+    let g:terminal_color_1 = '#CB6077'
+    let g:terminal_color_2 = '#BEB55B'
+    let g:terminal_color_3 = '#F4BC87'
+    let g:terminal_color_4 = '#8AB3B5'
+    let g:terminal_color_5 = '#A89BB9'
+    let g:terminal_color_6 = '#7BBDA4'
+    let g:terminal_color_7 = '#D0C8C6'
+    let g:terminal_color_8 = '#7E705A'
+    let g:terminal_color_9 = '#CB6077'
+    let g:terminal_color_10 = '#BEB55B'
+    let g:terminal_color_11 = '#F4BC87'
+    let g:terminal_color_12 = '#8AB3B5'
+    let g:terminal_color_13 = '#A89BB9'
+    let g:terminal_color_14 = '#7BBDA4'
+    let g:terminal_color_15 = '#F5EEEB'
+    let g:terminal_color_background = '#3B3228'
+    let g:terminal_color_foreground = '#D0C8C6'
   endif
 endif

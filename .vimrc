@@ -8,13 +8,15 @@ if !has('nvim')
   Plug 'ConradIrwin/vim-bracketed-paste'
 end
 Plug 'Raimondi/delimitMate'
-" Plug 'Shougo/unite.vim'
+Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 " Plug 'benekastah/neomake'
+Plug 'benmills/vimux'
 Plug 'bling/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'jeetsukumaran/vim-filebeagle'
 Plug 'junegunn/fzf'
+" Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -25,7 +27,7 @@ Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
 Plug 'mhinz/vim-grepper'
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 Plug 'osyo-manga/vim-over'
-Plug 'rking/ag.vim', {'on': 'Ag'}
+" Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
@@ -37,7 +39,6 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
 Plug 'tpope/vim-vinegar'
-" Plug 'unblevable/quick-scope'
 let g:netrw_banner = 1
 " Plug 'tsukkee/unite-tag'
 Plug 'wellle/targets.vim'
@@ -49,9 +50,9 @@ Plug 'fatih/vim-go'
 
 if has('python')
   if v:version > 703
-    Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+    " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
   endif
-  if has('patch-7.3.584')
+  if has('patch-7.3.598')
     Plug 'Valloric/YouCompleteMe'
   else
     Plug 'ajh17/VimCompletesMe'
@@ -66,19 +67,22 @@ endif
 " Plug 'facebook/vim-flow'
 Plug 'hynek/vim-python-pep8-indent'
 Plug 'sheerun/vim-polyglot'
+Plug 'zah/nim.vim'
 " Plug 'ap/vim-css-color'
 " Plug 'othree/javascript-libraries-syntax.vim'
 
 " Color
-" Plug 'abra/vim-abra'
+Plug 'Slava/vim-colors-tomorrow'
+" Plug 'altercation/vim-colors-solarized'
+" Plug 'blueyed/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
 " Plug 'chriskempson/vim-tomorrow-theme'
-" Plug 'cschlueter/vim-wombat
-" Plug 'guns/jellyx.vim'
+Plug 'cschlueter/vim-wombat'
+Plug 'guns/jellyx.vim'
 " Plug 'jonathanfilip/vim-lucius'
-Plug 'junegunn/seoul256.vim'
-" Plug 'morhetz/gruvbox'
-" Plug 'michalbachowski/vim-wombat256mod'
+" Plug 'junegunn/seoul256.vim'
+Plug 'morhetz/gruvbox'
+Plug 'michalbachowski/vim-wombat256mod'
 Plug 'nanotech/jellybeans.vim'
 " Plug 'notpratheek/vim-luna'
 " Plug 'romainl/Apprentice'
@@ -146,7 +150,9 @@ endif
 
 " if has('python')
 "   let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
+"   let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
 " endif
+
 
 " }}}
 " EasyAlign {{{
@@ -224,7 +230,7 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
 " nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
-" nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
+nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
 " " nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
 " nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
@@ -253,9 +259,14 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " autocmd FileType unite call s:custom_unite_settings()
 
 " }}}
+" Grepper {{{
+
+command! -nargs=* -complete=file Ag Grepper! -tool ag -open -switch -query <args>
+
+" }}}
 " YouCompleteMe {{{
 
-let g:ycm_path_to_python_interpreter = $HOME.'/.vim/venv/bin/python'
+let g:ycm_path_to_python_interpreter = $HOME.'/.vim/env/bin/python'
 let g:ycm_semantic_triggers = {'typescript': ['.']}
 
 " Looks up the symbol under the cursor and jumps to its definition if
@@ -297,6 +308,7 @@ let g:seoul256_background = 235  " Default is 237
 let g:gruvbox_italic = 0
 
 colorscheme hybrid
+let g:airline_theme = 'hybridline'
 
 let g:markdown_fenced_languages = ['python', 'javascript', 'js=javascript', 'json=javascript', 'go']
 
@@ -329,6 +341,15 @@ set completeopt=menuone,preview
 
 " Remove fold characters
 set fillchars="vert:|,fold:"
+
+" Set a nicer foldtext function
+set foldtext=NumLinesEndOfLine()
+function! NumLinesEndOfLine()
+  let maxwidth = 80
+  let lines = (v:foldend - v:foldstart + 1)
+  let linetext = strpart(getline(v:foldstart), 0, -3 + maxwidth - len(lines))
+  return linetext . repeat(' ', maxwidth - len(linetext) - len(lines)) . lines
+endfunction
 
 " ':substitute' flag 'g' is on by default, will replace
 " all matches on a line instead of one

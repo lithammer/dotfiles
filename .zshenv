@@ -8,11 +8,15 @@ GOPATH="$HOME/.go"
 
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:/usr/local/sbin"
-PATH="$PATH:$GOPATH/bin:/usr/local/opt/go/libexec/bin"
+PATH="$PATH:$GOPATH/bin"
+PATH="$PATH:/Users/Peter/Library/Python/2.7/bin"
 export PATH
 
-GOPATH="$GOPATH:$HOME/Code/.go"
+GOPATH="$GOPATH:$HOME"
 export GOPATH
+
+# Enable experimental vendoring feature available in Go 1.5
+export GO15VENDOREXPERIMENT=1
 
 # Path to man pages
 export MANPATH="/usr/local/man:$MANPATH"
@@ -42,3 +46,7 @@ export REPORTTIME=10
 # https://github.com/junegunn/fzf#respecting-gitignore-hgignore-and-svnignore
 export FZF_DEFAULT_COMMAND='ag -l -g ""'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+if [ -f ~/.zshenv.local ]; then
+    source ~/.zshenv.local
+fi

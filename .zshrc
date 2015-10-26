@@ -53,7 +53,7 @@ setopt COMBINING_CHARS      # Combine zero-length punctuation characters (accent
 
 # Enable z
 if [ -e /usr/local/etc/profile.d/z.sh ]; then
-    source "/usr/local/etc/profile.d/z.sh"
+    . "/usr/local/etc/profile.d/z.sh"
 fi
 
 # }}}
@@ -396,12 +396,12 @@ fi
 # FZF {{{
 
 if [ -e ~/.fzf.zsh ]; then
-    source ~/.fzf.zsh
+    . ~/.fzf.zsh
 fi
 
 # }}}
 
 if [ -f ~/.zshrc.local ]; then
-    source ~/.zshrc.local
+    . ~/.zshrc.local
 fi
 # vim: foldmethod=marker:

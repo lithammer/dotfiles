@@ -1,4 +1,5 @@
 " Plugins {{{
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 call plug#begin()
 
 Plug 'tpope/vim-sensible'
@@ -11,12 +12,10 @@ Plug 'Raimondi/delimitMate'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 " Plug 'benekastah/neomake'
-Plug 'benmills/vimux'
 Plug 'bling/vim-airline'
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'jeetsukumaran/vim-filebeagle'
-Plug 'junegunn/fzf'
-" Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
@@ -24,9 +23,9 @@ Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
-Plug 'mhinz/vim-grepper'
+" Plug 'mhinz/vim-grepper'
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
-Plug 'osyo-manga/vim-over'
+" Plug 'osyo-manga/vim-over'
 " Plug 'rking/ag.vim', {'on': 'Ag'}
 Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-commentary'
@@ -41,9 +40,8 @@ Plug 'tpope/vim-tbone'
 Plug 'tpope/vim-vinegar'
 let g:netrw_banner = 1
 " Plug 'tsukkee/unite-tag'
+" Plug 'unblevable/quick-scope'
 Plug 'wellle/targets.vim'
-
-Plug 'vim-scripts/LargeFile'
 
 Plug 'fatih/vim-go'
 " Plug 'rhysd/vim-go-impl'
@@ -54,43 +52,41 @@ if has('python')
   endif
   if has('patch-7.3.598')
     Plug 'Valloric/YouCompleteMe'
-  else
-    Plug 'ajh17/VimCompletesMe'
   end
   " Plug 'davidhalter/jedi-vim'
   " Plug 'lambdalisue/vim-pyenv'
   " Plug 'jmcantrell/vim-virtualenv'
-else
-  Plug 'ajh17/VimCompletesMe'
 endif
 
 " Plug 'facebook/vim-flow'
 Plug 'hynek/vim-python-pep8-indent'
 Plug 'sheerun/vim-polyglot'
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-erlang/vim-erlang-omnicomplete'
 Plug 'zah/nim.vim'
 " Plug 'ap/vim-css-color'
 " Plug 'othree/javascript-libraries-syntax.vim'
 
 " Color
-Plug 'Slava/vim-colors-tomorrow'
+" Plug 'Slava/vim-colors-tomorrow'
 " Plug 'altercation/vim-colors-solarized'
 " Plug 'blueyed/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
 " Plug 'chriskempson/vim-tomorrow-theme'
-Plug 'cschlueter/vim-wombat'
-Plug 'guns/jellyx.vim'
+" Plug 'cschlueter/vim-wombat'
+" Plug 'guns/jellyx.vim'
 " Plug 'jonathanfilip/vim-lucius'
 " Plug 'junegunn/seoul256.vim'
-Plug 'morhetz/gruvbox'
-Plug 'michalbachowski/vim-wombat256mod'
-Plug 'nanotech/jellybeans.vim'
+" Plug 'mhartington/oceanic-next'
+" Plug 'morhetz/gruvbox'
+" Plug 'michalbachowski/vim-wombat256mod'
+" Plug 'nanotech/jellybeans.vim'
 " Plug 'notpratheek/vim-luna'
 " Plug 'romainl/Apprentice'
 " Plug 'w0ng/vim-hybrid'
 Plug 'renstrom/vim-hybrid'
 
 call plug#end()
-
 " }}}
 " Plugin settings and mappings {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,20 +95,15 @@ call plug#end()
 let mapleader = ','
 
 " Airline {{{
-
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
 let g:airline#extensions#branch#enabled = 0
-
 " }}}
 " Ag {{{
-
 let g:ag_prg = 'ag --vimgrep'
-
 " "}}}
 " Brightest {{{
-
 let g:brightest#highlight = {'group': 'BrightestReverse'}
 let g:brightest#enable_filetypes = {
 \  '_': 0,
@@ -120,21 +111,13 @@ let g:brightest#enable_filetypes = {
 \  'go': 1,
 \  'javascript': 1,
 \}
-
-" }}}
-" delimitMate {{{
-
-" Enable expansion of <CR>
-let delimitMate_expand_cr = 1
-
 " }}}
 " Commentary {{{
 map <Leader>c :Commentary<CR>
 " }}}
-" Ctrlp {{{
-
-nnoremap <C-t> :CtrlPTag<CR>
-nnoremap <C-b> :CtrlPBuffer<CR>
+" CtrlP {{{
+" nnoremap <C-t> :CtrlPTag<CR>
+" nnoremap <C-b> :CtrlPBuffer<CR>
 
 " let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
 let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
@@ -152,20 +135,37 @@ endif
 "   let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
 "   let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
 " endif
-
-
+" }}}
+" delimitMate {{{
+let delimitMate_expand_cr = 1
 " }}}
 " EasyAlign {{{
 vmap <Enter> <Plug>(EasyAlign)
 " }}}
+" fzf {{{
+" let g:fzf_command_prefix = 'Fzf'
+nnoremap <C-p> :Files<CR>
+nnoremap <C-t> :Tags<CR>
+nnoremap <C-b> :Buffers<CR>
+" }}}
 " Go {{{
 let g:go_fmt_command = 'goimports'
 " }}}
+" Grepper {{{
+let g:grepper = {
+      \ 'open': 1,
+      \ 'switch': 1,
+      \ }
+" command! -nargs=* -complete=file Ag Grepper! -tool ag -open -switch -query <args>
+" }}}
 " Gutentags {{{
-
 let g:gutentags_cache_dir = $HOME.'/.vim/tags'
-let g:gutentags_exclude = ['/usr/local']
-
+let g:gutentags_exclude = [
+  \ '/usr/local/*',
+  \ '*.min.js',
+  \ '*/vendor/*',
+  \ '*/node_modules/*'
+  \ ]
 " }}}
 " Neomake {{{
 highlight link NeomakeErrorSign ErrorMsg
@@ -184,12 +184,6 @@ let g:neomake_open_list = 1
 let g:neomake_verbose = 0  " Log only errors
 
 let g:neomake_python_enabled_makers = ['pep8', 'frosted']
-
-" }}}
-" Pyenv {{{
-" let g:pyenv#auto_force_py_version_jedi = 0
-" let g:pyenv#auto_force_py_version = 0
-" let g:pyenv#jedi#auto_force_py_version = 0
 " }}}
 " Sneak {{{
 " let g:sneak#streak = 1
@@ -216,8 +210,11 @@ let g:syntastic_javascript_checkers = ['eslint']
 " let g:syntastic_javascript_jsxhint_args = '--babel'
 " let g:syntastic_lua_checkers = ['luac', 'luacheck']
 let g:syntastic_lua_checkers = ['luac']
-let g:syntastic_python_checkers = ['pep8', 'frosted']
+let g:syntastic_python_checkers = ['pep8', 'frosted', 'pylint']
+autocmd BufEnter *.py let g:syntastic_python_pylint_exec = getcwd() . '/env/bin/pylint'
 let g:syntastic_typescript_checkers = ['tsc', 'tslint']
+" http://www.jbrantly.com/typescript-and-jsx/
+let g:syntastic_typescript_tsc_args = '--jsx react'
 let g:syntastic_typescript_tslint_args = '--config ~/.tslint.json'
 " }}}
 " UltiSnips {{{
@@ -226,7 +223,6 @@ let g:UltiSnipsJumpForwardTrigger = '<C-k>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 " }}}
 " Unite {{{
-
 " call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
 " nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
@@ -234,38 +230,33 @@ nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
 " " nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
 " nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
-" " Don't cache, it's fast enough
-" let g:unite_source_rec_max_cache_files = 0
+" Don't cache, it's fast enough
+let g:unite_source_rec_max_cache_files = 0
 
-" call unite#custom#source('file_rec/async,file_rec/git', 'sorters', ['sorter_rank'])
-" call unite#custom#source('file_rec/async,file_rec/git,grep', 'converters', ['converter_relative_word'])
+call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim', 'sorters', ['sorter_rank'])
+call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim', 'matchers', ['matcher_fuzzy'])
+call unite#custom#source('file_rec/async,file_rec/git,grep', 'converters', ['converter_relative_word'])
 " " This might not work since `wildignore` is empty here
 " call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
 
-" if executable('ag')
-"   let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
-"   let g:unite_source_grep_command = 'ag'
-"   let g:unite_source_grep_default_opts = '--vimgrep'
-"   let g:unite_source_grep_recursive_opt = ''
-" endif
+if executable('ag')
+  let g:unite_source_rec_async_command =
+        \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', '']
+  let g:unite_source_grep_command = ['ag']
+  let g:unite_source_grep_default_opts = ['--vimgrep']
+  let g:unite_source_grep_recursive_opt = ['']
+endif
 
-" function! s:custom_unite_settings()
-"   " Overwrite settings.
-"   " imap <silent><buffer> <Esc> :UniteClose<CR>
-"   imap <silent><buffer><expr> <C-s> unite#do_action('split')
-"   imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-"   imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-" endfunction
-" autocmd FileType unite call s:custom_unite_settings()
-
-" }}}
-" Grepper {{{
-
-command! -nargs=* -complete=file Ag Grepper! -tool ag -open -switch -query <args>
-
+function! s:custom_unite_settings()
+  " Overwrite settings.
+  " imap <silent><buffer> <Esc> :UniteClose<CR>
+  imap <silent><buffer><expr> <C-s> unite#do_action('split')
+  imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+  imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+endfunction
+autocmd FileType unite call s:custom_unite_settings()
 " }}}
 " YouCompleteMe {{{
-
 let g:ycm_path_to_python_interpreter = $HOME.'/.vim/env/bin/python'
 let g:ycm_semantic_triggers = {'typescript': ['.']}
 
@@ -273,9 +264,7 @@ let g:ycm_semantic_triggers = {'typescript': ['.']}
 " possible; if the definition is not accessible from the current translation
 " unit, jumps to the symbol's declaration.
 nnoremap <leader>jd :YcmCompleter GoTo<CR>
-
 " }}}
-
 " }}}
 " Options {{{
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -496,9 +485,45 @@ nnoremap * *<C-o>
 " nnoremap <Tab> :lnext<CR>
 " nnoremap <S-Tab> :lprevious<CR>
 
-" Circular windows navigation
-nnoremap <Tab> <C-w>w
-nnoremap <S-Tab> <C-w>W
+" Circular tab navigation
+nnoremap <Tab> :tabnext<CR>
+nnoremap <S-Tab> :tabprevious<CR>
+
+" Map CTRL-] to Swedish keyboard counter-part
+" map <C-ä> <C-]>
+" inoremap <C-ö> <C-[>
+
+function! LocationPrevious()
+  try
+    lprev
+  catch /^Vim\%((\a\+)\)\=:E553/
+    llast
+  endtry
+endfunction
+
+function! LocationNext()
+  try
+    lnext
+  catch /^Vim\%((\a\+)\)\=:E553/
+    lfirst
+  endtry
+endfunction
+
+nnoremap ]l :call LocationNext()<CR>zx
+nnoremap [l :call LocationPrevious()<CR>zx
+
+" nmap < [
+" nmap > ]
+" omap < [
+" omap > ]
+" xmap < [
+" xmap > ]
+nmap ö [
+nmap ä ]
+omap ö [
+omap ä ]
+xmap ö [
+xmap ä ]
 
 " }}}
 " Auto commands {{{
@@ -598,7 +623,7 @@ function! SetupPython()
       end
 
       let l:line_ranges = v:lnum . '-' . (v:lnum + v:count - 1)
-      execute '0,$!yapf --lines=' . l:line_ranges
+      silent execute '0,$!yapf --lines=' . l:line_ranges
       " Reset cursor to first line of the formatted range
       call cursor(v:lnum, 1)
     endfunction
@@ -685,7 +710,7 @@ if has('gui_win32')
 endif
 
 " Local settings
-silent! source ~/.vimrc.local
+silent source ~/.vimrc.local
 
 " vim: set foldenable foldmethod=marker foldlevel=0:
 " }}}

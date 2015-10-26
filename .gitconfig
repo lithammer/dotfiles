@@ -38,6 +38,7 @@
 	standup = "!git log --since yesterday --author `git config user.email` --pretty=short"
 	wdiff = diff --color-words
 	rdiff = submodule foreach --recursive git diff
+	prune-local-branches = "!git branch --merged master | grep -v 'master$' | xargs git branch -d"
 
 [push]
 	default = current
@@ -65,3 +66,11 @@
 	prune = true
 
 # vim: set commentstring=#\ %s:
+[filter "hawser"]
+	clean = git hawser clean %f
+	smudge = git hawser smudge %f
+	required = true
+[filter "lfs"]
+	clean = git lfs clean %f
+	smudge = git lfs smudge %f
+	required = true

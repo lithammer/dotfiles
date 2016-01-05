@@ -3,8 +3,7 @@ if [[ "$TERM" == 'dumb' ]]; then
     return 1
 fi
 
-# Colors {{{
-
+# Colors {{{1
 autoload colors
 colors
 
@@ -39,11 +38,7 @@ man() {
         LESS_TERMCAP_us="$fg_bold[yellow]" \
             man "$@"
 }
-
-# }}}
-
-# Misc {{{
-
+# Misc {{{1
 autoload -U add-zsh-hook
 autoload -U run-help
 autoload run-help-git  # Enable `git help <command>`
@@ -55,11 +50,7 @@ setopt COMBINING_CHARS      # Combine zero-length punctuation characters (accent
 if [ -e /usr/local/etc/profile.d/z.sh ]; then
     . "/usr/local/etc/profile.d/z.sh"
 fi
-
-# }}}
-
-# Completion {{{
-
+# Completion {{{1
 # Add zsh-completions to $fpath.
 fpath=(/usr/local/share/zsh-completions $fpath)
 
@@ -176,21 +167,13 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<-
 
 # Enable pyenv
 # https://github.com/yyuu/pyenv
-if command -v pyenv > /dev/null; then
-    eval "$(pyenv init --no-rehash - zsh)"
-fi
-
 # https://github.com/yyuu/pyenv-virtualenv
-if command -v pyenv virtualenv-init > /dev/null; then
-    eval "$(pyenv virtualenv-init --no-rehash - zsh)"
-fi
+eval "$(command pyenv init --no-rehash - 2> /dev/null)"
+eval "$(command pyenv virtualenv-init --no-rehash - 2> /dev/null)"
 
-if command -v gulp > /dev/null; then
-    eval "$(gulp --completion=zsh)"
-fi
-# }}}
-# Navigation {{{
-
+# Gulp completion, too slow!
+# eval "$(command gulp --completion=zsh 2> /dev/null)"
+# Navigation {{{1
 # Changing/making/removing directory
 setopt AUTO_PUSHD
 setopt PUSHD_SILENT
@@ -201,10 +184,7 @@ setopt AUTO_NAME_DIRS
 setopt AUTO_CD
 setopt MULTIOS
 setopt CDABLEVARS
-
-# }}}
-# History {{{
-
+# History {{{1
 HISTFILE=~/.zsh_history
 HISTSIZE=100000
 SAVEHIST=100000
@@ -219,10 +199,7 @@ setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history fi
 setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
 setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
 setopt SHARE_HISTORY          # Share history between all sessions.
-
-# }}}
-# Prompt {{{
-
+# Prompt {{{1
 # Enable substition in the prompt
 setopt PROMPT_SUBST
 
@@ -292,8 +269,7 @@ __right_prompt() {
 
 PROMPT='$(__prompt)'
 RPROMPT='$(__right_prompt)'
-# }}}
-# Key bindings {{{
+# Key bindings {{{1
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 
@@ -362,10 +338,7 @@ bindkey '^[[B' down-line-or-beginning-search
 
 bindkey '^[[H' beginning-of-line                      # [fn-LeftArrow] - Go to beggining of line
 bindkey '^[[F' end-of-line                            # [fn-RightArrow] - Go to end of line
-
-# }}}
-# Aliases {{{
-
+# Aliases {{{1
 # Basic directory operations
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -389,18 +362,11 @@ alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do 
 if command -v nvim > /dev/null; then
     alias vim='nvim'
 fi
-
-# }}}
-# Tmux {{{
-# }}}
-# FZF {{{
-
+# FZF {{{1
 if [ -e ~/.fzf.zsh ]; then
     . ~/.fzf.zsh
 fi
-
-# }}}
-
+# Local config {{{1
 if [ -f ~/.zshrc.local ]; then
     . ~/.zshrc.local
 fi

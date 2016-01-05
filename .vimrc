@@ -1,243 +1,59 @@
-" Plugins {{{
+" Plugins {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 call plug#begin()
 
+" Use a different mapleader (default is '\')
+let mapleader = ','
+" tpope/vim-sensible {{{2
 Plug 'tpope/vim-sensible'
-
+" ConradIrwin/vim-bracketed-paste {{{2
 if !has('nvim')
   " This functionality is built into Neovim
   Plug 'ConradIrwin/vim-bracketed-paste'
 end
+" Raimondi/delimitMate {{{2
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
-" Plug 'benekastah/neomake'
-Plug 'bling/vim-airline'
-" Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'jeetsukumaran/vim-filebeagle'
-Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-peekaboo'
-Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
-Plug 'justinmk/vim-sneak'
-Plug 'kshenoy/vim-signature'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'marijnh/tern_for_vim', {'do': 'npm install'}
-" Plug 'mhinz/vim-grepper'
-Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
-" Plug 'osyo-manga/vim-over'
-" Plug 'rking/ag.vim', {'on': 'Ag'}
-Plug 'scrooloose/syntastic'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sleuth'
-Plug 'tpope/vim-speeddating'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-tbone'
-Plug 'tpope/vim-vinegar'
-let g:netrw_banner = 1
-" Plug 'tsukkee/unite-tag'
-" Plug 'unblevable/quick-scope'
-Plug 'wellle/targets.vim'
-
-Plug 'fatih/vim-go'
-" Plug 'rhysd/vim-go-impl'
-
-if has('python')
-  if v:version > 703
-    " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-  endif
-  if has('patch-7.3.598')
-    Plug 'Valloric/YouCompleteMe'
-  end
-  " Plug 'davidhalter/jedi-vim'
-  " Plug 'lambdalisue/vim-pyenv'
-  " Plug 'jmcantrell/vim-virtualenv'
-endif
-
-" Plug 'facebook/vim-flow'
-Plug 'hynek/vim-python-pep8-indent'
-Plug 'sheerun/vim-polyglot'
-Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'vim-erlang/vim-erlang-omnicomplete'
-Plug 'zah/nim.vim'
-" Plug 'ap/vim-css-color'
-" Plug 'othree/javascript-libraries-syntax.vim'
-
-" Color
-" Plug 'Slava/vim-colors-tomorrow'
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'blueyed/vim-colors-solarized'
-Plug 'chriskempson/base16-vim'
-" Plug 'chriskempson/vim-tomorrow-theme'
-" Plug 'cschlueter/vim-wombat'
-" Plug 'guns/jellyx.vim'
-" Plug 'jonathanfilip/vim-lucius'
-" Plug 'junegunn/seoul256.vim'
-" Plug 'mhartington/oceanic-next'
-" Plug 'morhetz/gruvbox'
-" Plug 'michalbachowski/vim-wombat256mod'
-" Plug 'nanotech/jellybeans.vim'
-" Plug 'notpratheek/vim-luna'
-" Plug 'romainl/Apprentice'
-" Plug 'w0ng/vim-hybrid'
-Plug 'renstrom/vim-hybrid'
-
-call plug#end()
-" }}}
-" Plugin settings and mappings {{{
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-" Use a different mapleader (default is '\')
-let mapleader = ','
-
-" Airline {{{
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-
-let g:airline#extensions#branch#enabled = 0
-" }}}
-" Ag {{{
-let g:ag_prg = 'ag --vimgrep'
-" "}}}
-" Brightest {{{
-let g:brightest#highlight = {'group': 'BrightestReverse'}
-let g:brightest#enable_filetypes = {
-\  '_': 0,
-\  'python': 1,
-\  'go': 1,
-\  'javascript': 1,
-\}
-" }}}
-" Commentary {{{
-map <Leader>c :Commentary<CR>
-" }}}
-" CtrlP {{{
-" nnoremap <C-t> :CtrlPTag<CR>
-" nnoremap <C-b> :CtrlPBuffer<CR>
-
-" let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
-let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
-
-if executable('ag')
-  let g:ctrlp_user_command = [
-    \ '.git',
-    \ 'git ls-files --cached --others --exclude-standard %s',
-    \ 'ag %s --nocolor --nogroup --files-with-matches -g ""'
-  \ ]
-  let g:ctrlp_use_caching = 0
-endif
-
-" if has('python')
-"   let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
-"   let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
-" endif
-" }}}
-" delimitMate {{{
 let delimitMate_expand_cr = 1
-" }}}
-" EasyAlign {{{
-vmap <Enter> <Plug>(EasyAlign)
-" }}}
-" fzf {{{
-" let g:fzf_command_prefix = 'Fzf'
-nnoremap <C-p> :Files<CR>
-nnoremap <C-t> :Tags<CR>
-nnoremap <C-b> :Buffers<CR>
-" }}}
-" Go {{{
-let g:go_fmt_command = 'goimports'
-" }}}
-" Grepper {{{
-let g:grepper = {
-      \ 'open': 1,
-      \ 'switch': 1,
-      \ }
-" command! -nargs=* -complete=file Ag Grepper! -tool ag -open -switch -query <args>
-" }}}
-" Gutentags {{{
-let g:gutentags_cache_dir = $HOME.'/.vim/tags'
-let g:gutentags_exclude = [
-  \ '/usr/local/*',
-  \ '*.min.js',
-  \ '*/vendor/*',
-  \ '*/node_modules/*'
-  \ ]
-" }}}
-" Neomake {{{
-highlight link NeomakeErrorSign ErrorMsg
-highlight link NeomakeWarningSign Type
+" Shougo/deoplete.nvim {{{2
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim'
+"   Plug 'davidhalter/jedi-vim'
+"   Plug 'Quramy/tsuquyomi'
 
-let g:neomake_error_sign = {
-    \ 'text': 'E>',
-    \ 'texthl': 'NeomakeErrorSign',
-    \ }
-let g:neomake_warning_sign = {
-    \ 'text': 'W>',
-    \ 'texthl': 'NeomakeWarningSign',
-    \ }
+"   let g:deoplete#enable_at_startup = 1
+"   let g:deoplete#enable_smart_case = 1
 
-let g:neomake_open_list = 1
-let g:neomake_verbose = 0  " Log only errors
+"   let g:deoplete#omni_patterns = {}
+"   let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
+"   let g:deoplete#omni_patterns.typescript = '[^. *\t]\.\w*'
 
-let g:neomake_python_enabled_makers = ['pep8', 'frosted']
-" }}}
-" Sneak {{{
-" let g:sneak#streak = 1
-nmap s <Plug>Sneak_s
-nmap S <Plug>Sneak_S
-highlight link SneakPluginTarget Search
-highlight link SneakStreakTarget Error
-highlight link SneakStreakMask Normal
-highlight link SneakPluginScope Search
-" }}}
-" Syntastic {{{
-highlight link SyntasticErrorSign ErrorMsg
-highlight link SyntasticWarningSign Type
+"   let g:deoplete#sources = {}
+"   " Remove tags and buffer from default source list
+"   " let g:deoplete#sources._ = ['buffer', 'member', 'file', 'omni']
+"   let g:deoplete#sources._ = ['buffer', 'member', 'file', 'omni']
+"   let g:deoplete#sources.gitcommit = ['buffer']
 
-let g:syntastic_check_on_open = 0
-let g:syntastic_always_populate_loc_list = 1
+"   inoremap <silent><expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 
-let g:syntastic_error_symbol = 'E>'
-let g:syntastic_warning_symbol = 'W>'
-let g:syntastic_aggregate_errors = 1
-" let g:syntastic_html_checkers = []
-let g:syntastic_go_checkers = ['go', 'govet']
-let g:syntastic_javascript_checkers = ['eslint']
-" let g:syntastic_javascript_jsxhint_args = '--babel'
-" let g:syntastic_lua_checkers = ['luac', 'luacheck']
-let g:syntastic_lua_checkers = ['luac']
-let g:syntastic_python_checkers = ['pep8', 'frosted', 'pylint']
-autocmd BufEnter *.py let g:syntastic_python_pylint_exec = getcwd() . '/env/bin/pylint'
-let g:syntastic_typescript_checkers = ['tsc', 'tslint']
-" http://www.jbrantly.com/typescript-and-jsx/
-let g:syntastic_typescript_tsc_args = '--jsx react'
-let g:syntastic_typescript_tslint_args = '--config ~/.tslint.json'
-" }}}
-" UltiSnips {{{
-let g:UltiSnipsExpandTrigger = '<C-k>'
-let g:UltiSnipsJumpForwardTrigger = '<C-k>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
-" }}}
-" Unite {{{
+"   let g:jedi#use_splits_not_buffers = 'winwidth'
+"   let g:jedi#completions_enabled = 0
+"   let g:jedi#auto_vim_configuration = 0
+"   let g:jedi#smart_auto_mappings = 0
+"   let g:jedi#show_call_signatures = 0
+"   let g:tsuquyomi_disable_default_mappings = 1
+"   let g:tsuquyomi_disable_quickfix = 1
+" endif
+" Shougo/unite.vim {{{2
+Plug 'Shougo/unite.vim' | Plug 'Shougo/unite-outline'
 " call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
 " nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
 nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
-" " nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
+" nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
 " nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
 
 " Don't cache, it's fast enough
 let g:unite_source_rec_max_cache_files = 0
-
-call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim', 'sorters', ['sorter_rank'])
-call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim', 'matchers', ['matcher_fuzzy'])
-call unite#custom#source('file_rec/async,file_rec/git,grep', 'converters', ['converter_relative_word'])
-" " This might not work since `wildignore` is empty here
-" call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
 
 if executable('ag')
   let g:unite_source_rec_async_command =
@@ -253,20 +69,221 @@ function! s:custom_unite_settings()
   imap <silent><buffer><expr> <C-s> unite#do_action('split')
   imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
   imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+
+  call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim',
+        \'sorters', ['sorter_rank'])
+  call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim',
+        \'matchers', ['matcher_fuzzy'])
+  call unite#custom#source('file_rec/async,file_rec/git,grep',
+        \'converters', ['converter_relative_word'])
+  " " This might not work since `wildignore` is empty here
+  " call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
 endfunction
 autocmd FileType unite call s:custom_unite_settings()
-" }}}
-" YouCompleteMe {{{
-let g:ycm_path_to_python_interpreter = $HOME.'/.vim/env/bin/python'
-let g:ycm_semantic_triggers = {'typescript': ['.']}
 
-" Looks up the symbol under the cursor and jumps to its definition if
-" possible; if the definition is not accessible from the current translation
-" unit, jumps to the symbol's declaration.
-nnoremap <leader>jd :YcmCompleter GoTo<CR>
+" Shougo/vimproc.vim {{{2
+Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
+" SirVer/ultisnips {{{2
+if has('python') && v:version > 703
+  " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+  let g:UltiSnipsExpandTrigger = '<C-k>'
+  let g:UltiSnipsJumpForwardTrigger = '<C-k>'
+  let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
+endif
+" Valloric/YouCompleteMe {{{2
+if has('python') && has('patch-7.3.598')
+  Plug 'Valloric/YouCompleteMe'
+  let g:ycm_path_to_python_interpreter = expand('~/.vim/env/bin/python')
+  " Disable the identifier completer
+  " let g:ycm_min_num_of_chars_for_completion = 99
+  let g:ycm_use_ultisnips_completer = 0
+  let g:ycm_goto_buffer_command = 'horizontal-split'
+  " let g:ycm_collect_identifiers_from_tags_files = 1
+
+  " Looks up the symbol under the cursor and jumps to its definition if
+  " possible; if the definition is not accessible from the current translation
+  " unit, jumps to the symbol's declaration.
+  nnoremap <leader>jd :YcmCompleter GoTo<CR>
+end
+
+" airblade/vim-gitgutter {{{2
+Plug 'airblade/vim-gitgutter'
+let g:gitgutter_map_keys = 0
+" benekastah/neomake {{{2
+Plug 'benekastah/neomake'
+highlight link NeomakeErrorSign ErrorMsg
+highlight link NeomakeWarningSign Type
+
+let g:neomake_error_sign = {
+    \ 'text': 'E>',
+    \ 'texthl': 'NeomakeErrorSign',
+    \ }
+let g:neomake_warning_sign = {
+    \ 'text': 'W>',
+    \ 'texthl': 'NeomakeWarningSign',
+    \ }
+
+" let g:neomake_open_list = 1
+let g:neomake_verbose = 0  " Log only errors
+
+let g:neomake_python_enabled_makers = ['pep8', 'frosted']
+" bling/vim-airline {{{2
+" Plug 'bling/vim-airline'
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+
+let g:airline#extensions#branch#enabled = 0
+" ctrlpvim/ctrlp.vim {{{2
+" Plug 'ctrlpvim/ctrlp.vim'
+" nnoremap <C-t> :CtrlPTag<CR>
+" nnoremap <C-b> :CtrlPBuffer<CR>
+
+" let g:ctrlp_custom_ignore = {'dir': '\v[\/](venv|env|node_modules|vendor)$'}
+let g:ctrlp_custom_ignore = {'dir': '\v[\/](vendor)$'}
+
+if executable('ag')
+  let g:ctrlp_user_command = [
+    \ '.git',
+    \ 'git ls-files --cached --others --exclude-standard %s',
+    \ 'ag %s --nocolor --nogroup --files-with-matches -g ""'
+  \ ]
+  let g:ctrlp_use_caching = 0
+endif
+" fatih/vim-go {{{2
+Plug 'fatih/vim-go'
+let g:go_fmt_command = 'goimports'
+" hynek/vim-python-pep8-indent {{{2
+Plug 'hynek/vim-python-pep8-indent'
+" jeetsukumaran/vim-filebeagle {{{2
+" Plug 'jeetsukumaran/vim-filebeagle'
+" junegunn/fzf {{{2
+Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
+" let g:fzf_command_prefix = 'Fzf'
+nnoremap <C-p> :Files<CR>
+nnoremap <C-t> :Tags<CR>
+nnoremap <C-b> :Buffers<CR>
+" junegunn/vim-peekaboo {{{2
+Plug 'junegunn/vim-peekaboo'
+" junegunn/rainbow_parentheses.vim {{{2
+Plug 'junegunn/rainbow_parentheses.vim'
+" junegunn/vim-easy-align {{{2
+Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
+vmap <Enter> <Plug>(EasyAlign)
+" justinmk/vim-sneak {{{2
+Plug 'justinmk/vim-sneak'
+" let g:sneak#streak = 1
+nmap s <Plug>Sneak_s
+nmap S <Plug>Sneak_S
+highlight link SneakPluginTarget Search
+highlight link SneakStreakTarget Error
+highlight link SneakStreakMask Normal
+highlight link SneakPluginScope Search
+" kshenoy/vim-signature {{{2
+Plug 'kshenoy/vim-signature'
+" ludovicchabant/vim-gutentags {{{2
+Plug 'ludovicchabant/vim-gutentags'
+let g:gutentags_cache_dir = expand('~/.vim/tags')
+let g:gutentags_exclude = [
+  \ '/usr/local/*',
+  \ '*.min.js',
+  \ '*/vendor/*',
+  \ '*/node_modules/*',
+  \ '*/env/*',
+  \ '*/venv/*',
+  \ '*/esb2001/*',
+  \ '*/isa-gw/*',
+  \ '*/platform/*'
+  \ ]
+" ternjs/tern_for_vim {{{2
+Plug 'ternjs/tern_for_vim', {'do': 'npm install'}
+" mhinz/vim-grepper {{{2
+Plug 'mhinz/vim-grepper'
+let g:grepper = {
+      \ 'open': 1,
+      \ 'switch': 1,
+      \ }
+" command! -nargs=* -complete=file Ag Grepper! -tool ag -open -switch -query <args>
+" osyo-manga/vim-brightest {{{2
+Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
+let g:brightest#highlight = {'group': 'BrightestReverse'}
+let g:brightest#enable_filetypes = {
+\  '_': 0,
+\  'python': 1,
+\  'go': 1,
+\  'javascript': 1,
+\}
+" scrooloose/syntastic {{{2
+Plug 'scrooloose/syntastic'
+highlight link SyntasticErrorSign ErrorMsg
+highlight link SyntasticWarningSign Type
+
+let g:syntastic_check_on_open = 0
+let g:syntastic_always_populate_loc_list = 1
+
+let g:syntastic_error_symbol = 'E>'
+let g:syntastic_warning_symbol = 'W>'
+let g:syntastic_aggregate_errors = 1
+" let g:syntastic_html_checkers = []
+let g:syntastic_go_checkers = ['go', 'govet', 'golint']
+let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_javascript_jsxhint_args = '--babel'
+" let g:syntastic_lua_checkers = ['luac', 'luacheck']
+let g:syntastic_lua_checkers = ['luac']
+let g:syntastic_python_checkers = ['pep8', 'frosted', 'pylint']
+let g:syntastic_typescript_checkers = ['tsc', 'tslint']
+" http://www.jbrantly.com/typescript-and-jsx/
+let g:syntastic_typescript_tsc_args = '--jsx react --module commonjs --target ES5'
+let g:syntastic_typescript_tslint_args = '--config ~/.config/.tslint.json'
+" sheerun/vim-polyglot {{{2
+Plug 'sheerun/vim-polyglot'
+" tpope/vim-commentary {{{2
+Plug 'tpope/vim-commentary'
+map <Leader>c :Commentary<CR>
+" tpope/vim-dispatch {{{2
+Plug 'tpope/vim-dispatch'
+" tpope/vim-eunuch {{{2
+Plug 'tpope/vim-eunuch'
+" tpope/vim-flagship {{{2
+" Plug 'tpope/vim-flagship'
+" tpope/vim-fugitive {{{2
+Plug 'tpope/vim-fugitive'
+" tpope/vim-repeat {{{2
+Plug 'tpope/vim-repeat'
+" tpope/vim-sleuth {{{2
+Plug 'tpope/vim-sleuth'
+" tpope/vim-speeddating {{{2
+Plug 'tpope/vim-speeddating'
+" tpope/vim-surround {{{2
+Plug 'tpope/vim-surround'
+" tpope/vim-tbone {{{2
+Plug 'tpope/vim-tbone'
+" unblevable/quick-scope {{{2
+" Plug 'unblevable/quick-scope'
+" wellle/targets.vim {{{2
+Plug 'wellle/targets.vim'
 " }}}
+
+" Colorschemes {{{2
+" Plug 'Slava/vim-colors-tomorrow'
+" Plug 'altercation/vim-colors-solarized'
+Plug 'chriskempson/base16-vim'
+" Plug 'chriskempson/vim-tomorrow-theme'
+Plug 'cschlueter/vim-wombat'
+Plug 'guns/jellyx.vim'
+Plug 'jonathanfilip/vim-lucius'
+Plug 'joshdick/onedark.vim'
+Plug 'junegunn/seoul256.vim'
+Plug 'mhartington/oceanic-next'
+Plug 'morhetz/gruvbox'
+Plug 'michalbachowski/vim-wombat256mod'
+Plug 'nanotech/jellybeans.vim'
+Plug 'notpratheek/vim-luna'
+Plug 'romainl/Apprentice'
+" Plug 'w0ng/vim-hybrid'
+Plug 'renstrom/vim-hybrid'
 " }}}
-" Options {{{
+call plug#end()
+" Options {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Use :help 'option' or press 'K' while having the cursor on the option to see
@@ -293,13 +310,14 @@ set t_Co=256
 set background=dark
 
 " let g:airline_theme = 'hybridline'
-let g:seoul256_background = 235  " Default is 237
 let g:gruvbox_italic = 0
 
-colorscheme hybrid
-let g:airline_theme = 'hybridline'
+colorscheme gruvbox
+" highlight! link WildMenu Search
+" let g:airline_theme = 'hybridline'
 
-let g:markdown_fenced_languages = ['python', 'javascript', 'js=javascript', 'json=javascript', 'go']
+let g:markdown_fenced_languages = [
+  \ 'python', 'javascript', 'js=javascript', 'json=javascript', 'go']
 
 " Don't try to highlight lines longer than 800 characters.
 set synmaxcol=400
@@ -329,7 +347,8 @@ set completeopt=menuone,preview
 " set completeopt=menuone
 
 " Remove fold characters
-set fillchars="vert:|,fold:"
+" set fillchars-=fold:-
+set fillchars="vert:│,fold:"
 
 " Set a nicer foldtext function
 set foldtext=NumLinesEndOfLine()
@@ -353,7 +372,7 @@ if executable('ag')
 else
   let &grepprg = 'grep --recursive --line-number $* *'
 endif
-command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
+" command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
 
 " Highlight all search matches
 set hlsearch
@@ -382,11 +401,13 @@ set wrap
 let &showbreak = '↪ '
 
 " Break long lines on more natural break points
-set linebreak
+if has('linebreak')
+  set linebreak
+endif
 
 " Every wrapped line will continue visually indented (same amount of space as
 " the beginning of that line), thus preserving horizontal blocks of text.
-if has('patch-7.4.338')
+if exists('+breakindent')
   set breakindent
   set breakindentopt=shift:2
 end
@@ -395,7 +416,7 @@ end
 set number
 
 " Use current line as starting point for line numbering
-if has('patch-7.3.787')
+if exists('+relativenumber')
   set relativenumber
 endif
 
@@ -436,7 +457,7 @@ endif
 set virtualedit=block
 
 " Case-insensitive completion for file names and directories
-if has('patch-7.3.072')
+if exists('+wildignorecase')
   set wildignorecase
 end
 
@@ -457,9 +478,7 @@ set wildignore+=venv,env,node_modules,bower_components
 
 " OS files
 set wildignore+=*.DS_Store
-
-" }}}
-" Mappings {{{
+" Mappings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " My fingers are too fast!
@@ -488,10 +507,6 @@ nnoremap * *<C-o>
 " Circular tab navigation
 nnoremap <Tab> :tabnext<CR>
 nnoremap <S-Tab> :tabprevious<CR>
-
-" Map CTRL-] to Swedish keyboard counter-part
-" map <C-ä> <C-]>
-" inoremap <C-ö> <C-[>
 
 function! LocationPrevious()
   try
@@ -524,9 +539,7 @@ omap ö [
 omap ä ]
 xmap ö [
 xmap ä ]
-
-" }}}
-" Auto commands {{{
+" Auto commands {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Sets the filetype when using Ctrl-x-e in bash
@@ -537,6 +550,13 @@ autocmd FileType vim,help setlocal keywordprg=:help
 
 " Resize splits when the window is resized
 autocmd VimResized * :wincmd =
+
+" Only show cursorline in the current buffer
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
+augroup END
 
 " Only show colorcolumn in the current window
 if &colorcolumn == '+1'
@@ -579,9 +599,7 @@ augroup rainbow_colors
   autocmd FileType clojure,scheme,python RainbowParentheses
 augroup END
 " au VimEnter * RainbowParentheses
-
-" }}}
-" Filetype settings {{{
+" Filetype settings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " Plain text
@@ -630,6 +648,8 @@ function! SetupPython()
 
     setlocal formatexpr=FormatPython()
   endif
+
+  " setlocal omnifunc=jedi#completions
 endfunction
 autocmd FileType python call SetupPython()
 
@@ -652,9 +672,8 @@ autocmd FileType json call SetupJSON()
 " Set JavaScript indent settings for TypeScript (leafgarland/typescript-vim
 " doesn't include any indentation)
 autocmd FileType typescript runtime! indent/javascript.vim
-
-" }}}
-" OS Specific {{{
+" autocmd FileType setlocal omnifunc=tsuquyomi#complete
+" OS Specific {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " General GUI options
@@ -665,6 +684,7 @@ if has('gui')
   set guioptions-=L
   set guioptions-=r  " Remove right scrollbar
   set guioptions-=R
+  nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/git:!<CR>
 endif
 
 " OS X
@@ -711,6 +731,4 @@ endif
 
 " Local settings
 silent source ~/.vimrc.local
-
 " vim: set foldenable foldmethod=marker foldlevel=0:
-" }}}

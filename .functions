@@ -31,7 +31,7 @@ function server() {
 
 # A makeshift SMTP server that logs all messages to the console
 function mail_server() {
-    python -m smtpd -n -c DebuggingServer localhost:25
+    python -m smtpd -n -c DebuggingServer localhost:2525
 }
 
 # Compare original and gzipped file size

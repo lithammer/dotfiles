@@ -44,7 +44,8 @@ export REPORTTIME=10
 # export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # https://github.com/junegunn/fzf#respecting-gitignore-hgignore-and-svnignore
-export FZF_DEFAULT_COMMAND='ag -l -g ""'
+export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_OPTS="--color=16 --inline-info --tiebreak=end"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 if [ -f ~/.zshenv.local ]; then

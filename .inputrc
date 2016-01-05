@@ -37,8 +37,8 @@ set output-meta on
 set convert-meta off
 
 # Make TAB cycle through possible completions
-# "\t": menu-complete
+"\t": menu-complete
 
 # Adds a characters to the beginning of the prompt indicating the current
-# editing mode.
-#set show-mode-in-prompt on
+# editing mode (only valuable in vim mode).
+# set show-mode-in-prompt on

@@ -2,20 +2,12 @@
 
 ## Vim
 
-See https://github.com/junegunn/vim-plug for how to mange plugins.
+See [junegunn/vim-plug](https://github.com/junegunn/vim-plug) for how to mange plugins.
 
-### Syntastic
+## Zsh
 
-You might want to install these packages for syntax checking:
+Add a list of enabled plugins in `~/.zshrc.local`, for example:
 
-Python
+    plugins=(golang gulp npm pyenv zsh-syntax-highlighting)
 
-```bash
-$ sudo pip install frosted
-```
-
-Javascript
-
-```bash
-$ npm install -g jshint  # or jsxhint for React
-```
+A list of plugins can be found in `.zsh/plugins`.

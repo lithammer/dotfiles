@@ -250,8 +250,7 @@ __prompt() {
         echo -n " $magenta_bold%m$reset"
     fi
 
-    # echo -n " $cyan_bold❯$reset "
-    echo -n " ${cyan_bold}λ$reset "
+    echo -n " $cyan_bold❯$reset "
 }
 
 __right_prompt() {

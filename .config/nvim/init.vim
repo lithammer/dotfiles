@@ -58,6 +58,7 @@ if $NVIM_TUI_ENABLE_TRUE_COLOR
   if g:colors_name == 'base16-eighties'
     " Make current line number more prominent (yellow)
     highlight! link CursorLineNr Todo
+    highlight! link WildMenu Search
 
     " Make 'listchars' darker
     highlight clear SpecialKey

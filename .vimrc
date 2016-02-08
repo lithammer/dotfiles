@@ -14,35 +14,6 @@ end
 " Raimondi/delimitMate {{{2
 Plug 'Raimondi/delimitMate'
 let delimitMate_expand_cr = 1
-" Shougo/deoplete.nvim {{{2
-" if has('nvim')
-"   Plug 'Shougo/deoplete.nvim'
-"   Plug 'davidhalter/jedi-vim'
-"   Plug 'Quramy/tsuquyomi'
-
-"   let g:deoplete#enable_at_startup = 1
-"   let g:deoplete#enable_smart_case = 1
-
-"   let g:deoplete#omni_patterns = {}
-"   let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
-"   let g:deoplete#omni_patterns.typescript = '[^. *\t]\.\w*'
-
-"   let g:deoplete#sources = {}
-"   " Remove tags and buffer from default source list
-"   " let g:deoplete#sources._ = ['buffer', 'member', 'file', 'omni']
-"   let g:deoplete#sources._ = ['buffer', 'member', 'file', 'omni']
-"   let g:deoplete#sources.gitcommit = ['buffer']
-
-"   inoremap <silent><expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-
-"   let g:jedi#use_splits_not_buffers = 'winwidth'
-"   let g:jedi#completions_enabled = 0
-"   let g:jedi#auto_vim_configuration = 0
-"   let g:jedi#smart_auto_mappings = 0
-"   let g:jedi#show_call_signatures = 0
-"   let g:tsuquyomi_disable_default_mappings = 1
-"   let g:tsuquyomi_disable_quickfix = 1
-" endif
 " Shougo/unite.vim {{{2
 Plug 'Shougo/unite.vim' | Plug 'Shougo/unite-outline'
 " call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -91,9 +62,10 @@ if has('python') && v:version > 703
   let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
 endif
 " Valloric/YouCompleteMe {{{2
-if has('python') && has('patch-7.3.598')
+if has('python') && has('patch-7.3.867')
   Plug 'Valloric/YouCompleteMe'
   let g:ycm_path_to_python_interpreter = expand('~/.vim/env/bin/python')
+  let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
   " Disable the identifier completer
   " let g:ycm_min_num_of_chars_for_completion = 99
   let g:ycm_use_ultisnips_completer = 0
@@ -192,10 +164,14 @@ let g:gutentags_exclude = [
   \ '*/venv/*',
   \ '*/esb2001/*',
   \ '*/isa-gw/*',
-  \ '*/platform/*'
+  \ '*/platform/*',
+  \ '*/third_party/*',
+  \ '*/lib/*',
+  \ '*/lib64/*'
   \ ]
-" ternjs/tern_for_vim {{{2
-Plug 'ternjs/tern_for_vim', {'do': 'npm install'}
+" majutsushi/tagbar {{{2
+Plug 'majutsushi/tagbar'
+nnoremap <Leader>t :TagbarToggle<CR>
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
 let g:grepper = {
@@ -212,6 +188,9 @@ let g:brightest#enable_filetypes = {
 \  'go': 1,
 \  'javascript': 1,
 \}
+" rust-lang/rust.vim {{{2
+Plug 'rust-lang/rust.vim'
+" let g:rustfmt_autosave = 1
 " scrooloose/syntastic {{{2
 Plug 'scrooloose/syntastic'
 highlight link SyntasticErrorSign ErrorMsg
@@ -264,21 +243,12 @@ Plug 'wellle/targets.vim'
 " }}}
 
 " Colorschemes {{{2
-" Plug 'Slava/vim-colors-tomorrow'
-" Plug 'altercation/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
-" Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'cschlueter/vim-wombat'
 Plug 'guns/jellyx.vim'
-Plug 'jonathanfilip/vim-lucius'
-Plug 'joshdick/onedark.vim'
-Plug 'junegunn/seoul256.vim'
-Plug 'mhartington/oceanic-next'
 Plug 'morhetz/gruvbox'
 Plug 'michalbachowski/vim-wombat256mod'
 Plug 'nanotech/jellybeans.vim'
-Plug 'notpratheek/vim-luna'
-Plug 'romainl/Apprentice'
 " Plug 'w0ng/vim-hybrid'
 Plug 'renstrom/vim-hybrid'
 " }}}
@@ -312,8 +282,7 @@ set background=dark
 " let g:airline_theme = 'hybridline'
 let g:gruvbox_italic = 0
 
-colorscheme gruvbox
-" highlight! link WildMenu Search
+colorscheme base16-eighties
 " let g:airline_theme = 'hybridline'
 
 let g:markdown_fenced_languages = [
@@ -648,8 +617,6 @@ function! SetupPython()
 
     setlocal formatexpr=FormatPython()
   endif
-
-  " setlocal omnifunc=jedi#completions
 endfunction
 autocmd FileType python call SetupPython()
 
@@ -672,7 +639,6 @@ autocmd FileType json call SetupJSON()
 " Set JavaScript indent settings for TypeScript (leafgarland/typescript-vim
 " doesn't include any indentation)
 autocmd FileType typescript runtime! indent/javascript.vim
-" autocmd FileType setlocal omnifunc=tsuquyomi#complete
 " OS Specific {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

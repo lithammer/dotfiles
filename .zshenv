@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-export ZSH=$HOME/.zsh
+export ZSH="$HOME/.zsh"
 
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
@@ -9,14 +9,11 @@ GOPATH="$HOME/.go"
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:/usr/local/sbin"
 PATH="$PATH:$GOPATH/bin"
-PATH="$PATH:/Users/Peter/Library/Python/2.7/bin"
+PATH="$PATH:/Users/$USER/Library/Python/2.7/bin"
 export PATH
 
 GOPATH="$GOPATH:$HOME"
 export GOPATH
-
-# Enable experimental vendoring feature available in Go 1.5
-export GO15VENDOREXPERIMENT=1
 
 # Path to man pages
 export MANPATH="/usr/local/man:$MANPATH"

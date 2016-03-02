@@ -1,21 +1,10 @@
 {
+    "extends": "eslint:recommended",
     "rules": {
-        "indent": [
-            2,
-            4
-        ],
-        "quotes": [
-            1,
-            "double"
-        ],
-        "linebreak-style": [
-            2,
-            "unix"
-        ],
-        "semi": [
-            2,
-            "always"
-        ],
+        "indent": [2, 4],
+        "quotes": [1, "double"],
+        "linebreak-style": [2, "unix"],
+        "semi": [2, "always"],
         "no-console": 0
     },
     "env": {
@@ -23,11 +12,12 @@
         "node": true,
         "browser": true
     },
-    "extends": "eslint:recommended",
-    "ecmaFeatures": {
-        "modules": true,
-        "jsx": true,
-        "experimentalObjectRestSpread": true
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "plugins": [
         "react"

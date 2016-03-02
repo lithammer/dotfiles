@@ -1,4 +1,3 @@
-#!/usr/bin/env zsh
 if [[ "$TERM" == 'dumb' ]]; then
     return 1
 fi
@@ -238,10 +237,11 @@ __prompt() {
         printf "%s[%s] " "$yellow" ${${VIRTUAL_ENV}:t}
     fi
 
-    # Show name of currently active pyenv (if other than "system")
-    local version_name=$(pyenv version-name)
-    if [ "$version_name" != "system" ]; then
-        echo -n "$yellow_bold$version_name$reset "
+    # Show name of currently active pyenv if it's not a global version.
+    local pyenv_origin="$(pyenv version-origin)"
+    local pyenv_root="$(pyenv root)/version"
+    if [ "$pyenv_origin" != "$pyenv_root" ]; then
+        echo -n "$yellow_bold$(pyenv version-name)$reset "
     fi
 
     # echo -n "$black_bold%2~$reset"

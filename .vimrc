@@ -1,3 +1,18 @@
+" Environment {{{1
+let g:python_version = matchstr(system("python --version | cut -f2 -d ' '"), '^[0-9]')
+if g:python_version =~ 3
+    let g:loaded_python_provider = 1
+else
+    let g:loaded_python3_provider = 1
+endif
+
+let $FZF_DEFAULT_OPTS .= ' --inline-info'
+if has('nvim')
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+  if empty($TMUX)
+    let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+  endif
+endif
 " Plugins {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 call plug#begin()
@@ -64,7 +79,7 @@ endif
 " Valloric/YouCompleteMe {{{2
 if has('python') && has('patch-7.3.867')
   Plug 'Valloric/YouCompleteMe'
-  let g:ycm_path_to_python_interpreter = expand('~/.vim/env/bin/python')
+  " let g:ycm_path_to_python_interpreter = expand('~/.vim/env/bin/python')
   let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
   " Disable the identifier completer
   " let g:ycm_min_num_of_chars_for_completion = 99
@@ -79,10 +94,12 @@ if has('python') && has('patch-7.3.867')
 end
 
 " airblade/vim-gitgutter {{{2
+" XXX: For some reason this screws with YCM completion
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_map_keys = 0
+let g:gitgutter_eager = 0
 " benekastah/neomake {{{2
-Plug 'benekastah/neomake'
+" Plug 'benekastah/neomake'
 highlight link NeomakeErrorSign ErrorMsg
 highlight link NeomakeWarningSign Type
 
@@ -98,7 +115,7 @@ let g:neomake_warning_sign = {
 " let g:neomake_open_list = 1
 let g:neomake_verbose = 0  " Log only errors
 
-let g:neomake_python_enabled_makers = ['pep8', 'frosted']
+let g:neomake_python_enabled_makers = ['flake8', 'pylint']
 " bling/vim-airline {{{2
 " Plug 'bling/vim-airline'
 let g:airline_left_sep = ''
@@ -153,7 +170,9 @@ highlight link SneakPluginScope Search
 " kshenoy/vim-signature {{{2
 Plug 'kshenoy/vim-signature'
 " ludovicchabant/vim-gutentags {{{2
-Plug 'ludovicchabant/vim-gutentags'
+if v:version > 703
+  Plug 'ludovicchabant/vim-gutentags'
+endif
 let g:gutentags_cache_dir = expand('~/.vim/tags')
 let g:gutentags_exclude = [
   \ '/usr/local/*',
@@ -175,10 +194,10 @@ nnoremap <Leader>t :TagbarToggle<CR>
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
 let g:grepper = {
-      \ 'open': 1,
-      \ 'switch': 1,
-      \ }
-" command! -nargs=* -complete=file Ag Grepper! -tool ag -open -switch -query <args>
+  \ 'open': 1,
+  \ 'switch': 1,
+  \ }
+command! -nargs=* Grep Grepper -noprompt -tool ag -grepprg ag --vimgrep <args>
 " osyo-manga/vim-brightest {{{2
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 let g:brightest#highlight = {'group': 'BrightestReverse'}
@@ -208,7 +227,9 @@ let g:syntastic_javascript_checkers = ['eslint']
 " let g:syntastic_javascript_jsxhint_args = '--babel'
 " let g:syntastic_lua_checkers = ['luac', 'luacheck']
 let g:syntastic_lua_checkers = ['luac']
-let g:syntastic_python_checkers = ['pep8', 'frosted', 'pylint']
+" let g:syntastic_python_checkers = ['flake8', 'pylint']
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_ruby_checkers = ['rubocop']
 let g:syntastic_typescript_checkers = ['tsc', 'tslint']
 " http://www.jbrantly.com/typescript-and-jsx/
 let g:syntastic_typescript_tsc_args = '--jsx react --module commonjs --target ES5'
@@ -244,10 +265,8 @@ Plug 'wellle/targets.vim'
 
 " Colorschemes {{{2
 Plug 'chriskempson/base16-vim'
-Plug 'cschlueter/vim-wombat'
 Plug 'guns/jellyx.vim'
 Plug 'morhetz/gruvbox'
-Plug 'michalbachowski/vim-wombat256mod'
 Plug 'nanotech/jellybeans.vim'
 " Plug 'w0ng/vim-hybrid'
 Plug 'renstrom/vim-hybrid'
@@ -282,7 +301,15 @@ set background=dark
 " let g:airline_theme = 'hybridline'
 let g:gruvbox_italic = 0
 
-colorscheme base16-eighties
+if !empty($TMUX)
+  set background=dark
+  let base16colorspace = 256
+  colorscheme base16-eighties
+elseif has('nvim')
+  colorscheme base16-eighties
+else
+  colorscheme hybrid
+endif
 " let g:airline_theme = 'hybridline'
 
 let g:markdown_fenced_languages = [
@@ -639,6 +666,145 @@ autocmd FileType json call SetupJSON()
 " Set JavaScript indent settings for TypeScript (leafgarland/typescript-vim
 " doesn't include any indentation)
 autocmd FileType typescript runtime! indent/javascript.vim
+" Neovim {{{1
+if has('nvim')
+  set nottimeout
+  set ttimeoutlen=-1
+
+  " Terminal mappings
+  tnoremap <C-b> <C-\><C-n>
+  " tnoremap <Esc> <C-\><C-n>
+  tnoremap <C-w><C-w> <C-\><C-n><C-w><C-w>
+
+  " Move between splits using <Alt>
+  tnoremap <A-Left> <C-\><C-n><C-w>h
+  tnoremap <A-Down> <C-\><C-n><C-w>j
+  tnoremap <A-Up> <C-\><C-n><C-w>k
+  tnoremap <A-Right> <C-\><C-n><C-w>l
+  nnoremap <A-Left> <C-w>h
+  nnoremap <A-Down> <C-w>j
+  nnoremap <A-Up> <C-w>k
+  nnoremap <A-Right> <C-w>l
+  nnoremap <A-h> <C-w>h
+  nnoremap <A-j> <C-w>j
+  nnoremap <A-k> <C-w>k
+  nnoremap <A-l> <C-w>l
+
+  " Always enter insert mode when focusing a terminal buffer
+  autocmd WinEnter term://* startinsert
+
+  if $NVIM_TUI_ENABLE_TRUE_COLOR
+    let g:airline_theme = 'base16'
+    set background=dark
+    " colorscheme base16-eighties
+
+    if g:colors_name == 'base16-eighties'
+      " Make current line number more prominent (yellow)
+      highlight! link CursorLineNr Todo
+      highlight! link WildMenu Search
+
+      " Make 'listchars' darker
+      highlight clear SpecialKey
+      highlight SpecialKey ctermfg=19 guifg=#444444
+
+      " Syntastic markers
+      highlight link SyntasticErrorSign DiffDelete
+      highlight link SyntasticWarningSign CursorLineNr
+
+      " Terminal color definitions (24-bit)
+      let g:terminal_color_0 = '#2D2D2D'
+      let g:terminal_color_1 = '#F2777A'
+      let g:terminal_color_2 = '#99CC99'
+      let g:terminal_color_3 = '#FFCC66'
+      let g:terminal_color_4 = '#6699CC'
+      let g:terminal_color_5 = '#CC99CC'
+      let g:terminal_color_6 = '#66CCCC'
+      let g:terminal_color_7 = '#D3D0C8'
+      let g:terminal_color_8 = '#747369'
+      let g:terminal_color_9 = '#F2777A'
+      let g:terminal_color_10 = '#99CC99'
+      let g:terminal_color_11 = '#FFCC66'
+      let g:terminal_color_12 = '#6699CC'
+      let g:terminal_color_13 = '#CC99CC'
+      let g:terminal_color_14 = '#66CCCC'
+      let g:terminal_color_15 = '#F2F0EC'
+      let g:terminal_color_background = '#2D2D2D'
+      let g:terminal_color_foreground = '#D3D0C8'
+    elseif g:colors_name == 'base16-ocean'
+      highlight! link CursorLineNr TabLineSel
+    elseif g:colors_name == 'base16-mocha'
+      highlight! link CursorLineNr TabLineSel
+
+      " Make 'listchars' darker
+      highlight! SpecialKey ctermfg=8 guifg=#5F5544
+
+      " Syntastic markers
+      highlight link SyntasticErrorSign DiffDelete
+      highlight link SyntasticWarningSign pythonTodo
+      highlight link SyntasticError Error
+      highlight link SyntasticWarning Error
+
+      " Terminal color definitions (24-bit)
+      let g:terminal_color_0 = '#3B3228'
+      let g:terminal_color_1 = '#CB6077'
+      let g:terminal_color_2 = '#BEB55B'
+      let g:terminal_color_3 = '#F4BC87'
+      let g:terminal_color_4 = '#8AB3B5'
+      let g:terminal_color_5 = '#A89BB9'
+      let g:terminal_color_6 = '#7BBDA4'
+      let g:terminal_color_7 = '#D0C8C6'
+      let g:terminal_color_8 = '#7E705A'
+      let g:terminal_color_9 = '#CB6077'
+      let g:terminal_color_10 = '#BEB55B'
+      let g:terminal_color_11 = '#F4BC87'
+      let g:terminal_color_12 = '#8AB3B5'
+      let g:terminal_color_13 = '#A89BB9'
+      let g:terminal_color_14 = '#7BBDA4'
+      let g:terminal_color_15 = '#F5EEEB'
+      let g:terminal_color_background = '#3B3228'
+      let g:terminal_color_foreground = '#D0C8C6'
+    elseif g:colors_name == 'gruvbox'
+      " Terminal color definitions (24-bit)
+      let g:terminal_color_0 = '#282828'
+      let g:terminal_color_1 = '#CC241D'
+      let g:terminal_color_2 = '#98971a'
+      let g:terminal_color_3 = '#d79921'
+      let g:terminal_color_4 = '#458588'
+      let g:terminal_color_5 = '#b16286'
+      let g:terminal_color_6 = '#689d6a'
+      let g:terminal_color_7 = '#a89984'
+      let g:terminal_color_8 = '#928374'
+      let g:terminal_color_9 = '#fb4934'
+      let g:terminal_color_10 = '#b8bb26'
+      let g:terminal_color_11 = '#fabd2f'
+      let g:terminal_color_12 = '#83a598'
+      let g:terminal_color_13 = '#d3869b'
+      let g:terminal_color_14 = '#8ec07c'
+      let g:terminal_color_15 = '#ebdbb2'
+      " let g:terminal_color_background = ''
+      " let g:terminal_color_foreground = ''
+    else
+      let g:terminal_color_0 = '#2D2D2D'
+      let g:terminal_color_1 = '#F2777A'
+      let g:terminal_color_2 = '#99CC99'
+      let g:terminal_color_3 = '#FFCC66'
+      let g:terminal_color_4 = '#6699CC'
+      let g:terminal_color_5 = '#CC99CC'
+      let g:terminal_color_6 = '#66CCCC'
+      let g:terminal_color_7 = '#D3D0C8'
+      let g:terminal_color_8 = '#747369'
+      let g:terminal_color_9 = '#F2777A'
+      let g:terminal_color_10 = '#99CC99'
+      let g:terminal_color_11 = '#FFCC66'
+      let g:terminal_color_12 = '#6699CC'
+      let g:terminal_color_13 = '#CC99CC'
+      let g:terminal_color_14 = '#66CCCC'
+      let g:terminal_color_15 = '#F2F0EC'
+      let g:terminal_color_background = '#2D2D2D'
+      let g:terminal_color_foreground = '#D3D0C8'
+    endif
+  endif
+endif
 " OS Specific {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -1,4 +1,5 @@
 " Environment {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let g:python_version = matchstr(system("python --version | cut -f2 -d ' '"), '^[0-9]')
 if g:python_version =~ 3
     let g:loaded_python_provider = 1
@@ -257,6 +258,8 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 " tpope/vim-tbone {{{2
 Plug 'tpope/vim-tbone'
+" tpope/vim-vinegar {{{2
+Plug 'tpope/vim-vinegar'
 " unblevable/quick-scope {{{2
 " Plug 'unblevable/quick-scope'
 " wellle/targets.vim {{{2

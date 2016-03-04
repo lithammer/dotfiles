@@ -390,9 +390,6 @@ set listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:_
 " Allow mouse usage in all modes
 set mouse=""
 
-" Don't show current mode on last line (vim-airline does this instead)
-set noshowmode
-
 " Wrap long lines
 set wrap
 
@@ -499,33 +496,6 @@ noremap <Space> za
 " Don't move on '*', useful when highlighting words
 nnoremap * *<C-o>
 
-" Go to next/previous item in location-list using <Tab>/<S-Tab> in normal mode
-" nnoremap <Tab> :lnext<CR>
-" nnoremap <S-Tab> :lprevious<CR>
-
-" Circular tab navigation
-nnoremap <Tab> :tabnext<CR>
-nnoremap <S-Tab> :tabprevious<CR>
-
-function! LocationPrevious()
-  try
-    lprev
-  catch /^Vim\%((\a\+)\)\=:E553/
-    llast
-  endtry
-endfunction
-
-function! LocationNext()
-  try
-    lnext
-  catch /^Vim\%((\a\+)\)\=:E553/
-    lfirst
-  endtry
-endfunction
-
-nnoremap ]l :call LocationNext()<CR>zx
-nnoremap [l :call LocationPrevious()<CR>zx
-
 " nmap < [
 " nmap > ]
 " omap < [
@@ -538,6 +508,49 @@ omap ö [
 omap ä ]
 xmap ö [
 xmap ä ]
+" Statusline {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+augroup statusline_whitespace
+  autocmd!
+  autocmd CursorHold,BufWritePost * unlet! b:statusline_whitespace_check
+augroup END
+
+function! StatuslineWhitespace()
+  if &readonly || !&modifiable || line('$') > 20000
+    return ''
+  endif
+
+  if !exists('b:statusline_whitespace_check')
+    let b:statusline_whitespace_check = ''
+
+    let trailing = search('\s$', 'nw')
+    let mixed = search('\v(^\t+ +)|(^ +\t+)', 'nw')
+
+    if trailing != 0 || mixed != 0
+      let b:statusline_whitespace_check = '!'
+      if trailing != 0
+        let b:statusline_whitespace_check .= (' ').printf('trailing[%s]', trailing)
+      endif
+      if mixed != 0
+        let b:statusline_whitespace_check .= (' ').printf('mixed-indent[%s]', mixed)
+      endif
+    endif
+  endif
+  return b:statusline_whitespace_check
+endfunction
+
+function! MyStatusline()
+
+  let tag = "%{tagbar#currenttag(':%s ', ' ')}"
+  let enc = "%{&encoding == 'utf-8' ? '' : printf('[%s]', &encoding)}"
+  let ff = "%{&fileformat == 'unix' ? '' : printf('[%s]', &fileformat)}"
+  let syntastic = '%{SyntasticStatuslineFlag()}'
+  let ws = '%{StatuslineWhitespace()}'
+
+  return ' %<%f%m'.tag.'%r%w%y'.enc.ff.'%=%l/%L, %c %#Error#'.syntastic.ws.'%*'
+endfunction
+
+set statusline=%!MyStatusline()
 " Auto commands {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

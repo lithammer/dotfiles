@@ -95,10 +95,8 @@ if has('python') && has('patch-7.3.867')
 end
 
 " airblade/vim-gitgutter {{{2
-" XXX: For some reason this screws with YCM completion
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_map_keys = 0
-let g:gitgutter_eager = 0
 " benekastah/neomake {{{2
 " Plug 'benekastah/neomake'
 highlight link NeomakeErrorSign ErrorMsg

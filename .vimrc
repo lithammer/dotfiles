@@ -30,46 +30,6 @@ end
 " Raimondi/delimitMate {{{2
 Plug 'Raimondi/delimitMate'
 let delimitMate_expand_cr = 1
-" Shougo/unite.vim {{{2
-Plug 'Shougo/unite.vim' | Plug 'Shougo/unite-outline'
-" call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/async:!<CR>
-" nnoremap <C-t> :<C-u>Unite -start-insert -auto-resize tag<CR>
-nnoremap <C-g> :<C-u>Unite -auto-preview -no-split grep<CR>
-" nnoremap <C-g> :<C-u>Unite -start-insert -auto-resize file_rec/git<CR>
-" nnoremap <C-b> :<C-u>Unite -quick-match buffer<CR>
-
-" Don't cache, it's fast enough
-let g:unite_source_rec_max_cache_files = 0
-
-if executable('ag')
-  let g:unite_source_rec_async_command =
-        \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', '']
-  let g:unite_source_grep_command = ['ag']
-  let g:unite_source_grep_default_opts = ['--vimgrep']
-  let g:unite_source_grep_recursive_opt = ['']
-endif
-
-function! s:custom_unite_settings()
-  " Overwrite settings.
-  " imap <silent><buffer> <Esc> :UniteClose<CR>
-  imap <silent><buffer><expr> <C-s> unite#do_action('split')
-  imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-  imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-
-  call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim',
-        \'sorters', ['sorter_rank'])
-  call unite#custom#source('file_rec/async,file_rec/git,file_rec/neovim',
-        \'matchers', ['matcher_fuzzy'])
-  call unite#custom#source('file_rec/async,file_rec/git,grep',
-        \'converters', ['converter_relative_word'])
-  " " This might not work since `wildignore` is empty here
-  " call unite#custom#source('file_rec/async,file_rec/git', 'ignore_globs', split(&wildignore, ','))
-endfunction
-autocmd FileType unite call s:custom_unite_settings()
-
-" Shougo/vimproc.vim {{{2
-Plug 'Shougo/vimproc.vim', {'do': 'make clean all'}
 " SirVer/ultisnips {{{2
 if has('python') && v:version > 703
   " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
@@ -238,12 +198,8 @@ Plug 'sheerun/vim-polyglot'
 " tpope/vim-commentary {{{2
 Plug 'tpope/vim-commentary'
 map <Leader>c :Commentary<CR>
-" tpope/vim-dispatch {{{2
-Plug 'tpope/vim-dispatch'
 " tpope/vim-eunuch {{{2
 Plug 'tpope/vim-eunuch'
-" tpope/vim-flagship {{{2
-" Plug 'tpope/vim-flagship'
 " tpope/vim-fugitive {{{2
 Plug 'tpope/vim-fugitive'
 " tpope/vim-repeat {{{2
@@ -577,25 +533,16 @@ if &colorcolumn == '+1'
   augroup END
 endif
 
-" Visual Mode */# from Scrooloose
-function! s:VSetSearch()
-  let temp = @@
-  norm! gvy
-  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
-  let @@ = temp
-endfunction
-vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
-vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
-
 " When editing a file, always jump to the last known cursor position.
-function! SetCursorPosition()
-  if &filetype !~ 'svn\|commit\c'
-    if line("'\"") > 0 && line("'\"") <= line("$") |
-      execute 'normal! g`"zvzz' |
-    endif
-  end
-endfunction
-autocmd BufReadPost * call SetCursorPosition()
+augroup lastposition
+  autocmd!
+  autocmd BufReadPost *
+    \ if &filetype !~ 'svn\|commit\c' |
+    \   if line("'\"") > 0 && line("'\"") <= line("$") |
+    \     execute 'normal! g`"zvzz' |
+    \   endif |
+    \ endif
+augroup END
 
 " Always close preview window after completion is done.
 " http://stackoverflow.com/a/26022965/1862923
@@ -604,11 +551,9 @@ if has('patch-7.3.598')
 endif
 
 augroup rainbow_colors
-  " let g:rainbow#pairs = [['(', ')'], ['[', ']']]
   autocmd!
-  autocmd FileType clojure,scheme,python RainbowParentheses
+  autocmd FileType lisp,clojure,scheme,python RainbowParentheses
 augroup END
-" au VimEnter * RainbowParentheses
 " Filetype settings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

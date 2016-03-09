@@ -821,5 +821,7 @@ if has('gui_win32')
 endif
 
 " Local settings
-silent source ~/.vimrc.local
+if filereadable(expand('~/.vimrc.local'))
+  source ~/.vimrc.local
+endif
 " vim: set foldenable foldmethod=marker foldlevel=0:

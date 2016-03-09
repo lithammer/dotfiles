@@ -30,27 +30,12 @@ end
 " Raimondi/delimitMate {{{2
 Plug 'Raimondi/delimitMate'
 let delimitMate_expand_cr = 1
-" SirVer/ultisnips {{{2
-if has('python') && v:version > 703
-  " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-  let g:UltiSnipsExpandTrigger = '<C-k>'
-  let g:UltiSnipsJumpForwardTrigger = '<C-k>'
-  let g:UltiSnipsJumpBackwardTrigger = '<C-j>'
-endif
 " Valloric/YouCompleteMe {{{2
 if has('python') && has('patch-7.3.867')
   Plug 'Valloric/YouCompleteMe'
-  " let g:ycm_path_to_python_interpreter = expand('~/.vim/env/bin/python')
-  let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
-  " Disable the identifier completer
-  " let g:ycm_min_num_of_chars_for_completion = 99
-  let g:ycm_use_ultisnips_completer = 0
-  let g:ycm_goto_buffer_command = 'horizontal-split'
-  " let g:ycm_collect_identifiers_from_tags_files = 1
 
-  " Looks up the symbol under the cursor and jumps to its definition if
-  " possible; if the definition is not accessible from the current translation
-  " unit, jumps to the symbol's declaration.
+  let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
+  let g:ycm_goto_buffer_command = 'horizontal-split'
   nnoremap <leader>jd :YcmCompleter GoTo<CR>
 end
 

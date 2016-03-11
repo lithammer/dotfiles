@@ -127,7 +127,7 @@ let g:brightest#enable_filetypes = {
 \}
 " rust-lang/rust.vim {{{2
 Plug 'rust-lang/rust.vim'
-" let g:rustfmt_autosave = 1
+let g:rustfmt_autosave = 1
 " scrooloose/syntastic {{{2
 Plug 'scrooloose/syntastic'
 highlight link SyntasticErrorSign ErrorMsg

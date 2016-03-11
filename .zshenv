@@ -5,11 +5,14 @@ export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 
 GOPATH="$HOME/.go"
+CARGO_HOME="$HOME/.cargo"
+# Consistent Python user base directory
+export PYTHONUSERBASE="$HOME/.local"
 
 PATH="$HOME/.bin:$PATH"
-PATH="$PATH:/usr/local/sbin"
 PATH="$PATH:$GOPATH/bin"
-PATH="$PATH:/Users/$USER/Library/Python/2.7/bin"
+PATH="$PATH:$CARGO_HOME/bin"
+PATH="$PATH:$PYTHONUSERBASE/bin"
 export PATH
 
 GOPATH="$GOPATH:$HOME"

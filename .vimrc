@@ -42,30 +42,6 @@ end
 " airblade/vim-gitgutter {{{2
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_map_keys = 0
-" benekastah/neomake {{{2
-" Plug 'benekastah/neomake'
-highlight link NeomakeErrorSign ErrorMsg
-highlight link NeomakeWarningSign Type
-
-let g:neomake_error_sign = {
-    \ 'text': 'E>',
-    \ 'texthl': 'NeomakeErrorSign',
-    \ }
-let g:neomake_warning_sign = {
-    \ 'text': 'W>',
-    \ 'texthl': 'NeomakeWarningSign',
-    \ }
-
-" let g:neomake_open_list = 1
-let g:neomake_verbose = 0  " Log only errors
-
-let g:neomake_python_enabled_makers = ['flake8', 'pylint']
-" bling/vim-airline {{{2
-" Plug 'bling/vim-airline'
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-
-let g:airline#extensions#branch#enabled = 0
 " ctrlpvim/ctrlp.vim {{{2
 " Plug 'ctrlpvim/ctrlp.vim'
 " nnoremap <C-t> :CtrlPTag<CR>
@@ -87,8 +63,6 @@ Plug 'fatih/vim-go'
 let g:go_fmt_command = 'goimports'
 " hynek/vim-python-pep8-indent {{{2
 Plug 'hynek/vim-python-pep8-indent'
-" jeetsukumaran/vim-filebeagle {{{2
-" Plug 'jeetsukumaran/vim-filebeagle'
 " junegunn/fzf {{{2
 Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 " let g:fzf_command_prefix = 'Fzf'
@@ -161,10 +135,13 @@ highlight link SyntasticWarningSign Type
 
 let g:syntastic_check_on_open = 0
 let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
 
 let g:syntastic_error_symbol = 'E>'
 let g:syntastic_warning_symbol = 'W>'
-let g:syntastic_aggregate_errors = 1
+
 " let g:syntastic_html_checkers = []
 let g:syntastic_go_checkers = ['go', 'govet', 'golint']
 let g:syntastic_javascript_checkers = ['eslint']
@@ -240,7 +217,6 @@ set t_Co=256
 " Make sure dark background is used for colorschemes
 set background=dark
 
-" let g:airline_theme = 'hybridline'
 let g:gruvbox_italic = 0
 
 if !empty($TMUX)
@@ -252,7 +228,6 @@ elseif has('nvim')
 else
   colorscheme hybrid
 endif
-" let g:airline_theme = 'hybridline'
 
 let g:markdown_fenced_languages = [
   \ 'python', 'javascript', 'js=javascript', 'json=javascript', 'go']
@@ -638,7 +613,6 @@ if has('nvim')
   autocmd WinEnter term://* startinsert
 
   if $NVIM_TUI_ENABLE_TRUE_COLOR
-    let g:airline_theme = 'base16'
     set background=dark
     " colorscheme base16-eighties
 

@@ -135,7 +135,6 @@ highlight link SyntasticWarningSign Type
 
 let g:syntastic_check_on_open = 0
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_aggregate_errors = 1
 
@@ -292,9 +291,6 @@ set hlsearch
 
 " Ignore case in search patterns, unless they contains upper case characters
 set ignorecase smartcase
-
-" Don't redraw screen while executing macros
-set lazyredraw
 
 " Show some hidden characters ('listchars')
 set list
@@ -587,9 +583,6 @@ autocmd FileType json call SetupJSON()
 autocmd FileType typescript runtime! indent/javascript.vim
 " Neovim {{{1
 if has('nvim')
-  set nottimeout
-  set ttimeoutlen=-1
-
   " Terminal mappings
   tnoremap <C-b> <C-\><C-n>
   " tnoremap <Esc> <C-\><C-n>

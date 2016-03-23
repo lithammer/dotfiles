@@ -1,11 +1,7 @@
 " Environment {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-let g:python_version = matchstr(system("python --version | cut -f2 -d ' '"), '^[0-9]')
-if g:python_version =~ 3
-    let g:loaded_python_provider = 1
-else
-    let g:loaded_python3_provider = 1
-endif
+let g:python_host_prog = '/usr/bin/python2'
+let g:ycm_path_to_python_interpreter = g:python_host_prog
 
 let $FZF_DEFAULT_OPTS .= ' --inline-info'
 if has('nvim')
@@ -14,6 +10,8 @@ if has('nvim')
     let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
   endif
 endif
+
+let g:did_install_default_menus = 1  " avoid menu.vim (saves ~100ms)
 " Plugins {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 call plug#begin()
@@ -31,9 +29,10 @@ end
 Plug 'Raimondi/delimitMate'
 let delimitMate_expand_cr = 1
 " Valloric/YouCompleteMe {{{2
-if has('python') && has('patch-7.3.867')
+if (has('python') || has('python3')) && has('patch-7.3.867')
   Plug 'Valloric/YouCompleteMe'
 
+  let g:ycm_python_binary_path = exepath('python')
   let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
   let g:ycm_goto_buffer_command = 'horizontal-split'
   nnoremap <leader>jd :YcmCompleter GoTo<CR>

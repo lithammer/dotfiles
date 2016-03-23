@@ -6,9 +6,7 @@ let g:ycm_path_to_python_interpreter = g:python_host_prog
 let $FZF_DEFAULT_OPTS .= ' --inline-info'
 if has('nvim')
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-  if empty($TMUX)
-    let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
-  endif
+  let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 endif
 
 let g:did_install_default_menus = 1  " avoid menu.vim (saves ~100ms)
@@ -107,6 +105,9 @@ let g:gutentags_exclude = [
   \ ]
 " majutsushi/tagbar {{{2
 Plug 'majutsushi/tagbar'
+" FZF will open files in the tagbar buffer if it's on the right side for some
+" reason.
+let g:tagbar_left = 1
 nnoremap <Leader>t :TagbarToggle<CR>
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
@@ -217,11 +218,7 @@ set background=dark
 
 let g:gruvbox_italic = 0
 
-if !empty($TMUX)
-  set background=dark
-  let base16colorspace = 256
-  colorscheme base16-eighties
-elseif has('nvim')
+if has('nvim')
   colorscheme base16-eighties
 else
   colorscheme hybrid
@@ -449,7 +446,6 @@ function! StatuslineWhitespace()
 endfunction
 
 function! MyStatusline()
-
   let tag = "%{tagbar#currenttag(':%s ', ' ')}"
   let enc = "%{&encoding == 'utf-8' ? '' : printf('[%s]', &encoding)}"
   let ff = "%{&fileformat == 'unix' ? '' : printf('[%s]', &fileformat)}"
@@ -541,25 +537,30 @@ function! SetupPython()
 
   " Highlight 'NOTE' and 'HACK' in comments
   syn keyword pythonTodo NOTE HACK contained
-
-  " https://github.com/google/yapf
-  if executable('yapf')
-    function! FormatPython()
-      " Do not run this for automatic formatting
-      if !empty(v:char) || mode() == 'i' || mode() == 'R'
-        return 1
-      end
-
-      let l:line_ranges = v:lnum . '-' . (v:lnum + v:count - 1)
-      silent execute '0,$!yapf --lines=' . l:line_ranges
-      " Reset cursor to first line of the formatted range
-      call cursor(v:lnum, 1)
-    endfunction
-
-    setlocal formatexpr=FormatPython()
-  endif
 endfunction
 autocmd FileType python call SetupPython()
+
+function! YAPF() range
+  if !executable('yapf')
+    echoerr "No yapf binary not found in $PATH. Please install it first."
+    return
+  endif
+  " Determine range to format.
+  let l:line_ranges = a:firstline . '-' . a:lastline
+  let l:cmd = 'yapf --lines=' . l:line_ranges
+
+  " Call YAPF with the current buffer
+  let l:formatted_text = system(l:cmd, join(getline(1, '$'), "\n") . "\n")
+
+  " Update the buffer.
+  silent execute '1,' . string(line('$')) . 'delete'
+  call setline(1, split(l:formatted_text, "\n"))
+
+  " Reset cursor to first line of the formatted range.
+  call cursor(a:firstline, 1)
+endfunction
+
+command! -range=% PyFormat <line1>,<line2>call YAPF()
 
 " XML, HTML et al
 function! SetupMarkupLanguage()
@@ -605,7 +606,7 @@ if has('nvim')
   autocmd WinEnter term://* startinsert
 
   if $NVIM_TUI_ENABLE_TRUE_COLOR
-    set background=dark
+    " set background=dark
     " colorscheme base16-eighties
 
     if g:colors_name == 'base16-eighties'

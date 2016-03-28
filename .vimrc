@@ -1,7 +1,7 @@
 " Environment {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let g:python_host_prog = '/usr/bin/python2'
-let g:ycm_path_to_python_interpreter = g:python_host_prog
+let g:ycm_server_python_interpreter = g:python_host_prog
 
 let $FZF_DEFAULT_OPTS .= ' --inline-info'
 if has('nvim')
@@ -115,7 +115,6 @@ let g:grepper = {
   \ 'open': 1,
   \ 'switch': 1,
   \ }
-command! -nargs=* Grep Grepper -noprompt -tool ag -grepprg ag --vimgrep <args>
 " osyo-manga/vim-brightest {{{2
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 let g:brightest#highlight = {'group': 'BrightestReverse'}
@@ -280,7 +279,7 @@ if executable('ag')
 else
   let &grepprg = 'grep --recursive --line-number $* *'
 endif
-" command! -nargs=1 -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
+" command! -nargs=* -complete=file -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
 
 " Highlight all search matches
 set hlsearch

@@ -2,9 +2,10 @@
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let g:python_host_prog = '/usr/bin/python2'
 let g:ycm_server_python_interpreter = g:python_host_prog
+let g:loaded_python3_provider = 1
 
-let $FZF_DEFAULT_OPTS .= ' --inline-info'
 if has('nvim')
+  let $FZF_DEFAULT_OPTS .= ' --inline-info'
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
   let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 endif
@@ -65,6 +66,7 @@ Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
 " let g:fzf_command_prefix = 'Fzf'
 nnoremap <C-p> :Files<CR>
 nnoremap <C-t> :Tags<CR>
+nnoremap <C-g> :BTags<CR>
 nnoremap <C-b> :Buffers<CR>
 " junegunn/vim-peekaboo {{{2
 Plug 'junegunn/vim-peekaboo'
@@ -149,10 +151,11 @@ let g:syntastic_lua_checkers = ['luac']
 " let g:syntastic_python_checkers = ['flake8', 'pylint']
 let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_ruby_checkers = ['rubocop']
+let g:syntastic_scss_checkers = ['sassc', 'stylelint']
 let g:syntastic_typescript_checkers = ['tsc', 'tslint']
 " http://www.jbrantly.com/typescript-and-jsx/
 let g:syntastic_typescript_tsc_args = '--jsx react --module commonjs --target ES5'
-let g:syntastic_typescript_tslint_args = '--config ~/.config/.tslint.json'
+let g:syntastic_typescript_tslint_args = '--config ~/.config/tslint.json'
 " sheerun/vim-polyglot {{{2
 Plug 'sheerun/vim-polyglot'
 " tpope/vim-commentary {{{2
@@ -174,6 +177,8 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-tbone'
 " tpope/vim-vinegar {{{2
 Plug 'tpope/vim-vinegar'
+" tweekmonster/braceless.vim {{{2
+Plug 'tweekmonster/braceless.vim'
 " unblevable/quick-scope {{{2
 " Plug 'unblevable/quick-scope'
 " wellle/targets.vim {{{2
@@ -181,6 +186,7 @@ Plug 'wellle/targets.vim'
 " }}}
 
 " Colorschemes {{{2
+Plug 'AlessandroYorba/Sierra'
 Plug 'chriskempson/base16-vim'
 Plug 'guns/jellyx.vim'
 Plug 'morhetz/gruvbox'
@@ -219,8 +225,43 @@ let g:gruvbox_italic = 0
 
 if has('nvim')
   colorscheme base16-eighties
+elseif has('termtruecolor') " Available since 7.4.1770
+  set guicolors
+  colorscheme base16-eighties
 else
   colorscheme hybrid
+endif
+
+if has('nvim') && $NVIM_TUI_ENABLE_TRUE_COLOR || has('termtruecolor')
+  if g:colors_name == 'base16-eighties'
+    " Make current line number more prominent (yellow)
+    highlight! link CursorLineNr Todo
+    highlight! link WildMenu Search
+
+    " Make 'listchars' darker
+    highlight clear SpecialKey
+    highlight SpecialKey ctermfg=19 guifg=#444444
+
+    " Syntastic markers
+    highlight link SyntasticErrorSign DiffDelete
+    highlight link SyntasticWarningSign CursorLineNr
+
+    " More contrast to active statusline
+    highlight! link StatusLine Cursor
+  elseif g:colors_name == 'base16-ocean'
+    highlight! link CursorLineNr TabLineSel
+  elseif g:colors_name == 'base16-mocha'
+    highlight! link CursorLineNr TabLineSel
+
+    " Make 'listchars' darker
+    highlight! SpecialKey ctermfg=8 guifg=#5F5544
+
+    " Syntastic markers
+    highlight link SyntasticErrorSign DiffDelete
+    highlight link SyntasticWarningSign pythonTodo
+    highlight link SyntasticError Error
+    highlight link SyntasticWarning Error
+  endif
 endif
 
 let g:markdown_fenced_languages = [
@@ -605,22 +646,7 @@ if has('nvim')
   autocmd WinEnter term://* startinsert
 
   if $NVIM_TUI_ENABLE_TRUE_COLOR
-    " set background=dark
-    " colorscheme base16-eighties
-
     if g:colors_name == 'base16-eighties'
-      " Make current line number more prominent (yellow)
-      highlight! link CursorLineNr Todo
-      highlight! link WildMenu Search
-
-      " Make 'listchars' darker
-      highlight clear SpecialKey
-      highlight SpecialKey ctermfg=19 guifg=#444444
-
-      " Syntastic markers
-      highlight link SyntasticErrorSign DiffDelete
-      highlight link SyntasticWarningSign CursorLineNr
-
       " Terminal color definitions (24-bit)
       let g:terminal_color_0 = '#2D2D2D'
       let g:terminal_color_1 = '#F2777A'
@@ -640,21 +666,7 @@ if has('nvim')
       let g:terminal_color_15 = '#F2F0EC'
       let g:terminal_color_background = '#2D2D2D'
       let g:terminal_color_foreground = '#D3D0C8'
-    elseif g:colors_name == 'base16-ocean'
-      highlight! link CursorLineNr TabLineSel
     elseif g:colors_name == 'base16-mocha'
-      highlight! link CursorLineNr TabLineSel
-
-      " Make 'listchars' darker
-      highlight! SpecialKey ctermfg=8 guifg=#5F5544
-
-      " Syntastic markers
-      highlight link SyntasticErrorSign DiffDelete
-      highlight link SyntasticWarningSign pythonTodo
-      highlight link SyntasticError Error
-      highlight link SyntasticWarning Error
-
-      " Terminal color definitions (24-bit)
       let g:terminal_color_0 = '#3B3228'
       let g:terminal_color_1 = '#CB6077'
       let g:terminal_color_2 = '#BEB55B'
@@ -674,7 +686,6 @@ if has('nvim')
       let g:terminal_color_background = '#3B3228'
       let g:terminal_color_foreground = '#D0C8C6'
     elseif g:colors_name == 'gruvbox'
-      " Terminal color definitions (24-bit)
       let g:terminal_color_0 = '#282828'
       let g:terminal_color_1 = '#CC241D'
       let g:terminal_color_2 = '#98971a'

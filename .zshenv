@@ -18,13 +18,16 @@ export PATH
 GOPATH="$GOPATH:$HOME"
 export GOPATH
 
+PYTHONSTARTUP="$HOME/.config/pythonrc"
+export PYTHONSTARTUP
+
 # Path to man pages
 export MANPATH="/usr/local/man:$MANPATH"
 
 # Default editor
 export EDITOR='nvim'
 
-export PAGER='less --no-init --quit-if-one-screen'
+export PAGER='less --no-init --quit-if-one-screen --raw-control-chars'
 # export LESS='-X -F'
 
 # Add colors to `ls`

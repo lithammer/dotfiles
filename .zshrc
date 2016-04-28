@@ -339,7 +339,7 @@ alias ll='ls -lh'
 alias la='ls -lAh'
 alias lsa='ls -lah'
 
-alias tree='tree -C'
+alias tree='tree -C -I "node_modules|env|vendor"'
 
 # History timestamps as "yyyy-mm-dd"
 alias history='fc -il 1'

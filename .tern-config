@@ -1,0 +1,15 @@
+{
+  "libs": [
+    "browser",
+    "jquery",
+    "ecma5",
+    "ecma6"
+  ],
+  "loadEagerly": [],
+  "plugins": {
+    "webpack": {},
+    "node": {},
+    "modules": {},
+    "es_modules": {}
+  }
+}

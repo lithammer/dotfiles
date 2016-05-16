@@ -7,7 +7,6 @@ let g:loaded_python3_provider = 1
 if has('nvim')
   let $FZF_DEFAULT_OPTS .= ' --inline-info'
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-  let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 endif
 
 let g:did_install_default_menus = 1  " avoid menu.vim (saves ~100ms)
@@ -40,6 +39,8 @@ end
 " airblade/vim-gitgutter {{{2
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_map_keys = 0
+" ap/vim-css-color {{{2
+Plug 'ap/vim-css-color'
 " ctrlpvim/ctrlp.vim {{{2
 " Plug 'ctrlpvim/ctrlp.vim'
 " nnoremap <C-t> :CtrlPTag<CR>
@@ -113,10 +114,7 @@ let g:tagbar_left = 1
 nnoremap <Leader>t :TagbarToggle<CR>
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
-let g:grepper = {
-  \ 'open': 1,
-  \ 'switch': 1,
-  \ }
+let g:grepper = {'open': 1, 'switch': 1}
 " osyo-manga/vim-brightest {{{2
 Plug 'osyo-manga/vim-brightest', {'on': 'BrightestEnable'}
 let g:brightest#highlight = {'group': 'BrightestReverse'}
@@ -150,6 +148,7 @@ let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_lua_checkers = ['luac']
 " let g:syntastic_python_checkers = ['flake8', 'pylint']
 let g:syntastic_python_checkers = ['flake8']
+" let g:syntastic_rst_checkers = ['sphinx']
 let g:syntastic_ruby_checkers = ['rubocop']
 let g:syntastic_scss_checkers = ['sassc', 'stylelint']
 let g:syntastic_typescript_checkers = ['tsc', 'tslint']
@@ -186,7 +185,6 @@ Plug 'wellle/targets.vim'
 " }}}
 
 " Colorschemes {{{2
-Plug 'AlessandroYorba/Sierra'
 Plug 'chriskempson/base16-vim'
 Plug 'guns/jellyx.vim'
 Plug 'morhetz/gruvbox'
@@ -221,18 +219,14 @@ set t_Co=256
 " Make sure dark background is used for colorschemes
 set background=dark
 
-let g:gruvbox_italic = 0
-
-if has('nvim')
-  colorscheme base16-eighties
-elseif has('termtruecolor') " Available since 7.4.1770
-  set guicolors
+if has('termguicolors') " 7.4.1799
+  set termguicolors
   colorscheme base16-eighties
 else
   colorscheme hybrid
 endif
 
-if has('nvim') && $NVIM_TUI_ENABLE_TRUE_COLOR || has('termtruecolor')
+if has('termguicolors')
   if g:colors_name == 'base16-eighties'
     " Make current line number more prominent (yellow)
     highlight! link CursorLineNr Todo
@@ -602,6 +596,37 @@ endfunction
 
 command! -range=% PyFormat <line1>,<line2>call YAPF()
 
+function! ClangFormat() range
+  if !executable('clang-format')
+    echoerr "No clang-format binary not found in $PATH. Please install it first."
+    return
+  endif
+  " Determine range to format.
+  let l:line_ranges = a:firstline . ':' . a:lastline
+  let l:cmd = 'clang-format -lines=' . l:line_ranges
+
+  " Call YAPF with the current buffer
+  let l:formatted_text = system(l:cmd, join(getline(1, '$'), "\n") . "\n")
+
+  " Update the buffer.
+  silent execute '1,' . string(line('$')) . 'delete'
+  call setline(1, split(l:formatted_text, "\n"))
+
+  " Reset cursor to first line of the formatted range.
+  call cursor(a:firstline, 1)
+endfunction
+
+command! -range=% CFormat <line1>,<line2>call ClangFormat()
+
+function! FormatCode() range
+  if &filetype == 'python'
+    " a:firstline,a:lastline call PyFormat()
+    call PyFormat()
+  endif
+endfunction
+
+command! -range=% Format <line1>,<line2>call FormatCode()
+
 " XML, HTML et al
 function! SetupMarkupLanguage()
   setlocal matchpairs+=<:>
@@ -645,85 +670,83 @@ if has('nvim')
   " Always enter insert mode when focusing a terminal buffer
   autocmd WinEnter term://* startinsert
 
-  if $NVIM_TUI_ENABLE_TRUE_COLOR
-    if g:colors_name == 'base16-eighties'
-      " Terminal color definitions (24-bit)
-      let g:terminal_color_0 = '#2D2D2D'
-      let g:terminal_color_1 = '#F2777A'
-      let g:terminal_color_2 = '#99CC99'
-      let g:terminal_color_3 = '#FFCC66'
-      let g:terminal_color_4 = '#6699CC'
-      let g:terminal_color_5 = '#CC99CC'
-      let g:terminal_color_6 = '#66CCCC'
-      let g:terminal_color_7 = '#D3D0C8'
-      let g:terminal_color_8 = '#747369'
-      let g:terminal_color_9 = '#F2777A'
-      let g:terminal_color_10 = '#99CC99'
-      let g:terminal_color_11 = '#FFCC66'
-      let g:terminal_color_12 = '#6699CC'
-      let g:terminal_color_13 = '#CC99CC'
-      let g:terminal_color_14 = '#66CCCC'
-      let g:terminal_color_15 = '#F2F0EC'
-      let g:terminal_color_background = '#2D2D2D'
-      let g:terminal_color_foreground = '#D3D0C8'
-    elseif g:colors_name == 'base16-mocha'
-      let g:terminal_color_0 = '#3B3228'
-      let g:terminal_color_1 = '#CB6077'
-      let g:terminal_color_2 = '#BEB55B'
-      let g:terminal_color_3 = '#F4BC87'
-      let g:terminal_color_4 = '#8AB3B5'
-      let g:terminal_color_5 = '#A89BB9'
-      let g:terminal_color_6 = '#7BBDA4'
-      let g:terminal_color_7 = '#D0C8C6'
-      let g:terminal_color_8 = '#7E705A'
-      let g:terminal_color_9 = '#CB6077'
-      let g:terminal_color_10 = '#BEB55B'
-      let g:terminal_color_11 = '#F4BC87'
-      let g:terminal_color_12 = '#8AB3B5'
-      let g:terminal_color_13 = '#A89BB9'
-      let g:terminal_color_14 = '#7BBDA4'
-      let g:terminal_color_15 = '#F5EEEB'
-      let g:terminal_color_background = '#3B3228'
-      let g:terminal_color_foreground = '#D0C8C6'
-    elseif g:colors_name == 'gruvbox'
-      let g:terminal_color_0 = '#282828'
-      let g:terminal_color_1 = '#CC241D'
-      let g:terminal_color_2 = '#98971a'
-      let g:terminal_color_3 = '#d79921'
-      let g:terminal_color_4 = '#458588'
-      let g:terminal_color_5 = '#b16286'
-      let g:terminal_color_6 = '#689d6a'
-      let g:terminal_color_7 = '#a89984'
-      let g:terminal_color_8 = '#928374'
-      let g:terminal_color_9 = '#fb4934'
-      let g:terminal_color_10 = '#b8bb26'
-      let g:terminal_color_11 = '#fabd2f'
-      let g:terminal_color_12 = '#83a598'
-      let g:terminal_color_13 = '#d3869b'
-      let g:terminal_color_14 = '#8ec07c'
-      let g:terminal_color_15 = '#ebdbb2'
-      " let g:terminal_color_background = ''
-      " let g:terminal_color_foreground = ''
-    else
-      let g:terminal_color_0 = '#2D2D2D'
-      let g:terminal_color_1 = '#F2777A'
-      let g:terminal_color_2 = '#99CC99'
-      let g:terminal_color_3 = '#FFCC66'
-      let g:terminal_color_4 = '#6699CC'
-      let g:terminal_color_5 = '#CC99CC'
-      let g:terminal_color_6 = '#66CCCC'
-      let g:terminal_color_7 = '#D3D0C8'
-      let g:terminal_color_8 = '#747369'
-      let g:terminal_color_9 = '#F2777A'
-      let g:terminal_color_10 = '#99CC99'
-      let g:terminal_color_11 = '#FFCC66'
-      let g:terminal_color_12 = '#6699CC'
-      let g:terminal_color_13 = '#CC99CC'
-      let g:terminal_color_14 = '#66CCCC'
-      let g:terminal_color_15 = '#F2F0EC'
-      let g:terminal_color_background = '#2D2D2D'
-      let g:terminal_color_foreground = '#D3D0C8'
-    endif
+  if g:colors_name == 'base16-eighties'
+    " Terminal color definitions (24-bit)
+    let g:terminal_color_0 = '#2D2D2D'
+    let g:terminal_color_1 = '#F2777A'
+    let g:terminal_color_2 = '#99CC99'
+    let g:terminal_color_3 = '#FFCC66'
+    let g:terminal_color_4 = '#6699CC'
+    let g:terminal_color_5 = '#CC99CC'
+    let g:terminal_color_6 = '#66CCCC'
+    let g:terminal_color_7 = '#D3D0C8'
+    let g:terminal_color_8 = '#747369'
+    let g:terminal_color_9 = '#F2777A'
+    let g:terminal_color_10 = '#99CC99'
+    let g:terminal_color_11 = '#FFCC66'
+    let g:terminal_color_12 = '#6699CC'
+    let g:terminal_color_13 = '#CC99CC'
+    let g:terminal_color_14 = '#66CCCC'
+    let g:terminal_color_15 = '#F2F0EC'
+    let g:terminal_color_background = '#2D2D2D'
+    let g:terminal_color_foreground = '#D3D0C8'
+  elseif g:colors_name == 'base16-mocha'
+    let g:terminal_color_0 = '#3B3228'
+    let g:terminal_color_1 = '#CB6077'
+    let g:terminal_color_2 = '#BEB55B'
+    let g:terminal_color_3 = '#F4BC87'
+    let g:terminal_color_4 = '#8AB3B5'
+    let g:terminal_color_5 = '#A89BB9'
+    let g:terminal_color_6 = '#7BBDA4'
+    let g:terminal_color_7 = '#D0C8C6'
+    let g:terminal_color_8 = '#7E705A'
+    let g:terminal_color_9 = '#CB6077'
+    let g:terminal_color_10 = '#BEB55B'
+    let g:terminal_color_11 = '#F4BC87'
+    let g:terminal_color_12 = '#8AB3B5'
+    let g:terminal_color_13 = '#A89BB9'
+    let g:terminal_color_14 = '#7BBDA4'
+    let g:terminal_color_15 = '#F5EEEB'
+    let g:terminal_color_background = '#3B3228'
+    let g:terminal_color_foreground = '#D0C8C6'
+  elseif g:colors_name == 'gruvbox'
+    let g:terminal_color_0 = '#282828'
+    let g:terminal_color_1 = '#CC241D'
+    let g:terminal_color_2 = '#98971a'
+    let g:terminal_color_3 = '#d79921'
+    let g:terminal_color_4 = '#458588'
+    let g:terminal_color_5 = '#b16286'
+    let g:terminal_color_6 = '#689d6a'
+    let g:terminal_color_7 = '#a89984'
+    let g:terminal_color_8 = '#928374'
+    let g:terminal_color_9 = '#fb4934'
+    let g:terminal_color_10 = '#b8bb26'
+    let g:terminal_color_11 = '#fabd2f'
+    let g:terminal_color_12 = '#83a598'
+    let g:terminal_color_13 = '#d3869b'
+    let g:terminal_color_14 = '#8ec07c'
+    let g:terminal_color_15 = '#ebdbb2'
+    " let g:terminal_color_background = ''
+    " let g:terminal_color_foreground = ''
+  else
+    let g:terminal_color_0 = '#2D2D2D'
+    let g:terminal_color_1 = '#F2777A'
+    let g:terminal_color_2 = '#99CC99'
+    let g:terminal_color_3 = '#FFCC66'
+    let g:terminal_color_4 = '#6699CC'
+    let g:terminal_color_5 = '#CC99CC'
+    let g:terminal_color_6 = '#66CCCC'
+    let g:terminal_color_7 = '#D3D0C8'
+    let g:terminal_color_8 = '#747369'
+    let g:terminal_color_9 = '#F2777A'
+    let g:terminal_color_10 = '#99CC99'
+    let g:terminal_color_11 = '#FFCC66'
+    let g:terminal_color_12 = '#6699CC'
+    let g:terminal_color_13 = '#CC99CC'
+    let g:terminal_color_14 = '#66CCCC'
+    let g:terminal_color_15 = '#F2F0EC'
+    let g:terminal_color_background = '#2D2D2D'
+    let g:terminal_color_foreground = '#D3D0C8'
   endif
 endif
 " OS Specific {{{1
@@ -742,6 +765,8 @@ endif
 
 " OS X
 if has('gui_macvim')
+  set background=light
+  colorscheme base16-solarized
   " Fullscreen takes up entire screen
   set fuoptions=maxhorz,maxvert
 

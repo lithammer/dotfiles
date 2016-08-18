@@ -51,7 +51,7 @@ if [ -e /usr/local/etc/profile.d/z.sh ]; then
 fi
 # Completion {{{1
 # Add zsh-completions to $fpath.
-fpath=(/usr/local/share/zsh-completions $fpath)
+fpath=($ZSH/completion /usr/local/share/zsh-completions $fpath)
 
 # Load and initialize the completion system ignoring insecure directories.
 autoload -Uz compinit && compinit

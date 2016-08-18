@@ -1,7 +1,8 @@
 # eval "$(command pyenv init --no-rehash - zsh)"
-export PATH="$HOME/.pyenv/shims:${PATH}"
+export PATH="$HOME/.pyenv/shims:$PATH"
 export PYENV_SHELL=zsh
-source "/usr/local/Cellar/pyenv/$(pyenv --version | awk '{print $2}')/completions/pyenv.zsh"
+source /usr/local/Cellar/pyenv/*/completions/pyenv.zsh
+
 pyenv() {
   local command
   command="$1"

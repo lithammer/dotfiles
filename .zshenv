@@ -1,4 +1,3 @@
-#!/usr/bin/env zsh
 export ZSH="$HOME/.zsh"
 
 export LANG='en_US.UTF-8'
@@ -6,18 +5,22 @@ export LC_ALL='en_US.UTF-8'
 
 GOPATH="$HOME/.go"
 CARGO_HOME="$HOME/.cargo"
-# Consistent Python user base directory
-export PYTHONUSERBASE="$HOME/.local"
 
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:$GOPATH/bin"
 PATH="$PATH:$CARGO_HOME/bin"
-PATH="$PATH:$PYTHONUSERBASE/bin"
+case "$OSTYPE" in
+    darwin*)
+        PATH="$PATH:$HOME/Library/Python/2.7/bin" ;;
+    linux*)
+        PATH="$PATH:$HOME/.local/bin" ;;
+esac
 export PATH
 
-GOPATH="$GOPATH:$HOME"
+GOPATH="$GOPATH:$HOME:$HOME/src/github.com/edgeware/monorepo"
 export GOPATH
 
+# Load custom Python start-up script
 PYTHONSTARTUP="$HOME/.config/pythonrc"
 export PYTHONSTARTUP
 
@@ -37,14 +40,11 @@ export CLICOLOR=1
 # Don't create Python binary files
 export PYTHONDONTWRITEBYTECODE=1
 
-# Disables prompt mangling in virtual_env/bin/activate
+# Disables prompt mangling when activating a Python virtualenv
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # Report CPU usage for commands running longer than 10 seconds
 export REPORTTIME=10
-
-# Load custom Python start-up script (enables tab-completion)
-# export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # https://github.com/junegunn/fzf#respecting-gitignore-hgignore-and-svnignore
 export FZF_DEFAULT_COMMAND='ag -g ""'

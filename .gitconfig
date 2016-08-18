@@ -7,15 +7,23 @@
 	remote = yellow
 
 [color "diff"]
-	frag = magenta
-	meta = yellow
-	new = green
-	old = red
+	meta = yellow bold
+	commit = green bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
 
 [color "status"]
 	added = green reverse
 	changed = yellow reverse
 	untracked = red reverse
+
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
 
 [user]
 	name = Peter Renström
@@ -25,20 +33,30 @@
 	autocrlf = input
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
+	pager = diff-so-fancy --patch-mode | less --tabs=4 -RFX
+	# pager = diff-highlight | less --tabs=4 -RFX
 
 [alias]
 	# l = log -n 20 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-	l  = log --pretty=custom -n 20
-	g  = log --graph --pretty=custom -n 20
+	l  = log --pretty=custom --max-count=20
+	g  = log --pretty=custom --max-count=20 --graph
 	d = diff
-	s = status -sb
+	s = status --short --branch
 	st = status
-	c = commit --untracked-files=no -v
+	c = commit --untracked-files=no
 	co = checkout
-	standup = "!git log --since yesterday --author `git config user.email` --pretty=short"
-	wdiff = diff --color-words
-	rdiff = submodule foreach --recursive git diff
-	prune-local-branches = "!git branch --merged master | grep -v 'master$' | xargs git branch -d"
+	prune-merged-branches = "!git branch --merged master | grep -v 'master$' | xargs git branch -d"
+
+	# Human aliases
+	# http://gggritso.com/human-git-aliases
+	amend = commit --amend
+	branches = branch -a
+	discard = checkout -- .
+	stashes = stash list
+	tags = tag
+	uncommit = reset --mixed HEAD~
+	undo = reset --mixed HEAD~
+	unstage = reset HEAD --
 
 [push]
 	default = current
@@ -65,12 +83,20 @@
 	clean = git media clean %f
 	smudge = git media smudge %f
 
-# vim: set commentstring=#\ %s:
-[filter "hawser"]
-	clean = git hawser clean %f
-	smudge = git hawser smudge %f
-	required = true
 [filter "lfs"]
-	clean = git lfs clean %f
-	smudge = git lfs smudge %f
 	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+
+[interactive]
+	# diffFilter = diff-highlight
+	diffFilter = diff-so-fancy --patch-mode
+
+[diff]
+	compactionHeuristic = true
+	# diffFilter = diff-highlight
+	diffFilter = diff-so-fancy --patch-mode
+
+[commit]
+	verbose = true
+# vim: set commentstring=#\ %s:

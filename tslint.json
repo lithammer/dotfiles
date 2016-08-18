@@ -1,0 +1,23 @@
+{
+    "extends": "tslint:latest",
+    "rules": {
+        "interface-name": false,
+        "no-bitwise": false,
+        "no-console": [
+            true,
+            "debug",
+            "info",
+            "time",
+            "timeEnd",
+            "trace"
+        ],
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "property-declaration",
+            "variable-declaration",
+            "member-variable-declaration"
+        ]
+    }
+}

@@ -241,7 +241,7 @@ __prompt() {
     local pyenv_origin="$(pyenv version-origin)"
     local pyenv_root="$(pyenv root)/version"
     if [ "$pyenv_origin" != "$pyenv_root" ]; then
-        echo -n "$yellow_bold$(pyenv version-name)$reset "
+        echo -n "$yellow$(pyenv version-name)$reset "
     fi
 
     # echo -n "$black_bold%2~$reset"

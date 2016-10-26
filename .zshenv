@@ -6,12 +6,13 @@ export LC_ALL='en_US.UTF-8'
 GOPATH="$HOME/.go"
 CARGO_HOME="$HOME/.cargo"
 
+PATH="/usr/local/sbin:$PATH"
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:$GOPATH/bin"
 PATH="$PATH:$CARGO_HOME/bin"
 case "$OSTYPE" in
     darwin*)
-        PATH="$PATH:$HOME/Library/Python/2.7/bin" ;;
+        PATH="$PATH:$HOME/Library/Python/3.5/bin:$HOME/Library/Python/2.7/bin" ;;
     linux*)
         PATH="$PATH:$HOME/.local/bin" ;;
 esac
@@ -31,7 +32,7 @@ export MANPATH="/usr/local/man:$MANPATH"
 export EDITOR='nvim'
 
 export PAGER='less --no-init --quit-if-one-screen --raw-control-chars'
-# export LESS='-X -F'
+export LESS='-R'
 
 # Add colors to `ls`
 export LSCOLORS=ExGxcxdxCxegedabagacad

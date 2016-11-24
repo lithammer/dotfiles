@@ -100,10 +100,10 @@ Plug 'hynek/vim-python-pep8-indent'
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 let g:fzf_command_prefix = 'Fzf'
 let g:fzf_files_options = '--preview "(highlight -O ansi {} || cat {}) 2> /dev/null | head -'.&lines.'"'
-nnoremap <C-p> :FzfFiles<CR>
-nnoremap <C-t> :FzfTags<CR>
-nnoremap <C-g> :FzfBTags<CR>
-nnoremap <C-b> :FzfBuffers<CR>
+nnoremap <silent> <C-p> :FzfFiles<CR>
+nnoremap <silent> <C-t> :FzfTags<CR>
+nnoremap <silent> <C-g> :FzfBTags<CR>
+nnoremap <silent> <C-b> :FzfBuffers<CR>
 " junegunn/vim-peekaboo {{{2
 Plug 'junegunn/vim-peekaboo'
 " junegunn/rainbow_parentheses.vim {{{2
@@ -117,9 +117,6 @@ Plug 'justinmk/vim-sneak'
 nmap s <Plug>Sneak_s
 nmap S <Plug>Sneak_S
 highlight link SneakPluginTarget Search
-highlight link SneakStreakTarget Error
-highlight link SneakStreakMask Normal
-highlight link SneakPluginScope Search
 " kshenoy/vim-signature {{{2
 Plug 'kshenoy/vim-signature'
 " ludovicchabant/vim-gutentags {{{2
@@ -134,9 +131,6 @@ let g:gutentags_exclude = [
   \ '*/node_modules/*',
   \ '*/env/*',
   \ '*/venv/*',
-  \ '*/esb2001/*',
-  \ '*/isa-gw/*',
-  \ '*/platform/*',
   \ '*/third_party/*',
   \ '*/lib/*',
   \ '*/lib64/*'
@@ -146,7 +140,10 @@ Plug 'majutsushi/tagbar'
 nnoremap <Leader>t :TagbarToggle<CR>
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
-let g:grepper = {'open': 1}
+let g:grepper = {'tools': ['ag', 'git', 'rg'], 'highlight': 1}
+" let g:grepper.simple_prompt = 1
+command! -nargs=+ -complete=file Rg Grepper -noprompt -tool rg -query <args>
+command! -nargs=+ -complete=file Ag Grepper -noprompt -tool ag -query <args>
 " neomake/neomake {{{2
 " Plug 'neomake/neomake'
 " autocmd! BufWritePost * Neomake
@@ -164,8 +161,36 @@ Plug 'raimon49/requirements.txt.vim'
 " rust-lang/rust.vim {{{2
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 let g:rustfmt_autosave = 1
-" scrooloose/syntastic {{{2
-Plug 'scrooloose/syntastic'
+" sheerun/vim-polyglot {{{2
+Plug 'sheerun/vim-polyglot'
+" tpope/vim-commentary {{{2
+Plug 'tpope/vim-commentary'
+map <Leader>c :Commentary<CR>
+" tpope/vim-eunuch {{{2
+Plug 'tpope/vim-eunuch'
+" tpope/vim-fugitive {{{2
+Plug 'tpope/vim-fugitive'
+" tpope/vim-repeat {{{2
+Plug 'tpope/vim-repeat'
+" tpope/vim-sleuth {{{2
+Plug 'tpope/vim-sleuth'
+" tpope/vim-speeddating {{{2
+Plug 'tpope/vim-speeddating'
+" tpope/vim-surround {{{2
+Plug 'tpope/vim-surround'
+" tpope/vim-tbone {{{2
+Plug 'tpope/vim-tbone'
+" tpope/vim-vinegar {{{2
+Plug 'tpope/vim-vinegar'
+" vim-airline/vim-airline {{{2
+" Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+" let g:airline_powerline_fonts = 1
+" let g:airline#extensions#hunks#enabled = 0
+" let g:airline#extensions#branch#enabled = 0
+" let g:airline_extensions = ['syntastic', 'whitespace', 'netrw', 'quickfix']
+" set noshowmode
+" vim-syntastic/syntastic {{{2
+Plug 'vim-syntastic/syntastic'
 " Alternatives https://github.com/w0rp/ale https://github.com/maralla/validator.vim
 highlight link SyntasticErrorSign ErrorMsg
 highlight link SyntasticWarningSign Type
@@ -198,34 +223,6 @@ let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_ruby_checkers = ['rubocop']
 let g:syntastic_scss_checkers = ['sassc', 'stylelint']
 let g:syntastic_typescript_checkers = ['tsuquyomi', 'tslint']
-" sheerun/vim-polyglot {{{2
-Plug 'sheerun/vim-polyglot'
-" tpope/vim-commentary {{{2
-Plug 'tpope/vim-commentary'
-map <Leader>c :Commentary<CR>
-" tpope/vim-eunuch {{{2
-Plug 'tpope/vim-eunuch'
-" tpope/vim-fugitive {{{2
-Plug 'tpope/vim-fugitive'
-" tpope/vim-repeat {{{2
-Plug 'tpope/vim-repeat'
-" tpope/vim-sleuth {{{2
-Plug 'tpope/vim-sleuth'
-" tpope/vim-speeddating {{{2
-Plug 'tpope/vim-speeddating'
-" tpope/vim-surround {{{2
-Plug 'tpope/vim-surround'
-" tpope/vim-tbone {{{2
-Plug 'tpope/vim-tbone'
-" tpope/vim-vinegar {{{2
-Plug 'tpope/vim-vinegar'
-" vim-airline/vim-airline {{{2
-" Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-" let g:airline_powerline_fonts = 1
-" let g:airline#extensions#hunks#enabled = 0
-" let g:airline#extensions#branch#enabled = 0
-" let g:airline_extensions = ['syntastic', 'whitespace', 'netrw', 'quickfix']
-" set noshowmode
 " wellle/targets.vim {{{2
 Plug 'wellle/targets.vim'
 " }}}
@@ -241,8 +238,9 @@ Plug 'nanotech/jellybeans.vim'
 Plug 'renstrom/vim-hybrid'
 " }}}
 call plug#end()
-
-" Needs to be executed after 'plug#end()'
+" Post vim-plug settings {{{2
+" Some settings that are set using a function are only available after
+" 'plug#end()' has been called.
 " if has('nvim')
 "   call deoplete#custom#set('_', 'disabled_syntaxes', ['Comment', 'String'])
 " end
@@ -256,24 +254,24 @@ call plug#end()
 " See :h ft-sh-syntax.
 let g:is_posix = 1
 
-" Tree style file listing
+" Tree style file listing.
 let g:netrw_liststyle = 3
 
-" <C-^> should go to the last file, not to netrw
+" <C-^> should go to the last file, not to netrw.
 let g:netrw_altfile = 1
 
 " Highlight numers, buitin functions, standard exceptions, doctests and
-" whitespace errors (:h ft-python-syntax)
+" whitespace errors (:h ft-python-syntax).
 let python_highlight_all = 1
 
 " The g:lisp_rainbow option provides 10 levels of individual colorization for
-" the parentheses and backquoted parentheses (:h ft-lisp-syntax)
+" the parentheses and backquoted parentheses (:h ft-lisp-syntax).
 let g:lisp_rainbow = 1
 
-" Use the 256 color space instead of 16
+" Use the 256 color space instead of 16.
 set t_Co=256
 
-" Make sure dark background is used for colorschemes
+" Make sure dark background is used for colorschemes.
 set background=dark
 
 if has('termguicolors') " 7.4.1799
@@ -289,7 +287,7 @@ if has('termguicolors') " 7.4.1799
   \    'background': { 'ctermbg': 'NONE', '256ctermbg': 'NONE', 'guibg': 'NONE' },
   \}
   " color jellybeans
-  colorscheme base16-eighties
+  colorscheme base16-mocha
 else
   colorscheme hybrid
 endif
@@ -320,7 +318,7 @@ if has('termguicolors')
 
     " Syntastic markers
     highlight link SyntasticErrorSign DiffDelete
-    highlight link SyntasticWarningSign pythonTodo
+    highlight link SyntasticWarningSign Todo
     highlight link SyntasticError Error
     highlight link SyntasticWarning Error
   endif
@@ -329,36 +327,45 @@ endif
 let g:markdown_fenced_languages = [
   \ 'python', 'javascript', 'js=javascript', 'json=javascript', 'go']
 
-" Don't try to highlight lines longer than 800 characters.
+" Don't try to highlight lines longer than 400 characters.
 set synmaxcol=400
 
-" Automatically save when moving between buffers (and more)
+" Automatically save when moving between buffers (and more).
 set autowrite
 
-" Recognize numbered lists when formatting text
+" When formatting text, recognize numbered lists. This actually uses
+" the 'formatlistpat' option, thus any kind of list can be used. The
+" indent of the text after the number is used for the next line. The
+" default is to find a number, optionally followed by '.', ':', ')',
+" ']' or '}'.  Note that 'autoindent' must be set too.
 set formatoptions+=n
 
-" Delete comment character when joining commented lines
+" Don't break a line after a one-letter word. It's broken before it
+" instead (if possible).
+set formatoptions+=1
+
+" Where it makes sense, remove a comment leader when joining lines.
 if has('patch-7.3.541')
   set formatoptions+=j
 endif
 
 " Use 4-space indentation, this might be overriden by language specific
 " indentation
-set tabstop=4 softtabstop=4 shiftwidth=4
-set expandtab
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab shiftround
+
+" Round indent to multiple of 'shiftwidth'.  Applies to > and < commands.
 set shiftround
 
-" Highlight one column after 'textwidth'
-" set colorcolumn=+1
-
-" Show menu when there's at least one match, and show extra information
+" menuone  Use the popup menu also when there is only one match.
+"          Useful when there is additional information about the
+"          match, e.g., what file it comes from.
+"
+" preview  Show extra information about the currently selected
+"          completion in the preview window.
 set completeopt=menuone,preview
-" set completeopt=menuone
 
 " Remove fold characters
-" set fillchars-=fold:-
-set fillchars="vert:│,fold:"
+set fillchars-=fold:-
 
 " Set a nicer foldtext function
 set foldtext=NumLinesEndOfLine()
@@ -378,68 +385,73 @@ set grepformat=%f:%l:%c:%m,%f:%l:%m
 
 " Use Ag (The Silver Searcher) instead of grep if available
 if executable('ag')
-  set grepprg=ag\ --vimgrep\ $*
+  let &grepprg='ag --vimgrep $*'
 else
-  set grepprg=grep\ -I\ --recursive\ --line-number\ $*\ *
+  let &grepprg='grep -I --recursive --line-number $* *'
 endif
-" command! -nargs=* -complete=file -bar Grep execute 'silent! grep! <q-args>' | redraw! | copen
-command! -bang -nargs=* -complete=file -bar Grep silent! grep! <args>
-autocmd QuickFixCmdPost *grep* cwindow
+" command! -bang -nargs=* -complete=file -bar Grep silent! grep! <args>
+" autocmd QuickFixCmdPost *grep* cwindow
 
-" Highlight all search matches
+" When there is a previous search pattern, highlight all its matches.
 set hlsearch
 
-" Ignore case in search patterns, unless they contains upper case characters
+" Ignore case in search patterns, unless they contain upper case characters.
 set ignorecase smartcase
 
-" Show some hidden characters ('listchars')
-set list
+" nosplit  Shows the effects of a command incrementally, as you type.
+" split    Also shows partial off-screen results in a preview window.
+if exists('&inccommand')
+  set inccommand=split
+endif
 
-set listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:_
+" Enable list mode. See 'listhars'.
+set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:+
 
-" Disable mouse
+" Disable mouse.
 set mouse=""
 
-" Wrap long lines
-set wrap
-
-" Characters to put at the start of wrap lines
-let &showbreak = '↪ '
-
-" Break long lines on more natural break points
+" If on, Vim will wrap long lines at a character in 'breakat' rather
+" than at the last character that fits on the screen. Unlike
+" 'wrapmargin' and 'textwidth', this does not insert <EOL>s in the file,
+" it only affects the way the file is displayed, not its contents.
 if has('linebreak')
   set linebreak
 endif
 
-" Every wrapped line will continue visually indented (same amount of space as
-" the beginning of that line), thus preserving horizontal blocks of text.
 if exists('+breakindent')
+  " Every wrapped line will continue visually indented (same amount of
+  " space as the beginning of that line), thus preserving horizontal blocks
+  " of text.
   set breakindent
+  " After applying 'breakindent', the wrapped line's beginning will be shifted
+  " by the given number of characters. It permits dynamic French paragraph
+  " indentation (negative) or emphasizing the line continuation (positive).
   set breakindentopt=shift:2
-end
+  let &showbreak = "\u21AA "
+endif
 
-" Show line numbers
+" Show line numbers.
 set number
 
-" Use current line as starting point for line numbering
+" Use current line as starting point for line numbering.
 if exists('+relativenumber')
   set relativenumber
 endif
 
-" Always report number of lines changes
+" Always report number of lines changes.
 set report=0
 
-" Minimal number of screen lines to keep above and below the cursor
+" Minimal number of screen lines to keep above and below the cursor.
 set scrolloff=5
 
-" The minimal number of columns to scroll horizontally
+" The minimal number of columns to scroll horizontally.
 set sidescroll=10
 
-" Put the new window on the right when doing :vsplit
-set splitright
-
-" Set the title of the window to 'titlestring'
+" Set the title of the window to 'titlestring'.
 set title
+
+" Splitting a window will put the new window right of the current one.
+set splitright
 
 set directory=~/.vim/swaps
 if !isdirectory(&directory)
@@ -459,33 +471,21 @@ if has('persistent_undo')
   endif
 endif
 
-" Allow cursor beyond EOL in Visual block mode
+" Allow cursor beyond EOL in Visual block mode.
 set virtualedit=block
 
-" Case-insensitive completion for file names and directories
+" Case-insensitive completion for file names and directories.
 if exists('+wildignorecase')
   set wildignorecase
 end
 
-" Match longest commong string
+" When more than one match, list all matches.
 set wildmode=list:longest,list:full
 
-" Version control
-set wildignore+=.svn/,*/.git/,*/.hg/
-set wildignore+=*/.svn/,*/.git/,*/.hg/
-
-" Binary files
-set wildignore+=*.py[co],*.luac,*.beam,*.class,*.o
-
-" Images
-set wildignore+=*.jpeg,*.jpg,*.png,*.gif,*.bmp,*.ico
-
-" Virtualenv, npm and bower
-set wildignore+=venv/,env/,node_modules/,vendor/
-set wildignore+=*/venv/,*/env/,*/node_modules/,*/vendor/
-
-" OS files
-set wildignore+=*.DS_Store
+" A list of patterns to ignore when expanding wildcards, completing file or
+" directory names, and influences the result of expand(), glob() and
+" globpath().
+set wildignore+=*.pyc,*.o
 " Mappings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -493,27 +493,47 @@ set wildignore+=*.DS_Store
 command W w
 command Q q
 
-" Copy to clipboard
+" Repeat the last recorded macro.
+nnoremap Q @@
+
+" Copy to clipboard.
 vnoremap <C-c> "*y"
 
-" Toggle fold under cursor
+" Toggle fold under cursor.
 noremap <Space> za
 
-" Don't move on '*', useful when highlighting words
+" Don't move on '*', useful when highlighting words.
 nnoremap * *<C-o>
 
-" nmap < [
-" nmap > ]
-" omap < [
-" omap > ]
-" xmap < [
-" xmap > ]
-" nmap ö [
-" nmap ä ]
-" omap ö [
-" omap ä ]
-" xmap ö [
-" xmap ä ]
+function! <SID>LocationPrevious()
+  try
+    lprev
+  catch /^Vim\%((\a\+)\)\=:E553/
+    llast
+  catch /^Vim\%((\a\+)\)\=:E776/
+    execute "normal \<Esc>"
+  endtry
+endfunction
+
+function! <SID>LocationNext()
+  try
+    lnext
+  catch /^Vim\%((\a\+)\)\=:E553/
+    lfirst
+  catch /^Vim\%((\a\+)\)\=:E776/
+    execute "normal \<Esc>"
+  endtry
+endfunction
+
+" nnoremap <silent> <Plug>LocationPrevious :<C-u>exe 'call <SID>LocationPrevious()'<CR>
+" nnoremap <silent> <Plug>LocationNext :<C-u>exe 'call <SID>LocationNext()'<CR>
+" nmap <silent> ö <Plug>LocationPrevious
+" nmap <silent> ä <Plug>LocationNext
+nmap <silent> ö :<C-u>exe 'call <SID>LocationPrevious()'<CR>
+nmap <silent> ä :<C-u>exe 'call <SID>LocationNext()'<CR>
+
+nmap Ö :cprevious<CR>
+nmap Ä :cnext<CR>
 " Statusline {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 augroup statusline_whitespace
@@ -606,7 +626,7 @@ function! SetupPlainText()
   setlocal wrap
   setlocal wrapmargin=2
   setlocal textwidth=79
-  setlocal formatoptions+=t
+  setlocal spell
 endfunction
 autocmd FileType text call SetupPlainText()
 
@@ -617,15 +637,12 @@ function! SetupPython()
   setlocal foldlevel=2
   setlocal foldnestmax=2
 
-  " Highlight 'print' as function.
-  syn keyword pythonBuiltinFunc print
-
   " Highlight 'NOTE' and 'HACK' in comments.
   syn keyword pythonTodo NOTE HACK contained
 endfunction
 autocmd FileType python call SetupPython()
 
-function! YAPF() range
+function! <SID>PyFormat() range
   if !executable('yapf')
     echoerr "No yapf binary not found in $PATH. Please install it first."
     return
@@ -645,54 +662,19 @@ function! YAPF() range
   call cursor(a:firstline, 1)
 endfunction
 
-command! -range=% PyFormat <line1>,<line2>call YAPF()
+command! -range=% PyFormat <line1>,<line2>call <SID>PyFormat()
 
-function! ClangFormat() range
+function! <SID>ClangFormat()
   if !executable('clang-format')
     echoerr "No clang-format binary not found in $PATH. Please install it first."
     return
   endif
-  " Determine range to format.
-  let l:line_ranges = a:firstline . ':' . a:lastline
-  let l:cmd = 'clang-format -lines=' . l:line_ranges
-
-  " Call clang-format with the current buffer
-  let l:formatted_text = system(l:cmd, join(getline(1, '$'), "\n") . "\n")
-
-  " Update the buffer.
-  silent execute '1,' . string(line('$')) . 'delete'
-  call setline(1, split(l:formatted_text, "\n"))
-
-  " Reset cursor to first line of the formatted range.
-  call cursor(a:firstline, 1)
+  call system('clang-format -i ' . expand('%:p'))
+  silent edit!
 endfunction
 
-command! -range=% CFormat <line1>,<line2>call ClangFormat()
-
-function! FormatCode() range
-  if &filetype == 'python'
-    call PyFormat()
-  endif
-endfunction
-
-command! -range=% Format <line1>,<line2>call FormatCode()
-
-" XML, HTML et al
-function! SetupMarkupLanguage()
-  setlocal matchpairs+=<:>
-
-  " Set `xmllint` as formatter for XML
-  if &filetype == 'xml'
-    setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
-  endif
-endfunction
-autocmd FileType html,xml call SetupMarkupLanguage()
-
-function! SetupJSON()
-  setlocal equalprg=python\ -mjson.tool
-endfunction
-autocmd FileType json call SetupJSON()
-
+command! ClangFormat call <SID>ClangFormat()
+autocmd! BufWritePost *.h,*.c,*.cpp nested ClangFormat
 " Neovim {{{1
 if has('nvim')
   " Terminal mappings
@@ -796,59 +778,7 @@ if has('nvim')
     let g:terminal_color_foreground = '#D3D0C8'
   endif
 endif
-" OS Specific {{{1
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-" General GUI options
-if has('gui')
-  set guioptions-=m  " Remove menu bar
-  set guioptions-=T  " Remove toolbar
-  set guioptions-=l  " Remove left scrollbar
-  set guioptions-=L
-  set guioptions-=r  " Remove right scrollbar
-  set guioptions-=R
-  nnoremap <C-p> :<C-u>Unite -start-insert -auto-resize file_rec/git:!<CR>
-endif
-
-" OS X
-if has('gui_macvim')
-  colorscheme base16-solarized-light
-  " Fullscreen takes up entire screen
-  set fuoptions=maxhorz,maxvert
-
-  " Command-Return for fullscreen
-  macmenu Window.Toggle\ Full\ Screen\ Mode key=<D-CR>
-
-  " MacVIM shift+arrow-keys behaviour
-  "let macvim_hig_shift_movement = 1
-
-  " Map tab switch to cmd-<number>
-  map <D-1> :tabn 1<CR>
-  map <D-2> :tabn 2<CR>
-  map <D-3> :tabn 3<CR>
-  map <D-4> :tabn 4<CR>
-  map <D-5> :tabn 5<CR>
-  map <D-6> :tabn 6<CR>
-  map <D-7> :tabn 7<CR>
-  map <D-8> :tabn 8<CR>
-  map <D-9> :tabn 9<CR>
-  map! <D-1> <C-O>:tabn 1<CR>
-  map! <D-2> <C-O>:tabn 2<CR>
-  map! <D-3> <C-O>:tabn 3<CR>
-  map! <D-4> <C-O>:tabn 4<CR>
-  map! <D-5> <C-O>:tabn 5<CR>
-  map! <D-6> <C-O>:tabn 6<CR>
-  map! <D-7> <C-O>:tabn 7<CR>
-  map! <D-8> <C-O>:tabn 8<CR>
-  map! <D-9> <C-O>:tabn 9<CR>
-endif
-
-" Windows
-if has('gui_win32')
-  " ...
-endif
-
-" Local settings
+" Local settings {{{2
 if filereadable(expand('~/.vimrc.local'))
   source ~/.vimrc.local
 endif

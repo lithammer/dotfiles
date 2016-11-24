@@ -53,6 +53,9 @@ fi
 # Add zsh-completions to $fpath.
 fpath=($ZSH/completion /usr/local/share/zsh-completions $fpath)
 
+# List of suffixes of files to be ignored during filename completion.
+fignore=(.pyc .o)
+
 # Load and initialize the completion system ignoring insecure directories.
 autoload -Uz compinit && compinit
 

@@ -77,7 +77,7 @@ zstyle ':completion::complete:*' cache-path "$ZSH/cache/"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 # Group matches and describe
-zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:*:*:*:*' menu yes select
 zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
@@ -335,25 +335,33 @@ bindkey '^[[F' end-of-line                            # [fn-RightArrow] - Go to 
 # Basic directory operations
 alias ...='cd ../..'
 alias ....='cd ../../..'
+alias .....='cd ../../../..'
 
 # List direcory contents
-alias l='ls -lh'
-alias ll='ls -lh'
-alias la='ls -lAh'
-alias lsa='ls -lah'
+# Detect which `ls` flavor is in use
+if ls --color > /dev/null 2>&1; then
+  colorflag='--color'
+else
+  colorflag='-G'
+fi
+alias ls="command ls $colorflag"
+alias l='ls -lF'
+alias ll='ls -lF'
+alias la='ls -lFa'
 
 alias tree='tree -C -I "node_modules|env|vendor"'
 
 # History timestamps as "yyyy-mm-dd"
 alias history='fc -il 1'
 
-alias grep='grep --color'
+alias grep='grep --color=auto'
 
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 
 # Use Neovim if available
 if command -v nvim > /dev/null; then
     alias vim='nvim'
+    alias nv='nvim'
 fi
 # FZF {{{1
 if [ -e ~/.fzf.zsh ]; then

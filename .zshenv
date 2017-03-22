@@ -12,7 +12,7 @@ PATH="$PATH:$GOPATH/bin"
 PATH="$PATH:$CARGO_HOME/bin"
 case "$OSTYPE" in
     darwin*)
-        PATH="$PATH:$HOME/Library/Python/3.5/bin:$HOME/Library/Python/2.7/bin" ;;
+        PATH="$PATH:$HOME/Library/Python/3.6/bin:$HOME/Library/Python/2.7/bin" ;;
     linux*)
         PATH="$PATH:$HOME/.local/bin" ;;
 esac
@@ -35,7 +35,8 @@ export PAGER='less --no-init --quit-if-one-screen --raw-control-chars'
 export LESS='-R'
 
 # Add colors to `ls`
-export LSCOLORS=ExGxcxdxCxegedabagacad
+# export LSCOLORS=ExGxcxdxCxegedabagacad
+export LSCOLORS=exgxcxdxcxegedabagacad
 export CLICOLOR=1
 
 # Don't create Python binary files
@@ -48,8 +49,8 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export REPORTTIME=10
 
 # https://github.com/junegunn/fzf#respecting-gitignore-hgignore-and-svnignore
-export FZF_DEFAULT_COMMAND='ag -g ""'
-export FZF_DEFAULT_OPTS="--color=16 --inline-info --tiebreak=end"
+export FZF_DEFAULT_COMMAND='rg --files'
+export FZF_DEFAULT_OPTS="--color=16 --inline-info"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 if [ -f ~/.zshenv.local ]; then

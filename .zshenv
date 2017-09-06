@@ -10,6 +10,7 @@ PATH="/usr/local/sbin:$PATH"
 PATH="$HOME/.bin:$PATH"
 PATH="$PATH:$GOPATH/bin"
 PATH="$PATH:$CARGO_HOME/bin"
+PATH="$PATH:$HOME/.luarocks/bin"
 case "$OSTYPE" in
     darwin*)
         PATH="$PATH:$HOME/Library/Python/3.6/bin:$HOME/Library/Python/2.7/bin" ;;

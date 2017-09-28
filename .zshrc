@@ -156,7 +156,8 @@ zstyle ':completion:*:*:kill:*' insert-ids single
 
 # Man
 zstyle ':completion:*:manuals' separate-sections true
-zstyle ':completion:*:manuals.(^1*)' insert-sections true
+zstyle ':completion:*:manuals.*' insert-sections true
+zstyle ':completion:*:man:*' menu yes select
 
 # SSH/SCP/RSYNC
 zstyle ':completion:*:(scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
@@ -237,15 +238,20 @@ __prompt() {
 
     # Show name currently active virtualenv
     if [[ -n $VIRTUAL_ENV ]]; then
-        printf "%s[%s] " "$yellow" ${${VIRTUAL_ENV}:t}
+        # Use parent folder if the path end with "/env".
+        if [[ $VIRTUAL_ENV == */env ]]; then
+          printf "%s[%s] " "$yellow" ${$(dirname $VIRTUAL_ENV):t}
+        else
+          printf "%s[%s] " "$yellow" ${${VIRTUAL_ENV}:t}
+        fi
     fi
 
     # Show name of currently active pyenv if it's not a global version.
-    local pyenv_origin="$(pyenv version-origin)"
-    local pyenv_root="$(pyenv root)/version"
-    if [ "$pyenv_origin" != "$pyenv_root" ]; then
-        echo -n "$yellow$(pyenv version-name)$reset "
-    fi
+    # local pyenv_origin="$(pyenv version-origin)"
+    # local pyenv_root="$(pyenv root)/version"
+    # if [ "$pyenv_origin" != "$pyenv_root" ]; then
+    #     echo -n "$yellow$(pyenv version-name)$reset "
+    # fi
 
     # echo -n "$black_bold%2~$reset"
     echo -n "%F{8}%2~%f"
@@ -356,6 +362,24 @@ alias history='fc -il 1'
 
 alias grep='grep --color=auto'
 
+# Activate a virtualenv.
+# alias activate='source env/bin/activate'
+activate-virtualenv() {
+  local curdir="$PWD"
+  while [ "$curdir" != "$HOME" ]; do
+    if [ $(find "$curdir" -type d -maxdepth 1 -name env) ]; then
+      break
+    fi
+    curdir=$(dirname "$curdir")
+  done
+  if [ -f "$curdir/env/bin/activate" ]; then
+    . $curdir/env/bin/activate
+  else
+    echo No virtualenv found
+    return 1
+  fi
+}
+
 alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 
 # Use Neovim if available
@@ -363,6 +387,15 @@ if command -v nvim > /dev/null; then
     alias vim='nvim'
     alias nv='nvim'
 fi
+# Path {{{1
+typeset -U path
+
+path=('/usr/local/sbin' $path)
+path=("$HOME/.bin" $path)
+path+=("$HOME/.go/bin")
+path+=("$CARGO_HOME/bin")
+path+=("$HOME/.luarocks/bin")
+path=('/usr/local/opt/curl/bin' $path)
 # FZF {{{1
 if [ -e ~/.fzf.zsh ]; then
     . ~/.fzf.zsh

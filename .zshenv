@@ -17,7 +17,7 @@ export PYTHONSTARTUP
 export MANPATH="/usr/local/man:$MANPATH"
 
 # Default editor
-export EDITOR='vim'
+export EDITOR='nvim'
 
 export PAGER='less --no-init --quit-if-one-screen --raw-control-chars'
 export LESS='-R'

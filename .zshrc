@@ -363,7 +363,6 @@ alias history='fc -il 1'
 alias grep='grep --color=auto'
 
 # Activate a virtualenv.
-# alias activate='source env/bin/activate'
 activate-virtualenv() {
   local curdir="$PWD"
   while [ "$curdir" != "$HOME" ]; do
@@ -379,8 +378,6 @@ activate-virtualenv() {
     return 1
   fi
 }
-
-alias colors='( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;for i in {0..256};do o=00$i;echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;done; )'
 
 # Use Neovim if available
 if command -v nvim > /dev/null; then

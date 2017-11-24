@@ -28,155 +28,188 @@ Plug 'tpope/vim-sensible'
 " AndrewRadev/splitjoin.vim {{{2
 Plug 'AndrewRadev/splitjoin.vim'
 let g:splitjoin_python_brackets_on_separate_lines = 1
-let g:splitjoin_trailing_comma = 1
 " ConradIrwin/vim-bracketed-paste {{{2
 if !has('nvim')
   " This functionality is built into Neovim
   Plug 'ConradIrwin/vim-bracketed-paste'
 end
 " Valloric/YouCompleteMe {{{2
+" MUcomplete
+Plug 'lifepillar/vim-mucomplete'
+
+Plug 'Rip-Rip/clang_complete'
+Plug 'davidhalter/jedi-vim'
+Plug 'racer-rust/vim-racer'
+
+" Plugin settings.
+" let g:mucomplete#enable_auto_at_startup = 1
+inoremap <expr> <C-e> mucomplete#popup_exit("\<C-e>")
+inoremap <expr> <C-y> mucomplete#popup_exit("\<C-y>")
+inoremap <expr> <CR> mucomplete#popup_exit("\<CR>")
+set shortmess+=c
+
+let g:jedi#auto_close_doc = 0
+let g:jedi#goto_command = 'gd'
+let g:jedi#popup_on_dot = 0
+let g:jedi#show_call_signatures = 0
+let g:jedi#smart_auto_mappings = 0
+let g:jedi#use_splits_not_buffers = 'winwidth'
+
+let g:clang_library_path = expand('/usr/local/Cellar/llvm/*/lib')
+let g:clang_complete_auto = 1
 " YCM {{{3
 " if has('python') || has('python3')
 "   Plug 'Valloric/YouCompleteMe'
-"   let g:ycm_python_binary_path = 'python'
+"   let g:ycm_python_binary_path = empty($VIRTUAL_ENV) ? g:python3_host_prog : 'python'
 "   let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
 "   let g:ycm_goto_buffer_command = 'horizontal-split'
 "   nnoremap <leader>jd :YcmCompleter GoTo<CR>
 " end
 " asyncomplete.vim {{{3
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-imap <C-space> <Plug>(asyncomplete_force_refresh)
+" let g:asyncomplete_remove_duplicates = 1
+" let g:asyncomplete_force_refresh_on_context_changed = 1
 
-augroup asyncomplete
-  autocmd!
-augroup END
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
+" imap <C-space> <Plug>(asyncomplete_force_refresh)
+
+" augroup asyncomplete
+"   autocmd!
+" augroup END
 
 " Completion sources.
 
 " Disable omni and buffer completion for these sources because they have an
 " LSP source (or otherwise better alternative).
-let s:asyncomplete_blacklist = [
-\  'go',
-\  'javascript',
-\  'javascript.jsx',
-\  'python',
-\  'rust',
-\  'typescript'
-\]
+" let s:asyncomplete_blacklist = [
+"       \ 'go',
+"       \ 'javascript',
+"       \ 'javascript.jsx',
+"       \ 'python',
+"       \ 'rust',
+"       \ 'typescript'
+"       \]
 
-Plug 'yami-beta/asyncomplete-omni.vim'
-autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-\  'name': 'omni',
-\  'priority': 6,
-\  'whitelist': ['*'],
-\  'blacklist': s:asyncomplete_blacklist,
-\  'completor': function('asyncomplete#sources#omni#completor')
-\}))
+" Plug 'yami-beta/asyncomplete-omni.vim'
+" autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"       \ 'name': 'omni',
+"       \ 'priority': 6,
+"       \ 'whitelist': ['*'],
+"       \ 'blacklist': s:asyncomplete_blacklist,
+"       \ 'completor': function('asyncomplete#sources#omni#completor')
+"       \}))
 
-if executable('ctags')
-  Plug 'prabirshrestha/asyncomplete-tags.vim'
-  autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
-  \  'name': 'tags',
-  \  'priority': 4,
-  \  'whitelist': ['c', 'cpp'],
-  \  'completor': function('asyncomplete#sources#tags#completor'),
-  \  'config': {'max_file_size': 20000000},
-  \}))
-endif
+" if executable('ctags')
+"   Plug 'prabirshrestha/asyncomplete-tags.vim'
+"   autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
+"         \ 'name': 'tags',
+"         \ 'priority': 4,
+"         \ 'whitelist': ['c', 'cpp'],
+"         \ 'completor': function('asyncomplete#sources#tags#completor'),
+"         \ 'config': {'max_file_size': 20000000},
+"         \}))
+" endif
 
-Plug 'prabirshrestha/asyncomplete-buffer.vim'
-autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-\  'name': 'buffer',
-\  'priority': 0,
-\  'whitelist': ['*'],
-\  'blacklist': s:asyncomplete_blacklist,
-\  'completor': function('asyncomplete#sources#buffer#completor'),
-\}))
+" Plug 'prabirshrestha/asyncomplete-buffer.vim'
+" autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+"       \ 'name': 'buffer',
+"       \ 'priority': 0,
+"       \ 'whitelist': ['*'],
+"       \ 'blacklist': ['go'],
+"       \ 'completor': function('asyncomplete#sources#buffer#completor'),
+"       \}))
 
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim' | Plug 'Shougo/neco-syntax'
 " autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-" \  'name': 'necosyntax',
-" \  'priority': 2,
-" \  'whitelist': ['*'],
-" \  'blacklist': s:asyncomplete_blacklist,
-" \  'completor': function('asyncomplete#sources#necosyntax#completor'),
-" \}))
+"       \ 'name': 'necosyntax',
+"       \ 'priority': 2,
+"       \ 'whitelist': ['*'],
+"       \ 'blacklist': s:asyncomplete_blacklist,
+"       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+"       \}))
 
-if executable('pyls')
-  autocmd asyncomplete User lsp_setup call lsp#register_server({
-  \  'name': 'pyls',
-  \  'cmd': {server_info->['pyls']},
-  \  'priority': 8,
-  \  'whitelist': ['python'],
-  \})
-endif
+" if executable('pyls')
+"   autocmd asyncomplete User lsp_setup call lsp#register_server({
+"         \ 'name': 'pyls',
+"         \ 'cmd': {server_info->['pyls']},
+"         \ 'priority': 8,
+"         \ 'whitelist': ['python'],
+"         \})
+" endif
 
-if executable('javascript-typescript-stdio')
-  autocmd asyncomplete User lsp_setup call lsp#register_server({
-  \  'name': 'javascript-typescript-stdio',
-  \  'cmd': {server_info->['javascript-typescript-stdio']},
-  \  'priority': 8,
-  \  'whitelist': ['javascript', 'javascript.jsx', 'typescript'],
-  \})
-endif
+" if executable('javascript-typescript-stdio')
+"   autocmd asyncomplete User lsp_setup call lsp#register_server({
+"         \ 'name': 'javascript-typescript-stdio',
+"         \ 'cmd': {server_info->['javascript-typescript-stdio']},
+"         \ 'priority': 8,
+"         \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript'],
+"         \})
+" endif
 
-if executable('rls')
-  autocmd asyncomplete User lsp_setup call lsp#register_server({
-  \  'name': 'rls',
-  \  'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
-  \  'priority': 8,
-  \  'whitelist': ['rust'],
-  \})
-endif
+" if executable('rls')
+"   autocmd asyncomplete User lsp_setup call lsp#register_server({
+"         \ 'name': 'rls',
+"         \ 'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
+"         \ 'priority': 8,
+"         \ 'whitelist': ['rust'],
+"         \})
+" endif
 
-autocmd asyncomplete User lsp_setup call lsp#register_server({
-\  'name': 'clangd',
-\  'cmd': {server_info->[expand('/usr/local/Cellar/llvm/*/bin/clangd')]},
-\  'priority': 8,
-\  'whitelist': ['c', 'cpp'],
-\})
+" autocmd asyncomplete User lsp_setup call lsp#register_server({
+"       \ 'name': 'clangd',
+"       \ 'cmd': {server_info->[expand('/usr/local/Cellar/llvm/*/bin/clangd')]},
+"       \ 'priority': 8,
+"       \ 'whitelist': ['c', 'cpp'],
+"       \})
 
-if executable('go-langserver')
-  autocmd asyncomplete User lsp_setup call lsp#register_server({
-  \  'name': 'go-langserver',
-  \  'cmd': {server_info->['go-langserver', '-mode=stdio']},
-  \  'priority': 8,
-  \  'whitelist': ['go'],
-  \})
-endif
+" if executable('go-langserver')
+"   autocmd asyncomplete User lsp_setup call lsp#register_server({
+"         \ 'name': 'go-langserver',
+"         \ 'cmd': {server_info->['go-langserver', '-mode=stdio']},
+"         \ 'priority': 8,
+"         \ 'whitelist': ['go'],
+"         \})
+" endif
 
-if executable('gocode')
-  Plug 'prabirshrestha/asyncomplete-gocode.vim'
-  autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#gocode#get_source_options({
-  \  'name': 'gocode',
-  \  'priority': 8,
-  \  'whitelist': ['go'],
-  \  'completor': function('asyncomplete#sources#gocode#completor'),
-  \}))
-endif
+" if executable('gocode')
+"   Plug 'prabirshrestha/asyncomplete-gocode.vim'
+"   autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#gocode#get_source_options({
+"         \ 'name': 'gocode',
+"         \ 'priority': 8,
+"         \ 'whitelist': ['go'],
+"         \ 'completor': function('asyncomplete#sources#gocode#completor'),
+"         \}))
+" endif
 " Vimjas/vim-python-pep8-indent {{{2
 Plug 'Vimjas/vim-python-pep8-indent'
 " airblade/vim-gitgutter {{{2
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_map_keys = 0
+" christoomey/vim-tmux-navigator {{{2
+Plug 'christoomey/vim-tmux-navigator'
+let g:tmux_navigator_no_mappings = 1
+
+if $TERM =~# '^\(xterm\|screen\)\(-.*\)\?$'
+  nnoremap <silent> <A-Left> :TmuxNavigateLeft<CR>
+  nnoremap <silent> <A-Down> :TmuxNavigateDown<CR>
+  nnoremap <silent> <A-Up> :TmuxNavigateUp<CR>
+  nnoremap <silent> <A-Right> :TmuxNavigateRight<CR>
+endif
 " fatih/vim-go {{{2
 Plug 'fatih/vim-go'
 let g:go_fmt_command = 'goimports'
 " fs111/pydoc.vim {{{2
-Plug 'fs111/pydoc.vim'
+" Plug 'fs111/pydoc.vim'
 " Don't highlight search term.
 let g:pydoc_highlight = 0
 " Use a more portable command.
 let g:pydoc_cmd = 'python -m pydoc'
-" junegunn/vim-peekaboo {{{2
-Plug 'junegunn/vim-peekaboo'
 " junegunn/vim-easy-align {{{2
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 vmap <Enter> <Plug>(EasyAlign)
@@ -194,18 +227,20 @@ if executable('ctags')
   let g:gutentags_generate_on_empty_buffer = 1
   let g:gutentags_cache_dir = expand('~/.vim/tags')
   let g:gutentags_ctags_exclude = [
-  \  '*.min.js',
-  \  '*/vendor/*',
-  \  '*/node_modules/*',
-  \  '*/env/*',
-  \  '*/venv/*',
-  \  '*/third_party/*',
-  \  '*/lib/*',
-  \  '*/lib64/*',
-  \  '*/build/*',
-  \  '*/dist/*',
-  \]
+        \ '*.min.js',
+        \ '*/vendor/*',
+        \ '*/node_modules/*',
+        \ '*/env/*',
+        \ '*/venv/*',
+        \ '*/third_party/*',
+        \ '*/lib/*',
+        \ '*/lib64/*',
+        \ '*/build/*',
+        \ '*/dist/*',
+        \]
 endif
+" machakann/vim-sandwich {{{2
+Plug 'machakann/vim-sandwich'
 " majutsushi/tagbar {{{2
 Plug 'majutsushi/tagbar'
 nnoremap <Leader>t :TagbarToggle<CR>
@@ -224,39 +259,47 @@ let g:rustfmt_autosave = 1
 Plug 'sheerun/vim-polyglot'
 " These are covered by the upstream plugin.
 let g:polyglot_disabled = [
-\  'go',
-\  'groovy',
-\  'python',
-\  'rust',
-\]
+      \ 'go',
+      \ 'groovy',
+      \ 'jenkins',
+      \ 'python',
+      \ 'rust',
+      \]
 " srstevenson/vim-picker {{{2
-" Plug 'ctrlpvim/ctrlp.vim' | Plug 'FelikZ/ctrlp-py-matcher'
+Plug 'srstevenson/vim-picker'
+nnoremap <silent> <C-p> :PickerEdit<CR>
+nnoremap <silent> <C-w><C-p> :PickerSplit<CR>
+nnoremap <silent> <C-b> :PickerBuffer<CR>
+" Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'nixprime/cpsm', {'do': 'env PY3=ON ./install.sh'}
+" let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
 " let g:ctrlp_working_path_mode = 'a'
-" let g:ctrlp_match_func = {'match': 'pymatcher#PyMatch'}
-" let g:ctrlp_user_command = 'rg --files %s'
+" let g:ctrlp_user_command = 'rg --files --color=never --glob "" %s'
 " let g:ctrlp_use_caching = 0
 " let g:ctrlp_status_func = {'main': 'CtrlP_Main', 'prog': 'CtrlP_Progress'}
 " let s:ctrlp_section_map = {'mru files': 'recent'}
+
 " function! CtrlP_Main(...) " See :h ctrlp_status_func
 "   let l:section = get(s:ctrlp_section_map, a:5, a:5)
 "   return a:1 ==# 'prt'
-"   \  ? '%#InsertMode# ' . l:section . ' %* %<' . getcwd() . ' %= %#InsertMode#' . (a:3?' regex ':' match ') . a:2 . ' %*'
-"   \  : '%#VisualMode# ' . l:section . ' %* %<' . getcwd() . ' %= %#VisualMode# select %*'
+"         \ ? '%#InsertMode# ' . l:section . ' %* %<' . getcwd() . ' %= %#InsertMode#' . (a:3?' regex ':' match ') . a:2 . ' %*'
+"         \ : '%#VisualMode# ' . l:section . ' %* %<' . getcwd() . ' %= %#VisualMode# select %*'
 " endf
 
 " function! CtrlP_Progress(...)
 "   return '%#Warnings# ' . a:1 . ' %* %= %<%#Warnings# ' . getcwd() . ' %*'
 " endf
-Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
-let g:fzf_command_prefix = 'Fzf'
-nnoremap <silent> <C-p> :FzfFiles<CR>
-nnoremap <silent> <Leader>b :FzfBTags<CR>
-command! -bang -nargs=* FzfRg
-\ call fzf#vim#grep(
-\   'rg --column --line-number --no-heading --color=always ' . shellescape(<q-args>), 1,
-\   <bang>0 ? fzf#vim#with_preview('up:60%')
-\           : fzf#vim#with_preview('right:50%:hidden', '?'),
-\   <bang>0)
+
+" Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+" let g:fzf_command_prefix = 'Fzf'
+" nnoremap <silent> <C-p> :FzfFiles<CR>
+" nnoremap <silent> <Leader>b :FzfBTags<CR>
+" command! -bang -nargs=* FzfRg
+"       \ call fzf#vim#grep(
+"       \   'rg --column --line-number --no-heading --color=always ' . shellescape(<q-args>), 1,
+"       \   <bang>0 ? fzf#vim#with_preview('up:60%')
+"       \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+"       \   <bang>0)
 " tpope/vim-commentary {{{2
 Plug 'tpope/vim-commentary'
 map <Leader>c :Commentary<CR>
@@ -268,8 +311,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 " tpope/vim-sleuth {{{2
 Plug 'tpope/vim-sleuth'
-" tpope/vim-surround {{{2
-Plug 'tpope/vim-surround'
 " tpope/vim-vinegar {{{2
 Plug 'tpope/vim-vinegar'
 let g:netrw_banner = 1
@@ -279,26 +320,24 @@ Plug 'vim-python/python-syntax'
 Plug 'w0rp/ale'
 
 let g:ale_linters = {
-\  'c': [],
-\  'cpp': [],
-\  'go': ['govet', 'golint', 'go build'],
-\  'python': ['flake8'],
-\  'rust': ['rustc', 'cargo'],
-\  'typescript': ['tslint', 'tsserver'],
-\}
+      \ 'go': ['govet', 'golint', 'go build'],
+      \ 'python': ['flake8'],
+      \ 'rust': ['rustc', 'cargo'],
+      \ 'typescript': ['tslint', 'tsserver'],
+      \}
 
 let g:ale_fixers = {
-\  'c': ['clang-format'],
-\  'cpp': ['clang-format'],
-\  'javascript': ['prettier'],
-\  'typescript': ['prettier'],
-\}
+      \ 'c': ['clang-format'],
+      \ 'cpp': ['clang-format'],
+      \ 'javascript': ['prettier'],
+      \ 'typescript': ['prettier'],
+      \}
 
 " let g:ale_python_mypy_options = '--ignore-missing-imports'
 " let g:ale_sign_error = "\u2716"
 " let g:ale_sign_warning = "\u267A"
 " let g:ale_sign_error = 'E>'
-let g:ale_echo_msg_format = '[%linter%] %s'
+" let g:ale_echo_msg_format = '[%linter%] %s'
 let g:ale_statusline_format = ["\u2716 %d", "\u267A %d", '']
 let g:ale_warn_about_trailing_whitespace = 1
 
@@ -314,15 +353,17 @@ Plug 'wellle/targets.vim'
 " }}}
 
 " Colorschemes {{{2
-" Plug 'ajmwagar/vim-dues'
+" Plug 'ajmwagar/vim-deus'
 " Plug 'arcticicestudio/nord-vim',
-" Plug 'chriskempson/base16-vim'
+Plug 'chriskempson/base16-vim'
+Plug 'cocopon/iceberg.vim'
 " Plug 'joshdick/onedark.vim'
 " Plug 'lifepillar/vim-solarized8'
 " Plug 'mbbill/vim-seattle'
 Plug 'nanotech/jellybeans.vim'
+" Plug 'owickstrom/vim-colors-paramount'
 " Plug 'rakr/vim-one'
-" Plug 'w0ng/vim-hybrid'
+Plug 'w0ng/vim-hybrid'
 " Plug 'renstrom/vim-hybrid'
 " }}}
 call plug#end()
@@ -330,6 +371,7 @@ call plug#end()
 " Interesting but unused plugins {{{1
 " Plug 'dominikduda/vim_current_word'
 " Plug 'junegunn/rainbow_parentheses.vim'
+" Plug 'junegunn/vim-peekaboo'
 " Plug 'osyo-manga/vim-brightest'
 " Plug 'sbdchd/neoformat'
 " Plug 'srstevenson/vim-picker'
@@ -367,17 +409,12 @@ let g:lisp_rainbow = 1
 " Make sure dark background is used for colorschemes.
 set background=dark
 
-if has('termguicolors') " 7.4.1799
-  if !empty($TMUX)
-    " :h xterm-true-color
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  endif
+if has('termguicolors')
   set termguicolors
   let g:jellybeans_overrides = {
-  \  'background': {'ctermbg': 'none', '256ctermbg': 'none', 'guibg': 'none'},
-  \  'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
-  \}
+        \ 'background': {'ctermbg': 'none', '256ctermbg': 'none', 'guibg': 'none'},
+        \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
+        \}
   colorscheme jellybeans
 else
   colorscheme hybrid
@@ -544,10 +581,6 @@ set ttimeout ttimeoutlen=50
 " Mappings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-" My fingers are too fast!
-command W w
-command Q q
-
 " Repeat the last recorded macro.
 nnoremap Q @@
 
@@ -634,7 +667,7 @@ function! CustomALEStatusLine()
   return ' ' . l:ale_status_line . ' '
 endfunction
 
-let &statusline = '%< %f[%n] %h%m%r%=%-14.(%l,%c%V%) %P '
+let &statusline = '%< %f %h%m%r%=%-14.(%l,%c%V%) %P '
 set statusline+=%#Error#%{CustomALEStatusLine()}%*
 set statusline+=%#Error#%{StatuslineWhitespace()}%*
 " Auto commands {{{1
@@ -669,11 +702,11 @@ augroup END
 augroup lastposition
   autocmd!
   autocmd BufReadPost *
-  \  if &filetype !~ 'svn\|commit\c' |
-  \    if line("'\"") > 0 && line("'\"") <= line("$") |
-  \      execute 'normal! g`"zvzz' |
-  \    endif |
-  \  endif
+        \ if &filetype !~ 'svn\|commit\c' |
+        \   if line("'\"") > 0 && line("'\"") <= line("$") |
+        \     execute 'normal! g`"zvzz' |
+        \   endif |
+        \ endif
 augroup END
 
 " Always close preview window after completion is done.

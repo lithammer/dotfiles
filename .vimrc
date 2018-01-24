@@ -5,6 +5,7 @@ scriptencoding utf-8
 " let g:python_host_prog = '/usr/local/bin/python2'
 let g:python3_host_prog = '/usr/local/bin/python3'
 
+" https://github.com/ajmwagar/vim-deus/issues/2
 if has('nvim')
   " Enable mode shapes, cursor highlight and blinking.
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
@@ -21,176 +22,115 @@ endif
 " Plugins {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 call plug#begin()
-" Use a different mapleader (default is '\')
-let g:mapleader = ','
 " tpope/vim-sensible {{{2
 Plug 'tpope/vim-sensible'
 " AndrewRadev/splitjoin.vim {{{2
 Plug 'AndrewRadev/splitjoin.vim'
 let g:splitjoin_python_brackets_on_separate_lines = 1
-" ConradIrwin/vim-bracketed-paste {{{2
-if !has('nvim')
-  " This functionality is built into Neovim
-  Plug 'ConradIrwin/vim-bracketed-paste'
-end
-" Valloric/YouCompleteMe {{{2
-" MUcomplete
+" Completion {{{2
+augroup lsp
+  autocmd!
+augroup END
+
 Plug 'lifepillar/vim-mucomplete'
 
-Plug 'Rip-Rip/clang_complete'
+" Plug 'Rip-Rip/clang_complete'
 Plug 'davidhalter/jedi-vim'
-Plug 'racer-rust/vim-racer'
+" Plug 'prabirshrestha/vim-lsp' | Plug 'prabirshrestha/async.vim'
 
-" Plugin settings.
-" let g:mucomplete#enable_auto_at_startup = 1
-inoremap <expr> <C-e> mucomplete#popup_exit("\<C-e>")
-inoremap <expr> <C-y> mucomplete#popup_exit("\<C-y>")
-inoremap <expr> <CR> mucomplete#popup_exit("\<CR>")
+let s:cquery_bin_path = expand('~/.local/cquery/bin/cquery')
+
+Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'make release'}
+let g:LanguageClient_loadSettings = 1
+let g:LanguageClient_settingsPath = expand('~/.config/nvim/settings.json')
+let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_serverCommands = {
+      \ 'c': [s:cquery_bin_path, '--language-server'],
+      \ 'cpp': [s:cquery_bin_path, '--language-server'],
+      \ 'go': ['go-langserver', '-mode=stdio', '-gocodecompletion'],
+      \ 'javascript': ['javascript-typescript-stdio'],
+      \ 'javascript.jsx': ['javascript-typescript-stdio'],
+      \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+      \ 'typescript': ['javascript-typescript-stdio'],
+      \}
+
 set shortmess+=c
 
+" nnoremap ,d :LspDefinition<CR>
+nnoremap <silent> ,d :call LanguageClient_textDocument_definition()<CR>
+
 let g:jedi#auto_close_doc = 0
-let g:jedi#goto_command = 'gd'
+let g:jedi#goto_command = ',d'
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 0
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#use_splits_not_buffers = 'winwidth'
 
-let g:clang_library_path = expand('/usr/local/Cellar/llvm/*/lib')
+" Default to Python 3 outside of virtualenvs.
+if empty($VIRTUAL_ENV)
+  let g:jedi#force_py_version = 3
+endif
+
+let g:go_gocode_unimported_packages = 1
+
+let g:clang_library_path = '/usr/local/opt/llvm/lib/libclang.dylib'
 let g:clang_complete_auto = 1
-" YCM {{{3
-" if has('python') || has('python3')
-"   Plug 'Valloric/YouCompleteMe'
-"   let g:ycm_python_binary_path = empty($VIRTUAL_ENV) ? g:python3_host_prog : 'python'
-"   let g:ycm_rust_src_path = expand('~/src/github.com/rust-lang/rust/src')
-"   let g:ycm_goto_buffer_command = 'horizontal-split'
-"   nnoremap <leader>jd :YcmCompleter GoTo<CR>
-" end
-" asyncomplete.vim {{{3
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-" let g:asyncomplete_remove_duplicates = 1
-" let g:asyncomplete_force_refresh_on_context_changed = 1
+" autocmd lsp User lsp_setup call lsp#register_server({
+"       \ 'name': 'clangd',
+"       \ 'cmd': {server_info->[expand('/usr/local/Cellar/llvm/*/bin/clangd')]},
+"       \ 'priority': 9,
+"       \ 'whitelist': ['c', 'cpp'],
+"       \})
+" autocmd lsp FileType c,cpp setlocal omnifunc=lsp#complete
 
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" inoremap <expr> <CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-" imap <C-space> <Plug>(asyncomplete_force_refresh)
+" autocmd lsp User lsp_setup call lsp#register_server({
+"       \ 'name': 'cquery',
+"       \ 'cmd': {server_info->[expand('~/.local/cquery/bin/cquery'), '--language-server']},
+"       \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+"       \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+"       \ })
+" autocmd lsp FileType c,cpp,objc,objcpp setlocal omnifunc=lsp#complete
 
-" augroup asyncomplete
-"   autocmd!
-" augroup END
-
-" Completion sources.
-
-" Disable omni and buffer completion for these sources because they have an
-" LSP source (or otherwise better alternative).
-" let s:asyncomplete_blacklist = [
-"       \ 'go',
-"       \ 'javascript',
-"       \ 'javascript.jsx',
-"       \ 'python',
-"       \ 'rust',
-"       \ 'typescript'
-"       \]
-
-" Plug 'yami-beta/asyncomplete-omni.vim'
-" autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-"       \ 'name': 'omni',
-"       \ 'priority': 6,
-"       \ 'whitelist': ['*'],
-"       \ 'blacklist': s:asyncomplete_blacklist,
-"       \ 'completor': function('asyncomplete#sources#omni#completor')
-"       \}))
-
-" if executable('ctags')
-"   Plug 'prabirshrestha/asyncomplete-tags.vim'
-"   autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
-"         \ 'name': 'tags',
-"         \ 'priority': 4,
-"         \ 'whitelist': ['c', 'cpp'],
-"         \ 'completor': function('asyncomplete#sources#tags#completor'),
-"         \ 'config': {'max_file_size': 20000000},
-"         \}))
+" if executable('go-langserver')
+"   autocmd lsp User lsp_setup call lsp#register_server({
+"         \ 'name': 'go-langserver',
+"         \ 'cmd': {server_info->['go-langserver', '-mode=stdio', '-gocodecompletion']},
+"         \ 'priority': 9,
+"         \ 'whitelist': ['go'],
+"         \})
+"   autocmd lsp FileType go setlocal omnifunc=lsp#complete
 " endif
 
-" Plug 'prabirshrestha/asyncomplete-buffer.vim'
-" autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-"       \ 'name': 'buffer',
-"       \ 'priority': 0,
-"       \ 'whitelist': ['*'],
-"       \ 'blacklist': ['go'],
-"       \ 'completor': function('asyncomplete#sources#buffer#completor'),
-"       \}))
-
-" Plug 'prabirshrestha/asyncomplete-necosyntax.vim' | Plug 'Shougo/neco-syntax'
-" autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-"       \ 'name': 'necosyntax',
-"       \ 'priority': 2,
-"       \ 'whitelist': ['*'],
-"       \ 'blacklist': s:asyncomplete_blacklist,
-"       \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
-"       \}))
+" if executable('javascript-typescript-stdio')
+"   autocmd lsp User lsp_setup call lsp#register_server({
+"         \ 'name': 'javascript-typescript-stdio',
+"         \ 'cmd': {server_info->['javascript-typescript-stdio']},
+"         \ 'priority': 9,
+"         \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript'],
+"         \})
+"   autocmd lsp FileType javascript,javascript.jsx,typescript setlocal omnifunc=lsp#complete
+" endif
 
 " if executable('pyls')
-"   autocmd asyncomplete User lsp_setup call lsp#register_server({
+"   autocmd lsp User lsp_setup call lsp#register_server({
 "         \ 'name': 'pyls',
 "         \ 'cmd': {server_info->['pyls']},
 "         \ 'priority': 8,
 "         \ 'whitelist': ['python'],
 "         \})
-" endif
-
-" if executable('javascript-typescript-stdio')
-"   autocmd asyncomplete User lsp_setup call lsp#register_server({
-"         \ 'name': 'javascript-typescript-stdio',
-"         \ 'cmd': {server_info->['javascript-typescript-stdio']},
-"         \ 'priority': 8,
-"         \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript'],
-"         \})
+"   autocmd lsp FileType python setlocal omnifunc=lsp#complete
 " endif
 
 " if executable('rls')
-"   autocmd asyncomplete User lsp_setup call lsp#register_server({
+"   autocmd lsp User lsp_setup call lsp#register_server({
 "         \ 'name': 'rls',
-"         \ 'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
-"         \ 'priority': 8,
+"         \ 'cmd': {server_info->['rustup', 'run', 'stable', 'rls']},
+"         \ 'priority': 9,
 "         \ 'whitelist': ['rust'],
 "         \})
+"   autocmd lsp FileType rust setlocal omnifunc=lsp#complete
 " endif
-
-" autocmd asyncomplete User lsp_setup call lsp#register_server({
-"       \ 'name': 'clangd',
-"       \ 'cmd': {server_info->[expand('/usr/local/Cellar/llvm/*/bin/clangd')]},
-"       \ 'priority': 8,
-"       \ 'whitelist': ['c', 'cpp'],
-"       \})
-
-" if executable('go-langserver')
-"   autocmd asyncomplete User lsp_setup call lsp#register_server({
-"         \ 'name': 'go-langserver',
-"         \ 'cmd': {server_info->['go-langserver', '-mode=stdio']},
-"         \ 'priority': 8,
-"         \ 'whitelist': ['go'],
-"         \})
-" endif
-
-" if executable('gocode')
-"   Plug 'prabirshrestha/asyncomplete-gocode.vim'
-"   autocmd asyncomplete User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#gocode#get_source_options({
-"         \ 'name': 'gocode',
-"         \ 'priority': 8,
-"         \ 'whitelist': ['go'],
-"         \ 'completor': function('asyncomplete#sources#gocode#completor'),
-"         \}))
-" endif
-" Vimjas/vim-python-pep8-indent {{{2
-Plug 'Vimjas/vim-python-pep8-indent'
-" airblade/vim-gitgutter {{{2
-Plug 'airblade/vim-gitgutter'
-let g:gitgutter_map_keys = 0
 " christoomey/vim-tmux-navigator {{{2
 Plug 'christoomey/vim-tmux-navigator'
 let g:tmux_navigator_no_mappings = 1
@@ -204,12 +144,6 @@ endif
 " fatih/vim-go {{{2
 Plug 'fatih/vim-go'
 let g:go_fmt_command = 'goimports'
-" fs111/pydoc.vim {{{2
-" Plug 'fs111/pydoc.vim'
-" Don't highlight search term.
-let g:pydoc_highlight = 0
-" Use a more portable command.
-let g:pydoc_cmd = 'python -m pydoc'
 " junegunn/vim-easy-align {{{2
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 vmap <Enter> <Plug>(EasyAlign)
@@ -217,8 +151,14 @@ vmap <Enter> <Plug>(EasyAlign)
 Plug 'justinmk/vim-sneak'
 " let g:sneak#label = 1
 " let g:sneak#s_next = 1
-nmap s <Plug>Sneak_s
-nmap S <Plug>Sneak_S
+" nmap s <Plug>Sneak_s
+" nmap S <Plug>Sneak_S
+nmap gs <Plug>Sneak_s
+nmap gS <Plug>Sneak_S
+xmap gs <Plug>Sneak_s
+xmap gS <Plug>Sneak_S
+omap gs <Plug>Sneak_s
+omap gS <Plug>Sneak_S
 " kshenoy/vim-signature {{{2
 Plug 'kshenoy/vim-signature'
 " ludovicchabant/vim-gutentags {{{2
@@ -228,33 +168,42 @@ if executable('ctags')
   let g:gutentags_cache_dir = expand('~/.vim/tags')
   let g:gutentags_ctags_exclude = [
         \ '*.min.js',
-        \ '*/vendor/*',
-        \ '*/node_modules/*',
-        \ '*/env/*',
-        \ '*/venv/*',
-        \ '*/third_party/*',
-        \ '*/lib/*',
-        \ '*/lib64/*',
         \ '*/build/*',
         \ '*/dist/*',
+        \ '*/env/*',
+        \ '*/lib/*',
+        \ '*/lib64/*',
+        \ '*/node_modules/*',
+        \ '*/third_party/*',
+        \ '*/vendor/*',
+        \ '*/venv/*',
         \]
+  let g:gutentags_file_list_command = {
+        \ 'markers': {
+        \   '.git': 'git ls-files',
+        \ }
+        \}
 endif
 " machakann/vim-sandwich {{{2
 Plug 'machakann/vim-sandwich'
 " majutsushi/tagbar {{{2
 Plug 'majutsushi/tagbar'
-nnoremap <Leader>t :TagbarToggle<CR>
+nnoremap ,t :TagbarToggle<CR>
 " mbbill/undotree {{{2
 Plug 'mbbill/undotree'
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
 let g:grepper = {'tools': ['git', 'rg']}
-" let g:grepper.simple_prompt = 1
 command! -nargs=+ -complete=file Grep Grepper -noprompt -tool rg -query <args>
 command! -nargs=+ -complete=file Rg Grepper -noprompt -tool rg -query <args>
+" mhinz/vim-signify {{{2
+Plug 'mhinz/vim-signify'
+let g:signify_vcs_list = ['git']
+" let g:signify_sign_add = '·'
 " rust-lang/rust.vim {{{2
 Plug 'rust-lang/rust.vim'
 let g:rustfmt_autosave = 1
+let g:rustfmt_command = 'rustup run nightly rustfmt'
 " sheerun/vim-polyglot {{{2
 Plug 'sheerun/vim-polyglot'
 " These are covered by the upstream plugin.
@@ -262,7 +211,6 @@ let g:polyglot_disabled = [
       \ 'go',
       \ 'groovy',
       \ 'jenkins',
-      \ 'python',
       \ 'rust',
       \]
 " srstevenson/vim-picker {{{2
@@ -270,39 +218,11 @@ Plug 'srstevenson/vim-picker'
 nnoremap <silent> <C-p> :PickerEdit<CR>
 nnoremap <silent> <C-w><C-p> :PickerSplit<CR>
 nnoremap <silent> <C-b> :PickerBuffer<CR>
-" Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'nixprime/cpsm', {'do': 'env PY3=ON ./install.sh'}
-" let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
-" let g:ctrlp_working_path_mode = 'a'
-" let g:ctrlp_user_command = 'rg --files --color=never --glob "" %s'
-" let g:ctrlp_use_caching = 0
-" let g:ctrlp_status_func = {'main': 'CtrlP_Main', 'prog': 'CtrlP_Progress'}
-" let s:ctrlp_section_map = {'mru files': 'recent'}
-
-" function! CtrlP_Main(...) " See :h ctrlp_status_func
-"   let l:section = get(s:ctrlp_section_map, a:5, a:5)
-"   return a:1 ==# 'prt'
-"         \ ? '%#InsertMode# ' . l:section . ' %* %<' . getcwd() . ' %= %#InsertMode#' . (a:3?' regex ':' match ') . a:2 . ' %*'
-"         \ : '%#VisualMode# ' . l:section . ' %* %<' . getcwd() . ' %= %#VisualMode# select %*'
-" endf
-
-" function! CtrlP_Progress(...)
-"   return '%#Warnings# ' . a:1 . ' %* %= %<%#Warnings# ' . getcwd() . ' %*'
-" endf
-
-" Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
-" let g:fzf_command_prefix = 'Fzf'
-" nnoremap <silent> <C-p> :FzfFiles<CR>
-" nnoremap <silent> <Leader>b :FzfBTags<CR>
-" command! -bang -nargs=* FzfRg
-"       \ call fzf#vim#grep(
-"       \   'rg --column --line-number --no-heading --color=always ' . shellescape(<q-args>), 1,
-"       \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"       \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"       \   <bang>0)
+let g:picker_find_executable = 'fd'
+let g:picker_find_flags = '--color=never'
 " tpope/vim-commentary {{{2
 Plug 'tpope/vim-commentary'
-map <Leader>c :Commentary<CR>
+map ,c :Commentary<CR>
 " tpope/vim-eunuch {{{2
 Plug 'tpope/vim-eunuch'
 " tpope/vim-fugitive {{{2
@@ -311,58 +231,61 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 " tpope/vim-sleuth {{{2
 Plug 'tpope/vim-sleuth'
+" tpope/vim-unimpaired {{{2
+Plug 'tpope/vim-unimpaired'
 " tpope/vim-vinegar {{{2
 Plug 'tpope/vim-vinegar'
-let g:netrw_banner = 1
-" vim-python/python-syntax {{{2
-Plug 'vim-python/python-syntax'
 " w0rp/ale {{{2
 Plug 'w0rp/ale'
 
 let g:ale_linters = {
-      \ 'go': ['govet', 'golint', 'go build'],
-      \ 'python': ['flake8'],
+      \ 'go': ['gofmt', 'golint', 'go vet', 'go build'],
       \ 'rust': ['rustc', 'cargo'],
       \ 'typescript': ['tslint', 'tsserver'],
       \}
 
+let g:ale_fix_on_save = 1
 let g:ale_fixers = {
       \ 'c': ['clang-format'],
       \ 'cpp': ['clang-format'],
+      \ 'css': ['prettier'],
       \ 'javascript': ['prettier'],
+      \ 'scss': ['prettier'],
       \ 'typescript': ['prettier'],
       \}
+
+let g:ale_python_mypy_options = '--ignore-missing-imports'
 
 " let g:ale_python_mypy_options = '--ignore-missing-imports'
 " let g:ale_sign_error = "\u2716"
 " let g:ale_sign_warning = "\u267A"
+let g:ale_sign_error = "\u25CF"
+let g:ale_sign_warning = "\u25CF"
 " let g:ale_sign_error = 'E>'
 " let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 let g:ale_statusline_format = ["\u2716 %d", "\u267A %d", '']
 let g:ale_warn_about_trailing_whitespace = 1
 
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
-
-highlight ALEError ctermbg=none cterm=underline
-" Adapted for jellybeans.
-highlight link ALEErrorSign WarningMsg
-highlight link ALEWarningSign Type
 " wellle/targets.vim {{{2
 Plug 'wellle/targets.vim'
 " }}}
 
 " Colorschemes {{{2
-" Plug 'ajmwagar/vim-deus'
-" Plug 'arcticicestudio/nord-vim',
+Plug 'ajmwagar/vim-deus'
+Plug 'arcticicestudio/nord-vim',
 Plug 'chriskempson/base16-vim'
 Plug 'cocopon/iceberg.vim'
-" Plug 'joshdick/onedark.vim'
+Plug 'joshdick/onedark.vim'
 " Plug 'lifepillar/vim-solarized8'
 " Plug 'mbbill/vim-seattle'
+Plug 'morhetz/gruvbox'
 Plug 'nanotech/jellybeans.vim'
+Plug 'nightsense/vimspectr'
 " Plug 'owickstrom/vim-colors-paramount'
-" Plug 'rakr/vim-one'
+Plug 'rakr/vim-one'
 Plug 'w0ng/vim-hybrid'
 " Plug 'renstrom/vim-hybrid'
 " }}}
@@ -382,8 +305,45 @@ call plug#end()
 " Use :help 'option' or press 'K' while having the cursor on the option to see
 " documention about it.
 
+" Make sure dark background is used for colorschemes.
+set background=dark
+
+if has('termguicolors')
+  set termguicolors
+  " let g:jellybeans_overrides = {
+  "       \ 'background': {'ctermbg': 'none', '256ctermbg': 'none', 'guibg': 'none'},
+  "       \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
+  "       \ 'ALEErrorSign': {'ctermfg': '1', 'ctermbg': '242', 'guifg': '902020', 'guibg': '333333'},
+  "       \ 'ALEWarningSign': {'ctermfg': '121', 'ctermbg': '242', 'guifg': 'ffb964', 'guibg': '333333'},
+  "       \}
+  " function! s:base16_customize() abort
+  "   call Base16hi('ALEErrorSign', g:base16_gui08, g:base16_gui01, g:base16_cterm01, g:base16_cterm08, '', '')
+  " endfunction
+
+  " augroup on_change_colorschema
+  "   autocmd!
+  "   autocmd ColorScheme * call s:base16_customize()
+  " augroup END
+
+  " let g:nord_italic = 1
+  " let g:nord_italic_comments = 1
+  " let g:nord_comment_brightness = 15
+
+  " let g:gruvbox_bold = 1
+  " let g:gruvbox_italic = 1
+  " let g:gruvbox_underline = 1
+  " let g:gruvbox_undercurl = 1
+
+  let g:onedark_terminal_italics = 1
+  let g:one_allow_italics = 1
+
+  colorscheme one
+else
+  colorscheme hybrid
+endif
+
 " Stop the sh syntax file from highlighting $(...) as errors.
-" See :h ft-sh-syntax.
+" :h ft-sh-syntax.
 let g:is_posix = 1
 
 " Tree style file listing.
@@ -399,26 +359,14 @@ if has('patch-7.4.156')
 endif
 
 " Highlight numbers, buitin functions, standard exceptions, doctests and
-" whitespace errors (:h ft-python-syntax).
+" whitespace errors.
+" :h ft-python-syntax
 let g:python_highlight_all = 1
 
 " The g:lisp_rainbow option provides 10 levels of individual colorization for
-" the parentheses and backquoted parentheses (:h ft-lisp-syntax).
+" the parentheses and backquoted parentheses.
+" :h ft-lisp-syntax
 let g:lisp_rainbow = 1
-
-" Make sure dark background is used for colorschemes.
-set background=dark
-
-if has('termguicolors')
-  set termguicolors
-  let g:jellybeans_overrides = {
-        \ 'background': {'ctermbg': 'none', '256ctermbg': 'none', 'guibg': 'none'},
-        \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
-        \}
-  colorscheme jellybeans
-else
-  colorscheme hybrid
-endif
 
 " Don't try to highlight lines longer than 400 characters.
 set synmaxcol=400
@@ -426,11 +374,7 @@ set synmaxcol=400
 " Automatically save when moving between buffers (and more).
 set autowrite
 
-" When formatting text, recognize numbered lists. This actually uses
-" the 'formatlistpat' option, thus any kind of list can be used. The
-" indent of the text after the number is used for the next line. The
-" default is to find a number, optionally followed by '.', ':', ')',
-" ']' or '}'.  Note that 'autoindent' must be set too.
+" When formatting text, recognize numbered lists.
 set formatoptions+=n
 
 " Don't break a line after a one-letter word. It's broken before it
@@ -446,19 +390,16 @@ endif
 " indentation
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab shiftround
 
-" Round indent to multiple of 'shiftwidth'.  Applies to > and < commands.
+" Round indent to multiple of 'shiftwidth'.
 set shiftround
 
 " menuone   Use the popup menu also when there is only one match.
-"           Useful when there is additional information about the
-"           match, e.g., what file it comes from.
 "
 " preview   Show extra information about the currently selected
 "           completion in the preview window.
 "
 " noselect  Do not select a match in the menu, force the user to
-"           select one from the menu. Only works in combination with
-"           "menu" or "menuone".
+"           select one from the menu.
 set completeopt=menuone,preview,noselect
 
 " Include line numbers in grep format.
@@ -466,10 +407,8 @@ set grepformat^=%f:%l:%c:%m
 
 if executable('rg')
   let &grepprg = 'rg --vimgrep'
-elseif executable('ag')
-  let &grepprg = 'ag --vimgrep'
 else
-  let &grepprg = 'grep -I --recursive --line-number $* *'
+  let &grepprg = 'grep -Inr $* /dev/null'
 endif
 
 " Automatically open the quickfix window when populated.
@@ -485,14 +424,16 @@ set hlsearch
 " Ignore case in search patterns, unless they contain upper case characters.
 set ignorecase smartcase
 
-" nosplit  Shows the effects of a command incrementally, as you type.
-" split    Also shows partial off-screen results in a preview window.
+" Shows the effects of a command incrementally, as you type.
+" Also shows partial off-screen results in a preview window.
 if exists('&inccommand')
   set inccommand=split
 endif
 
 " Enable list mode. See 'listhars'.
 set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:+
+
+set fillchars=vert:│,fold:·
 
 " If on, Vim will wrap long lines at a character in 'breakat' rather
 " than at the last character that fits on the screen. Unlike
@@ -515,7 +456,7 @@ if exists('+breakindent')
 endif
 
 " Show line numbers.
-set number
+" set number
 
 " Use current line as starting point for line numbering.
 " if exists('+relativenumber')
@@ -569,15 +510,6 @@ set wildmode=list:longest,list:full
 if has('patch-7.4.156')
   let &wildignore = netrw_gitignore#Hide()
 endif
-
-" A list of patterns to ignore when expanding wildcards, completing file or
-" directory names, and influences the result of expand(), glob() and
-" globpath().
-set wildignore+=*.pyc,*.o
-
-" https://github.com/neovim/neovim/pull/6434
-set ttimeout ttimeoutlen=50
-
 " Mappings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -594,40 +526,24 @@ noremap <Space> za
 nnoremap * *<C-o>
 
 " List buffers and wait for input.
-nnoremap <Leader>b :buffers<CR>:buffer<Space>
+nnoremap ,b :ls<CR>:buffer<Space>
 
-function! <SID>LocationPrevious()
-  try
-    lprev
-  catch /^Vim\%((\a\+)\)\=:E553/
-    llast
-  catch /^Vim\%((\a\+)\)\=:E776/
-    execute "normal \<Esc>"
-  endtry
+" Display all lines that contain the keyword under the cursor and then waits
+" to select one to jump to.
+function! Occurrences()
+  execute 'normal [I'
+  let l:nr = input("Type number and \<Enter\> (empty cancels): ")
+  if l:nr
+    execute 'normal ' . l:nr . '[\t'
+  endif
 endfunction
+nnoremap ,i :call Occurrences()<CR>
+" nnoremap ,i [I:let nr = input("Type number and \<Enter\>: ")<Bar>exe "normal " . nr ."[\t"<CR>
 
-function! <SID>LocationNext()
-  try
-    lnext
-  catch /^Vim\%((\a\+)\)\=:E553/
-    lfirst
-  catch /^Vim\%((\a\+)\)\=:E776/
-    execute "normal \<Esc>"
-  catch /^Vim\%((\a\+)\)\=:E42/
-    execute "normal \<Esc>"
-  endtry
-endfunction
-
-" nnoremap <silent> <Plug>LocationPrevious :<C-u>exe 'call <SID>LocationPrevious()'<CR>
-" nnoremap <silent> <Plug>LocationNext :<C-u>exe 'call <SID>LocationNext()'<CR>
-" nmap <silent> ö <Plug>LocationPrevious
-" nmap <silent> ä <Plug>LocationNext
-nmap <silent> ö :<C-u>exe 'call <SID>LocationPrevious()'<CR>
-nmap <silent> ä :<C-u>exe 'call <SID>LocationNext()'<CR>
-
-nmap Ö :cprevious<CR>
-nmap Ä :cnext<CR>
-
+" https://www.reddit.com/r/vim/comments/7iy03o/you_aint_gonna_need_it_your_replacement_for/dr2qo4k/
+inoremap (<CR> (<CR>)<Esc>O
+inoremap {<CR> {<CR>}<Esc>O
+inoremap [<CR> [<CR>]<Esc>O
 " Statusline {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 augroup statuslinewhitespace
@@ -656,6 +572,7 @@ function! StatuslineWhitespace()
       endif
     endif
   endif
+
   return b:statusline_whitespace_check
 endfunction
 
@@ -668,35 +585,18 @@ function! CustomALEStatusLine()
 endfunction
 
 let &statusline = '%< %f %h%m%r%=%-14.(%l,%c%V%) %P '
-set statusline+=%#Error#%{CustomALEStatusLine()}%*
+if &runtimepath =~# 'ale'
+  set statusline+=%#Error#%{CustomALEStatusLine()}%*
+endif
 set statusline+=%#Error#%{StatuslineWhitespace()}%*
 " Auto commands {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-" Sets the filetype when using CTRL-X CTRL-E in bash
-augroup commandeditor
-  autocmd!
-  autocmd BufRead,BufNewFile bash-* set filetype=sh
-augroup END
-
-" Press K to get documentation about a Vim keyword
-augroup keywordprg
-  autocmd!
-  autocmd FileType vim,help setlocal keywordprg=:help
-augroup END
 
 " Resize splits when the window is resized
 augroup autoresize
   autocmd!
   autocmd VimResized * :wincmd =
 augroup END
-
-" Only show cursorline in the current buffer, and only in normal mode.
-" augroup cursorLine
-"   au!
-"   au VimEnter,InsertLeave,BufWinEnter * setlocal cursorline
-"   au WinLeave,InsertEnter,BufWinLeave * setlocal nocursorline
-" augroup END
 
 " When editing a file, always jump to the last known cursor position.
 augroup lastposition
@@ -709,48 +609,35 @@ augroup lastposition
         \ endif
 augroup END
 
+" Only show cursorline in the current buffer, and only in normal mode.
+if exists('+cursorline')
+  augroup cursorLine
+    autocmd!
+    autocmd VimEnter,InsertLeave,BufWinEnter * setlocal cursorline
+    autocmd WinLeave,InsertEnter,BufWinLeave * setlocal nocursorline
+  augroup END
+endif
+
 " Always close preview window after completion is done.
 if has('patch-7.3.598')
   augroup closepreview
     autocmd!
     " autocmd CompleteDone * if pumvisible() == 0 | pclose | endif
-    autocmd InsertLeave * pclose
+    " autocmd! InsertLeave <buffer> if pumvisible() == 0 | pclose | endif
+    autocmd! InsertLeave * if pumvisible() == 0 | pclose | endif
   augroup END
 endif
 " Filetype settings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-" Plain text
-function! SetupPlainText()
-  setlocal wrap
-  setlocal wrapmargin=2
-  setlocal textwidth=79
-endfunction
-
-" Python, PEP8: http://www.python.org/dev/peps/pep-0008/
 function! SetupPython()
-  setlocal textwidth=79
-  setlocal foldmethod=indent
-  setlocal foldlevel=2
-  setlocal foldnestmax=2
-
-  " Highlight 'NOTE' and 'HACK' in comments.
-  syn keyword pythonTodo NOTE HACK contained
-
-  " nnoremap <buffer> <silent> gd :YcmCompleter GoTo<CR>
-  " nnoremap <buffer> <silent> gd :LspDefinition<CR>
+  setlocal foldmethod=indent foldlevel=2 foldnestmax=2 textwidth=79
 endfunction
 
 augroup vimrc
   autocmd!
-augroup END
-
-autocmd vimrc FileType text call SetupPlainText()
-autocmd vimrc FileType python call SetupPython()
-
-augroup fmt
-  autocmd!
-  autocmd BufWritePre *.h,*.c,*.cpp,*.js,*.jsx,*.ts,*.tsx ALEFix
+  autocmd FileType text setlocal textwidth=79
+  autocmd FileType python call SetupPython()
 augroup END
 " Neovim {{{1
 if has('nvim')
@@ -786,27 +673,6 @@ if has('nvim')
     autocmd BufEnter term://* startinsert
     autocmd BufLeave term://* stopinsert
   augroup END
-
-  if !exists('g:terminal_color_0')
-    let g:terminal_color_0 = '#2D2D2D'
-    let g:terminal_color_1 = '#F2777A'
-    let g:terminal_color_2 = '#99CC99'
-    let g:terminal_color_3 = '#FFCC66'
-    let g:terminal_color_4 = '#6699CC'
-    let g:terminal_color_5 = '#CC99CC'
-    let g:terminal_color_6 = '#66CCCC'
-    let g:terminal_color_7 = '#D3D0C8'
-    let g:terminal_color_8 = '#747369'
-    let g:terminal_color_9 = '#F2777A'
-    let g:terminal_color_10 = '#99CC99'
-    let g:terminal_color_11 = '#FFCC66'
-    let g:terminal_color_12 = '#6699CC'
-    let g:terminal_color_13 = '#CC99CC'
-    let g:terminal_color_14 = '#66CCCC'
-    let g:terminal_color_15 = '#F2F0EC'
-    let g:terminal_color_background = '#2D2D2D'
-    let g:terminal_color_foreground = '#D3D0C8'
-  endif
 endif
 " Local settings {{{1
 if filereadable(expand('~/.vimrc.local'))

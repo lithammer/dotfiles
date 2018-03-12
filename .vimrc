@@ -49,14 +49,12 @@ let g:LanguageClient_diagnosticsEnable = 0
 let g:LanguageClient_serverCommands = {
       \ 'c': [s:cquery_bin_path, '--language-server'],
       \ 'cpp': [s:cquery_bin_path, '--language-server'],
-      \ 'go': ['go-langserver', '-mode=stdio', '-gocodecompletion'],
+      \ 'go': ['go-langserver', '-gocodecompletion', '-addr=127.0.0.1:4389'],
       \ 'javascript': ['javascript-typescript-stdio'],
       \ 'javascript.jsx': ['javascript-typescript-stdio'],
-      \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+      \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
       \ 'typescript': ['javascript-typescript-stdio'],
       \}
-
-set shortmess+=c
 
 " nnoremap ,d :LspDefinition<CR>
 nnoremap <silent> ,d :call LanguageClient_textDocument_definition()<CR>
@@ -67,6 +65,11 @@ let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 0
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#use_splits_not_buffers = 'winwidth'
+
+" https://github.com/lifepillar/vim-mucomplete/issues/85
+let g:mucomplete#can_complete = {}
+let g:mucomplete#can_complete.python = {'omni': {t -> t =~ '\m\%(\k\k\|\.\)$'}}
+let g:mucomplete#can_complete.go = {'omni': {t -> t =~ '\m\%(\k\k\|\.\)$'}}
 
 " Default to Python 3 outside of virtualenvs.
 if empty($VIRTUAL_ENV)
@@ -97,7 +100,7 @@ let g:clang_complete_auto = 1
 " if executable('go-langserver')
 "   autocmd lsp User lsp_setup call lsp#register_server({
 "         \ 'name': 'go-langserver',
-"         \ 'cmd': {server_info->['go-langserver', '-mode=stdio', '-gocodecompletion']},
+"         \ 'cmd': {server_info->['go-langserver', '-gocodecompletion', '-addr=127.0.0.1:4389']},
 "         \ 'priority': 9,
 "         \ 'whitelist': ['go'],
 "         \})
@@ -127,7 +130,7 @@ let g:clang_complete_auto = 1
 " if executable('rls')
 "   autocmd lsp User lsp_setup call lsp#register_server({
 "         \ 'name': 'rls',
-"         \ 'cmd': {server_info->['rustup', 'run', 'stable', 'rls']},
+"         \ 'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
 "         \ 'priority': 9,
 "         \ 'whitelist': ['rust'],
 "         \})
@@ -153,14 +156,17 @@ vmap <Enter> <Plug>(EasyAlign)
 Plug 'justinmk/vim-sneak'
 " let g:sneak#label = 1
 " let g:sneak#s_next = 1
+
+" The conflict with vim-sandwich.
 " nmap s <Plug>Sneak_s
 " nmap S <Plug>Sneak_S
+
 nmap gs <Plug>Sneak_s
-nmap gS <Plug>Sneak_S
-xmap gs <Plug>Sneak_s
-xmap gS <Plug>Sneak_S
 omap gs <Plug>Sneak_s
-omap gS <Plug>Sneak_S
+xmap gs <Plug>Sneak_s
+" nmap gS <Plug>Sneak_S
+" omap gS <Plug>Sneak_S
+" xmap gS <Plug>Sneak_S
 " kshenoy/vim-signature {{{2
 Plug 'kshenoy/vim-signature'
 " ludovicchabant/vim-gutentags {{{2
@@ -201,11 +207,13 @@ command! -nargs=+ -complete=file Rg Grepper -noprompt -tool rg -query <args>
 " mhinz/vim-signify {{{2
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = ['git']
-" let g:signify_sign_add = '·'
+let g:signify_sign_add = "\u2502"
+let g:signify_sign_change = "\u2502"
+" plasticboy/vim-markdown {{{2
+Plug 'plasticboy/vim-markdown'
+let g:vim_markdown_folding_disabled = 1
 " rust-lang/rust.vim {{{2
 Plug 'rust-lang/rust.vim'
-let g:rustfmt_autosave = 1
-let g:rustfmt_command = 'rustup run nightly rustfmt'
 " sheerun/vim-polyglot {{{2
 Plug 'sheerun/vim-polyglot'
 " These are covered by the upstream plugin.
@@ -213,6 +221,7 @@ let g:polyglot_disabled = [
       \ 'go',
       \ 'groovy',
       \ 'jenkins',
+      \ 'markdown',
       \ 'rust',
       \]
 " srstevenson/vim-picker {{{2
@@ -220,11 +229,9 @@ Plug 'srstevenson/vim-picker'
 nnoremap <silent> <C-p> :PickerEdit<CR>
 nnoremap <silent> <C-w><C-p> :PickerSplit<CR>
 nnoremap <silent> <C-b> :PickerBuffer<CR>
-let g:picker_find_executable = 'fd'
-let g:picker_find_flags = '--color=never'
 " tpope/vim-commentary {{{2
 Plug 'tpope/vim-commentary'
-map ,c :Commentary<CR>
+map <silent> ,c :Commentary<CR>
 " tpope/vim-eunuch {{{2
 Plug 'tpope/vim-eunuch'
 " tpope/vim-fugitive {{{2
@@ -252,6 +259,9 @@ let g:ale_fixers = {
       \ 'cpp': ['clang-format'],
       \ 'css': ['prettier'],
       \ 'javascript': ['prettier'],
+      \ 'json': ['prettier'],
+      \ 'python': ['yapf'],
+      \ 'rust': ['rustfmt'],
       \ 'scss': ['prettier'],
       \ 'typescript': ['prettier'],
       \}
@@ -259,15 +269,15 @@ let g:ale_fixers = {
 let g:ale_python_mypy_options = '--ignore-missing-imports'
 
 " let g:ale_python_mypy_options = '--ignore-missing-imports'
-" let g:ale_sign_error = "\u2716"
-" let g:ale_sign_warning = "\u267A"
-let g:ale_sign_error = "\u25CF"
-let g:ale_sign_warning = "\u25CF"
+let g:ale_sign_error = "\u2716"
+let g:ale_sign_warning = "\u267A"
+" let g:ale_sign_error = "\u25CF"
+" let g:ale_sign_warning = "\u25CF"
+" let g:ale_sign_error = 'E>'
+" let g:ale_sign_warning = 'W>'
 " let g:ale_sign_error = 'E>'
 " let g:ale_echo_msg_format = '[%linter%] %s'
 let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-let g:ale_statusline_format = ["\u2716 %d", "\u267A %d", '']
-let g:ale_warn_about_trailing_whitespace = 1
 
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
@@ -285,7 +295,6 @@ Plug 'joshdick/onedark.vim'
 " Plug 'mbbill/vim-seattle'
 Plug 'morhetz/gruvbox'
 Plug 'nanotech/jellybeans.vim'
-Plug 'nightsense/vimspectr'
 " Plug 'owickstrom/vim-colors-paramount'
 Plug 'rakr/vim-one'
 Plug 'w0ng/vim-hybrid'
@@ -313,23 +322,24 @@ set background=dark
 if has('termguicolors')
   set termguicolors
   " let g:jellybeans_overrides = {
-  "       \ 'background': {'ctermbg': 'none', '256ctermbg': 'none', 'guibg': 'none'},
+  "       \ 'background': {'ctermbg': 'none', 'guibg': 'none'},
   "       \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
   "       \ 'ALEErrorSign': {'ctermfg': '1', 'ctermbg': '242', 'guifg': '902020', 'guibg': '333333'},
   "       \ 'ALEWarningSign': {'ctermfg': '121', 'ctermbg': '242', 'guifg': 'ffb964', 'guibg': '333333'},
   "       \}
-  " function! s:base16_customize() abort
-  "   call Base16hi('ALEErrorSign', g:base16_gui08, g:base16_gui01, g:base16_cterm01, g:base16_cterm08, '', '')
-  " endfunction
 
-  " augroup on_change_colorschema
-  "   autocmd!
-  "   autocmd ColorScheme * call s:base16_customize()
-  " augroup END
+  function! s:base16_customize() abort
+    call Base16hi('ALEErrorSign', g:base16_gui08, g:base16_gui01, g:base16_cterm01, g:base16_cterm08, '', '')
+  endfunction
 
-  " let g:nord_italic = 1
-  " let g:nord_italic_comments = 1
-  " let g:nord_comment_brightness = 15
+  augroup on_change_colorschema
+    autocmd!
+    autocmd ColorScheme * call s:base16_customize()
+  augroup END
+
+  let g:nord_italic = 1
+  let g:nord_italic_comments = 1
+  let g:nord_comment_brightness = 15
 
   " let g:gruvbox_bold = 1
   " let g:gruvbox_italic = 1
@@ -339,7 +349,7 @@ if has('termguicolors')
   let g:onedark_terminal_italics = 1
   let g:one_allow_italics = 1
 
-  colorscheme one
+  colorscheme base16-eighties
 else
   colorscheme hybrid
 endif
@@ -579,11 +589,27 @@ function! StatuslineWhitespace()
 endfunction
 
 function! CustomALEStatusLine()
-  let l:ale_status_line = ale#statusline#Status()
-  if empty(l:ale_status_line)
+  let [l:error_format, l:warning_format, l:no_errors] = ["\u2716 %d", "\u267A %d", '']
+  let l:counts = ale#statusline#Count(bufnr(''))
+
+  " Build strings based on user formatting preferences.
+  let l:errors = l:counts[0] ? printf(l:error_format, l:counts[0]) : ''
+  let l:warnings = l:counts[1] ? printf(l:warning_format, l:counts[1]) : ''
+
+  " Different formats based on the combination of errors and warnings.
+  if empty(l:errors) && empty(l:warnings)
+    let l:res = l:no_errors
+  elseif !empty(l:errors) && !empty(l:warnings)
+    let l:res = printf('%s %s', l:errors, l:warnings)
+  else
+    let l:res = empty(l:errors) ? l:warnings : l:errors
+  endif
+
+  if empty(l:res)
     return ''
   endif
-  return ' ' . l:ale_status_line . ' '
+
+  return ' ' . l:res . ' '
 endfunction
 
 let &statusline = '%< %f %h%m%r%=%-14.(%l,%c%V%) %P '
@@ -615,8 +641,8 @@ augroup END
 if exists('+cursorline')
   augroup cursorLine
     autocmd!
-    autocmd VimEnter,InsertLeave,BufWinEnter * setlocal cursorline
-    autocmd WinLeave,InsertEnter,BufWinLeave * setlocal nocursorline
+    autocmd VimEnter,InsertLeave,BufEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave,InsertEnter,BufLeave,BufWinLeave * setlocal nocursorline
   augroup END
 endif
 

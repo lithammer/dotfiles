@@ -24,6 +24,8 @@ endif
 call plug#begin()
 " tpope/vim-sensible {{{2
 Plug 'tpope/vim-sensible'
+" ap/vim-css-color {{{2
+Plug 'ap/vim-css-color', {'for': 'css'}
 " AndrewRadev/splitjoin.vim {{{2
 Plug 'AndrewRadev/splitjoin.vim'
 let g:splitjoin_python_brackets_on_separate_lines = 1

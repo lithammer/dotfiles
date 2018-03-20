@@ -1,5 +1,10 @@
-function __auto_virtualenv --on-variable PWD -d 'Automatically activate virtualenv'
+# function __auto_virtualenv --on-variable PWD -d 'Automatically activate virtualenv'
+function __auto_virtualenv --on-event fish_prompt -d 'Automatically activate virtualenv'
   status --is-command-substitution; and return
+
+  if test -n "$PIPENV_ACTIVE"
+    return
+  end
 
   # Try to activate virtualenv.
   activate_virtualenv

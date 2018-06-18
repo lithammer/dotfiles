@@ -298,7 +298,7 @@ Plug 'nanotech/jellybeans.vim'
 " Plug 'owickstrom/vim-colors-paramount'
 Plug 'rakr/vim-one'
 Plug 'w0ng/vim-hybrid'
-" Plug 'renstrom/vim-hybrid'
+" Plug 'lithammer/vim-hybrid'
 " }}}
 call plug#end()
 " }}}

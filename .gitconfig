@@ -26,8 +26,8 @@
 	newHighlight = green bold 22
 
 [user]
-	name = Peter Renström
-	email = renstrom.peter@gmail.com
+	name = Peter Lithammer
+	email = peterlithammer@gmail.com
 
 [core]
 	autocrlf = input

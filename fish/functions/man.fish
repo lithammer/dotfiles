@@ -1,4 +1,4 @@
-function man --description 'Display colored manual pages'
+function man --description 'Display colored man pages'
     set -l blink (set_color -o red)
     set -l bold (set_color -o blue)
     set -l standout (set_color -r)

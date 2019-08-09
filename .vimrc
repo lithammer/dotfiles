@@ -2,10 +2,9 @@
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 scriptencoding utf-8
 
-" let g:python_host_prog = '/usr/local/bin/python2'
+let g:python_host_prog = '/usr/local/bin/python2'
 let g:python3_host_prog = '/usr/local/bin/python3'
 
-" https://github.com/ajmwagar/vim-deus/issues/2
 if has('nvim')
   " Enable mode shapes, cursor highlight and blinking.
   set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
@@ -24,42 +23,37 @@ endif
 call plug#begin()
 " tpope/vim-sensible {{{2
 Plug 'tpope/vim-sensible'
-" ap/vim-css-color {{{2
-Plug 'ap/vim-css-color', {'for': 'css'}
-" AndrewRadev/splitjoin.vim {{{2
-Plug 'AndrewRadev/splitjoin.vim'
-let g:splitjoin_python_brackets_on_separate_lines = 1
 " Completion {{{2
-augroup lsp
-  autocmd!
-augroup END
-
 Plug 'lifepillar/vim-mucomplete'
 
-" Plug 'Rip-Rip/clang_complete'
 Plug 'davidhalter/jedi-vim'
-" Plug 'prabirshrestha/vim-lsp' | Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
 
-let s:cquery_bin_path = expand('~/.local/cquery/bin/cquery')
+" Disable diagnostics, it's handled by Ale.
+let g:lsp_diagnostics_enabled = 0
 
-Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'make release'}
-let g:LanguageClient_loadSettings = 1
-let g:LanguageClient_settingsPath = expand('~/.config/nvim/settings.json')
+" Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'make release'}
+if has('nvim')
+  let g:LanguageClient_settingsPath = expand('~/.config/nvim/settings.json')
+endif
 let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_diagnosticsList = 'Disabled'
 let g:LanguageClient_serverCommands = {
-      \ 'c': [s:cquery_bin_path, '--language-server'],
-      \ 'cpp': [s:cquery_bin_path, '--language-server'],
-      \ 'go': ['go-langserver', '-gocodecompletion', '-addr=127.0.0.1:4389'],
+      \ 'c': ['cquery'],
+      \ 'cpp': ['cquery'],
+      \ 'go': ['go-langserver', '-gocodecompletion'],
       \ 'javascript': ['javascript-typescript-stdio'],
       \ 'javascript.jsx': ['javascript-typescript-stdio'],
-      \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+      \ 'rust': ['rustup', 'run', 'stable', 'rls'],
       \ 'typescript': ['javascript-typescript-stdio'],
       \}
 
-" nnoremap ,d :LspDefinition<CR>
-nnoremap <silent> ,d :call LanguageClient_textDocument_definition()<CR>
+nnoremap <silent> ,d :LspDefinition<CR>
+" nnoremap <silent> ,d :call LanguageClient_textDocument_definition()<CR>
 
 let g:jedi#auto_close_doc = 0
+let g:jedi#auto_vim_configuration = 0
 let g:jedi#goto_command = ',d'
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 0
@@ -68,74 +62,108 @@ let g:jedi#use_splits_not_buffers = 'winwidth'
 
 " https://github.com/lifepillar/vim-mucomplete/issues/85
 let g:mucomplete#can_complete = {}
-let g:mucomplete#can_complete.python = {'omni': {t -> t =~ '\m\%(\k\k\|\.\)$'}}
+" let g:mucomplete#can_complete.python = {'omni': {t -> t =~ '\m\%(\k\k\|\.\)$'}}
 let g:mucomplete#can_complete.go = {'omni': {t -> t =~ '\m\%(\k\k\|\.\)$'}}
-
-" Default to Python 3 outside of virtualenvs.
-if empty($VIRTUAL_ENV)
-  let g:jedi#force_py_version = 3
-endif
 
 let g:go_gocode_unimported_packages = 1
 
-let g:clang_library_path = '/usr/local/opt/llvm/lib/libclang.dylib'
-let g:clang_complete_auto = 1
-
-" autocmd lsp User lsp_setup call lsp#register_server({
-"       \ 'name': 'clangd',
-"       \ 'cmd': {server_info->[expand('/usr/local/Cellar/llvm/*/bin/clangd')]},
-"       \ 'priority': 9,
-"       \ 'whitelist': ['c', 'cpp'],
-"       \})
-" autocmd lsp FileType c,cpp setlocal omnifunc=lsp#complete
-
-" autocmd lsp User lsp_setup call lsp#register_server({
-"       \ 'name': 'cquery',
-"       \ 'cmd': {server_info->[expand('~/.local/cquery/bin/cquery'), '--language-server']},
-"       \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-"       \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-"       \ })
-" autocmd lsp FileType c,cpp,objc,objcpp setlocal omnifunc=lsp#complete
-
-" if executable('go-langserver')
-"   autocmd lsp User lsp_setup call lsp#register_server({
-"         \ 'name': 'go-langserver',
-"         \ 'cmd': {server_info->['go-langserver', '-gocodecompletion', '-addr=127.0.0.1:4389']},
+" augroup lsp_clangd
+"   autocmd!
+"   autocmd User lsp_setup call lsp#register_server({
+"         \ 'name': 'clangd',
+"         \ 'cmd': {server_info->[expand('/usr/local/Cellar/llvm/*/bin/clangd')]},
 "         \ 'priority': 9,
-"         \ 'whitelist': ['go'],
+"         \ 'whitelist': ['c', 'cpp'],
 "         \})
-"   autocmd lsp FileType go setlocal omnifunc=lsp#complete
+"   autocmd FileType c,cpp setlocal omnifunc=lsp#complete
+" augroup END
+
+" if executable('cquery')
+"   augroup lsp_cquery
+"     autocmd!
+"     autocmd User lsp_setup call lsp#register_server({
+"           \ 'name': 'cquery',
+"           \ 'cmd': {server_info->['cquery']},
+"           \ 'priority': 9,
+"           \ 'root_uri': {server_info->lsp#utils#path_to_uri(
+"           \   lsp#utils#find_nearest_parent_file_directory(
+"           \     lsp#utils#get_buffer_path(), '.cquery'))},
+"           \ 'initialization_options': {'cacheDirectory': expand('~/.cache/cquery')},
+"           \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+"           \ })
+"     autocmd FileType c,cpp,objc,objcpp setlocal omnifunc=lsp#complete
+"   augroup END
 " endif
 
-" if executable('javascript-typescript-stdio')
-"   autocmd lsp User lsp_setup call lsp#register_server({
-"         \ 'name': 'javascript-typescript-stdio',
-"         \ 'cmd': {server_info->['javascript-typescript-stdio']},
-"         \ 'priority': 9,
-"         \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript'],
-"         \})
-"   autocmd lsp FileType javascript,javascript.jsx,typescript setlocal omnifunc=lsp#complete
+if executable('ccls')
+  augroup lsp_ccls
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \ 'name': 'ccls',
+          \ 'cmd': {server_info->['ccls']},
+          \ 'priority': 9,
+          \ 'root_uri': {server_info->lsp#utils#path_to_uri(
+          \   lsp#utils#find_nearest_parent_file_directory(
+          \     lsp#utils#get_buffer_path(), '.ccls'))},
+          \ 'initialization_options': {'cache': {'directory': expand('~/.cache/ccls')}},
+          \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+          \ })
+    autocmd FileType c,cpp,objc,objcpp setlocal omnifunc=lsp#complete
+  augroup END
+endif
+
+" if executable('gopls')
+"   augroup lsp_gopls
+"     autocmd!
+"     autocmd User lsp_setup call lsp#register_server({
+"           \ 'name': 'gopls',
+"           \ 'cmd': {server_info->['gopls']},
+"           \ 'priority': 9,
+"           \ 'whitelist': ['go'],
+"           \})
+"     autocmd FileType go setlocal omnifunc=lsp#complete
+"   augroup END
 " endif
+
+if executable('javascript-typescript-stdio')
+  augroup lsp_javascript
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \ 'name': 'javascript-typescript-stdio',
+          \ 'cmd': {server_info->['javascript-typescript-stdio']},
+          \ 'priority': 9,
+          \ 'whitelist': ['javascript', 'javascript.jsx', 'typescript'],
+          \})
+    autocmd FileType javascript,javascript.jsx,typescript setlocal omnifunc=lsp#complete
+  augroup END
+endif
 
 " if executable('pyls')
-"   autocmd lsp User lsp_setup call lsp#register_server({
-"         \ 'name': 'pyls',
-"         \ 'cmd': {server_info->['pyls']},
-"         \ 'priority': 8,
-"         \ 'whitelist': ['python'],
-"         \})
-"   autocmd lsp FileType python setlocal omnifunc=lsp#complete
+"   augroup lsp_python
+"     autocmd!
+"     autocmd User lsp_setup call lsp#register_server({
+"           \ 'name': 'pyls',
+"           \ 'cmd': {server_info->['pyls']},
+"           \ 'priority': 8,
+"           \ 'whitelist': ['python'],
+"           \})
+"     autocmd FileType python setlocal omnifunc=lsp#complete
+"   augroup END
 " endif
 
-" if executable('rls')
-"   autocmd lsp User lsp_setup call lsp#register_server({
-"         \ 'name': 'rls',
-"         \ 'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
-"         \ 'priority': 9,
-"         \ 'whitelist': ['rust'],
-"         \})
-"   autocmd lsp FileType rust setlocal omnifunc=lsp#complete
-" endif
+if executable('rls')
+  augroup lsp_rust
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \ 'name': 'rls',
+          \ 'cmd': {server_info->['rustup', 'run', 'stable', 'rls']},
+          \ 'priority': 9,
+          \ 'initialization_options': {'rust': {'clippy_preference': 'on'}},
+          \ 'whitelist': ['rust'],
+          \})
+    autocmd FileType rust setlocal omnifunc=lsp#complete
+  augroup END
+endif
 " christoomey/vim-tmux-navigator {{{2
 Plug 'christoomey/vim-tmux-navigator'
 let g:tmux_navigator_no_mappings = 1
@@ -146,27 +174,113 @@ if $TERM =~# '^\(xterm\|screen\)\(-.*\)\?$'
   nnoremap <silent> <A-Up> :TmuxNavigateUp<CR>
   nnoremap <silent> <A-Right> :TmuxNavigateRight<CR>
 endif
+" dense-analysis/ale {{{2
+Plug 'dense-analysis/ale'
+
+let g:ale_linters = {
+      \ 'c': ['ccls'],
+      \ 'cpp': ['ccls'],
+      \ 'ansible': ['ansible'],
+      \ 'go': ['gofmt', 'golint', 'go vet', 'go build'],
+      \ 'rust': ['rustc', 'cargo'],
+      \ 'typescript': ['tslint', 'tsserver'],
+      \}
+
+" Let another plugin handle LSP.
+" let g:ale_disable_lsp = 1
+
+let g:ale_cpp_ccls_init_options = {'cache': {'directory': expand('~/.cache/ccls')}}
+
+" :help ale-typescript-tslint
+" let g:ale_linters_ignore = {
+"       \ 'c': ['gcc', 'clang'],
+"       \ 'typescript': ['tslint'],
+"       \}
+
+let g:ale_fix_on_save = 1
+let g:ale_fixers = {
+      \ 'c': ['clang-format'],
+      \ 'cpp': ['clang-format'],
+      \ 'css': ['prettier'],
+      \ 'javascript': ['prettier'],
+      \ 'json': ['prettier'],
+      \ 'python': ['black'],
+      \ 'rust': ['rustfmt'],
+      \ 'scss': ['prettier'],
+      \ 'typescript': ['prettier'],
+      \}
+
+augroup ale
+  autocmd!
+  " Default to --line-length=79 if pyproject.toml is missing.
+  autocmd VimEnter *
+        \ if empty(ale#path#FindNearestFile('%', 'pyproject.toml')) |
+        \   let g:ale_python_black_options = '--line-length=79' |
+        \ endif
+augroup END
+let g:ale_python_mypy_options = '--ignore-missing-imports'
+let g:ale_sh_shfmt_options = '-i=4 -ci'
+
+let g:ale_virtualtext_cursor = 1
+" let g:ale_python_mypy_options = '--ignore-missing-imports'
+" let g:ale_sign_error = "\u2716"
+" let g:ale_sign_warning = "\u267A"
+" let g:ale_sign_error = "\u25CF"
+" let g:ale_sign_warning = "\u25CF"
+let g:ale_sign_error = 'E>'
+let g:ale_sign_warning = 'W>'
+" let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+
+" https://github.com/desmap/ale-sensible
+let g:ale_set_signs = 0
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_delay = 0
+" augroup alesensible
+"   autocmd!
+"   autocmd VimEnter,BufEnter,ColorScheme *
+"         \ exec "hi! ALEInfoLine
+"           \ guifg=".(&background=='light'?'#808000':'#ffff00')."
+"           \ guibg=".(&background=='light'?'#ffff00':'#555500') |
+"         \ exec "hi! ALEWarningLine
+"           \ guifg=".(&background=='light'?'#808000':'#ffff00')."
+"           \ guibg=".(&background=='light'?'#ffff00':'#555500') |
+"         \ exec "hi! ALEErrorLine
+"           \ guifg=".(&background=='light'?'#ff0000':'#ff0000')."
+"           \ guibg=".(&background=='light'?'#ffcccc':'#550000')
+" augroup END
 " fatih/vim-go {{{2
 Plug 'fatih/vim-go'
+let g:go_def_mode = 'gopls'
 let g:go_fmt_command = 'goimports'
+let g:go_info_mode = 'gopls'
+let g:go_metalinter_command = 'golangci-lint'
 " junegunn/vim-easy-align {{{2
 Plug 'junegunn/vim-easy-align', {'on': ['<Plug>(EasyAlign)', 'EasyAlign']}
 vmap <Enter> <Plug>(EasyAlign)
 " justinmk/vim-sneak {{{2
 Plug 'justinmk/vim-sneak'
-" let g:sneak#label = 1
+let g:sneak#label = 1
 " let g:sneak#s_next = 1
 
-" The conflict with vim-sandwich.
+" This conflicts with vim-sandwich.
 " nmap s <Plug>Sneak_s
 " nmap S <Plug>Sneak_S
 
 nmap gs <Plug>Sneak_s
 omap gs <Plug>Sneak_s
 xmap gs <Plug>Sneak_s
-" nmap gS <Plug>Sneak_S
-" omap gS <Plug>Sneak_S
-" xmap gS <Plug>Sneak_S
+nmap gS <Plug>Sneak_S
+omap gS <Plug>Sneak_S
+xmap gS <Plug>Sneak_S
+
+nmap ss <Plug>Sneak_s
+omap ss <Plug>Sneak_s
+xmap ss <Plug>Sneak_s
+nmap SS <Plug>Sneak_S
+omap SS <Plug>Sneak_S
+xmap SS <Plug>Sneak_S
 " kshenoy/vim-signature {{{2
 Plug 'kshenoy/vim-signature'
 " ludovicchabant/vim-gutentags {{{2
@@ -179,8 +293,6 @@ if executable('ctags')
         \ '*/build/*',
         \ '*/dist/*',
         \ '*/env/*',
-        \ '*/lib/*',
-        \ '*/lib64/*',
         \ '*/node_modules/*',
         \ '*/third_party/*',
         \ '*/vendor/*',
@@ -194,24 +306,33 @@ if executable('ctags')
 endif
 " machakann/vim-sandwich {{{2
 Plug 'machakann/vim-sandwich'
+
+" https://github.com/machakann/vim-sandwich/issues/62
+let g:textobj_sandwich_no_default_key_mappings = 1
 " majutsushi/tagbar {{{2
 Plug 'majutsushi/tagbar'
-nnoremap ,t :TagbarToggle<CR>
 " mbbill/undotree {{{2
 Plug 'mbbill/undotree'
 " mhinz/vim-grepper {{{2
 Plug 'mhinz/vim-grepper'
-let g:grepper = {'tools': ['git', 'rg']}
-command! -nargs=+ -complete=file Grep Grepper -noprompt -tool rg -query <args>
-command! -nargs=+ -complete=file Rg Grepper -noprompt -tool rg -query <args>
+" Browse input history.
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+nnoremap ,g :Grepper<CR>
+" command! -nargs=+ -complete=file Grep Grepper -noprompt -tool rg -query <args>
+" command! -nargs=+ -complete=file Rg Grepper -noprompt -tool rg -query <args>
 " mhinz/vim-signify {{{2
 Plug 'mhinz/vim-signify'
 let g:signify_vcs_list = ['git']
 let g:signify_sign_add = "\u2502"
 let g:signify_sign_change = "\u2502"
-" plasticboy/vim-markdown {{{2
-Plug 'plasticboy/vim-markdown'
-let g:vim_markdown_folding_disabled = 1
+" michaeljsmith/vim-indent-object {{{2
+Plug 'michaeljsmith/vim-indent-object'
+" numirias/semshi {{{2
+Plug 'numirias/semshi'
+let g:semshi#error_sign = v:false
+" romainl/vim-cool {{{2
+" Plug 'romainl/vim-cool'
 " rust-lang/rust.vim {{{2
 Plug 'rust-lang/rust.vim'
 " sheerun/vim-polyglot {{{2
@@ -219,16 +340,21 @@ Plug 'sheerun/vim-polyglot'
 " These are covered by the upstream plugin.
 let g:polyglot_disabled = [
       \ 'go',
+      \ 'graphql',
       \ 'groovy',
       \ 'jenkins',
-      \ 'markdown',
       \ 'rust',
       \]
 " srstevenson/vim-picker {{{2
+Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+let g:fzf_command_prefix = 'Fzf'
+" nnoremap <silent> <C-p> :FzfFiles<CR>
+
 Plug 'srstevenson/vim-picker'
-nnoremap <silent> <C-p> :PickerEdit<CR>
-nnoremap <silent> <C-w><C-p> :PickerSplit<CR>
-nnoremap <silent> <C-b> :PickerBuffer<CR>
+nmap <C-p> <Plug>(PickerEdit)
+nmap <C-w><C-p> <Plug>(PickerSplit)
+nmap ,t <Plug>(PickerTag)
+nmap <C-w>,t <Plug>(PickerStag)
 " tpope/vim-commentary {{{2
 Plug 'tpope/vim-commentary'
 map <silent> ,c :Commentary<CR>
@@ -244,71 +370,47 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-unimpaired'
 " tpope/vim-vinegar {{{2
 Plug 'tpope/vim-vinegar'
-" w0rp/ale {{{2
-Plug 'w0rp/ale'
-
-let g:ale_linters = {
-      \ 'go': ['gofmt', 'golint', 'go vet', 'go build'],
-      \ 'rust': ['rustc', 'cargo'],
-      \ 'typescript': ['tslint', 'tsserver'],
-      \}
-
-let g:ale_fix_on_save = 1
-let g:ale_fixers = {
-      \ 'c': ['clang-format'],
-      \ 'cpp': ['clang-format'],
-      \ 'css': ['prettier'],
-      \ 'javascript': ['prettier'],
-      \ 'json': ['prettier'],
-      \ 'python': ['yapf'],
-      \ 'rust': ['rustfmt'],
-      \ 'scss': ['prettier'],
-      \ 'typescript': ['prettier'],
-      \}
-
-let g:ale_python_mypy_options = '--ignore-missing-imports'
-
-" let g:ale_python_mypy_options = '--ignore-missing-imports'
-let g:ale_sign_error = "\u2716"
-let g:ale_sign_warning = "\u267A"
-" let g:ale_sign_error = "\u25CF"
-" let g:ale_sign_warning = "\u25CF"
-" let g:ale_sign_error = 'E>'
-" let g:ale_sign_warning = 'W>'
-" let g:ale_sign_error = 'E>'
-" let g:ale_echo_msg_format = '[%linter%] %s'
-let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
 " wellle/targets.vim {{{2
 Plug 'wellle/targets.vim'
 " }}}
 
 " Colorschemes {{{2
-Plug 'ajmwagar/vim-deus'
-Plug 'arcticicestudio/nord-vim',
+Plug 'lifepillar/vim-colortemplate'
+
+" Plug 'ajmwagar/vim-deus'
+" Plug 'andreypopp/vim-colors-plain'
+" Plug 'arcticicestudio/nord-vim',
+Plug 'axvr/photon.vim'
+" Plug 'challenger-deep-theme/vim', {'as': 'challenger-deep'}
+Plug 'cormacrelf/vim-colors-github'
 Plug 'chriskempson/base16-vim'
-Plug 'cocopon/iceberg.vim'
+" Plug 'cocopon/iceberg.vim'
+Plug 'gruvbox-community/gruvbox'
 Plug 'joshdick/onedark.vim'
+" Plug 'junegunn/seoul256.vim'
+Plug 'ldelossa/vimdark'
+Plug 'lifepillar/vim-gruvbox8'
 " Plug 'lifepillar/vim-solarized8'
+Plug 'lithammer/vim-eighties'
 " Plug 'mbbill/vim-seattle'
-Plug 'morhetz/gruvbox'
+Plug 'mhinz/vim-janah'
+" Plug 'morhetz/gruvbox'
 Plug 'nanotech/jellybeans.vim'
 " Plug 'owickstrom/vim-colors-paramount'
-Plug 'rakr/vim-one'
+" Plug 'rakr/vim-one'
+" Plug 'romainl/Apprentice'
+" Plug 'rainglow/vim', {'as': 'rainglow-vim'}
+Plug 'srcery-colors/srcery-vim'
+" Plug 'tyrannicaltoucan/vim-quantum'
 Plug 'w0ng/vim-hybrid'
-" Plug 'lithammer/vim-hybrid'
 " }}}
 call plug#end()
 " }}}
 " Interesting but unused plugins {{{1
-" Plug 'dominikduda/vim_current_word'
 " Plug 'junegunn/rainbow_parentheses.vim'
 " Plug 'junegunn/vim-peekaboo'
-" Plug 'osyo-manga/vim-brightest'
-" Plug 'sbdchd/neoformat'
 " Plug 'srstevenson/vim-picker'
+" Plug 'tpope/vim-apathy'
 " }}}
 " Options {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -316,42 +418,134 @@ call plug#end()
 " Use :help 'option' or press 'K' while having the cursor on the option to see
 " documention about it.
 
-" Make sure dark background is used for colorschemes.
-set background=dark
-
 if has('termguicolors')
   set termguicolors
-  " let g:jellybeans_overrides = {
-  "       \ 'background': {'ctermbg': 'none', 'guibg': 'none'},
-  "       \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
-  "       \ 'ALEErrorSign': {'ctermfg': '1', 'ctermbg': '242', 'guifg': '902020', 'guibg': '333333'},
-  "       \ 'ALEWarningSign': {'ctermfg': '121', 'ctermbg': '242', 'guifg': 'ffb964', 'guibg': '333333'},
-  "       \}
+
+  let g:jellybeans_overrides = {
+        \ 'background': {'ctermbg': 'none', 'guibg': 'none'},
+        \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
+        \ 'ALEErrorSign': {'ctermfg': '1', 'ctermbg': '242', 'guifg': '902020', 'guibg': '333333'},
+        \ 'ALEWarningSign': {'ctermfg': '121', 'ctermbg': '242', 'guifg': 'ffb964', 'guibg': '333333'},
+        \ 'User1': {'ctermbg': '4', 'guibg': '437019', 'attr': 'italic'},
+        \ 'User2': {'ctermfg': '0', 'ctermbg': '121', 'guifg': '000000', 'guibg': 'ffb964', 'attr': 'italic'},
+        \ 'User3': {'ctermbg': '1', 'guibg': '902020', 'attr': 'italic'},
+        \}
 
   function! s:base16_customize() abort
+    call Base16hi('WildMenu', g:base16_gui01, g:base16_gui0A, g:base16_cterm01, g:base16_cterm0A, '', '')
     call Base16hi('ALEErrorSign', g:base16_gui08, g:base16_gui01, g:base16_cterm01, g:base16_cterm08, '', '')
+    call Base16hi('ALEWarningSign', g:base16_gui0A, g:base16_gui01, g:base16_cterm01, g:base16_cterm0A, '', '')
+    call Base16hi('ALEVirtualTextError', g:base16_gui03, '', g:base16_cterm03, '', '',  '')
+    call Base16hi('ALEVirtualTextInfo', g:base16_gui03, '', g:base16_cterm03, '', '',  '')
+    call Base16hi('ALEVirtualTextStyleError', g:base16_gui03, '', g:base16_cterm03, '', '',  '')
+    call Base16hi('ALEVirtualTextStyleWarning', g:base16_gui03, '', g:base16_cterm03, '', '',  '')
+    call Base16hi('ALEVirtualTextWarning', g:base16_gui03, '', g:base16_cterm03, '', '',  '')
+
+    call Base16hi('User1', g:base16_gui0B, g:base16_gui02, g:base16_cterm04, g:base16_cterm0B, '', '')
+    call Base16hi('User2', g:base16_gui0A, g:base16_gui02, g:base16_cterm04, g:base16_cterm0A, '', '')
+    call Base16hi('User3', g:base16_gui08, g:base16_gui02, g:base16_cterm04, g:base16_cterm08, '', '')
+    call Base16hi('User4', g:base16_gui0C, g:base16_gui02, g:base16_cterm04, g:base16_cterm0C, '', '')
+
+    call Base16hi('StatusLineOk', g:base16_gui0B, g:base16_gui02, g:base16_cterm04, g:base16_cterm0B, '', '')
+    call Base16hi('StatusLineWarning', g:base16_gui0A, g:base16_gui02, g:base16_cterm04, g:base16_cterm0A, '', '')
+    call Base16hi('StatusLineError', g:base16_gui08, g:base16_gui02, g:base16_cterm04, g:base16_cterm08, '', '')
+    call Base16hi('StatusLineWhitespace', g:base16_gui0C, g:base16_gui02, g:base16_cterm04, g:base16_cterm0C, '', '')
   endfunction
 
-  augroup on_change_colorschema
+  function! s:janah_customize() abort
+    highlight link Whitespace SpecialKey
+    highlight Normal guibg=NONE
+
+    highlight ALEErrorSign ctermfg=167 ctermbg=237 guifg=#df5f5f guibg=#3a3a3a
+    highlight ALEWarningSign ctermfg=223 ctermbg=237 guifg=#ffdfaf guibg=#3a3a3a
+    highlight ALEVirtualTextError ctermfg=244 ctermbg=236 guifg=#808080 guibg=#303030
+    highlight ALEVirtualTextInfo ctermfg=244 ctermbg=236 guifg=#808080 guibg=#303030
+    highlight ALEVirtualTextStyleError ctermfg=244 ctermbg=236 guifg=#808080 guibg=#303030
+    highlight ALEVirtualTextStyleWarning ctermfg=244 ctermbg=236 guifg=#808080 guibg=#303030
+    highlight ALEVirtualTextWarning ctermfg=244 ctermbg=236 guifg=#808080 guibg=#303030
+
+    highlight User1 ctermfg=119 ctermbg=237 guifg=#87ff5f guibg=#3a3a3a
+    highlight User2 ctermfg=227 ctermbg=237 guifg=#ffff5f guibg=#3a3a3a
+    highlight User3 ctermfg=167 ctermbg=237 guifg=#df5f5f guibg=#3a3a3a
+    highlight User4 ctermfg=6 ctermbg=237 guifg=Cyan guibg=#3a3a3a
+
+    highlight StatusLineOk ctermfg=119 ctermbg=237 guifg=#87ff5f guibg=#3a3a3a
+    highlight StatusLineWarning ctermfg=227 ctermbg=237 guifg=#ffff5f guibg=#3a3a3a
+    highlight StatusLineError ctermfg=167 ctermbg=237 guifg=#df5f5f guibg=#3a3a3a
+    highlight StatusLineWhitespace ctermfg=6 ctermbg=237 guifg=Cyan guibg=#3a3a3a
+  endfunction
+
+  function! s:gruvbox_customize() abort
+     highlight link User1 DiffAdd
+     highlight link User2 IncSearch
+     highlight link User3 DiffDelete
+     highlight link User4 DiffChange
+
+     highlight SignifySignAdd guibg=#3c3836
+     highlight SignifySignChange guibg=#3c3836
+     highlight SignifySignDelete guibg=#3c3836
+     highlight SignifySignChangeDelete guibg=#3c3836
+     highlight SignifySignDeleteFirstLine guibg=#3c3836
+  endfunction
+
+  function! s:photon_customize() abort
+    highlight Normal ctermfg=251 ctermbg=NONE guifg=#c6c6c6 guibg=NONE
+    highlight NonText ctermfg=237 ctermbg=NONE guifg=#3a3a3a guibg=NONE
+    highlight Cursor cterm=reverse gui=reverse ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
+    highlight User1 ctermfg=119 ctermbg=237 guifg=#87ff5f guibg=#3a3a3a
+    highlight User2 ctermfg=227 ctermbg=237 guifg=#ffff5f guibg=#3a3a3a
+    highlight User3 ctermfg=167 ctermbg=237 guifg=#df5f5f guibg=#3a3a3a
+    highlight User4 ctermfg=6 ctermbg=237 guifg=Cyan guibg=#3a3a3a
+  endfunction
+
+  function! s:eighties_customize() abort
+     highlight User1 ctermbg=0 guifg=#99cc99 guibg=#2d2d2d gui=reverse cterm=reverse
+     highlight User2 ctermbg=0 guifg=#f99157 guibg=#2d2d2d gui=reverse cterm=reverse
+     highlight User3 ctermbg=0 guifg=#f2777a guibg=#2d2d2d gui=reverse cterm=reverse
+     highlight User4 ctermbg=0 guifg=#66cccc guibg=#2d2d2d gui=reverse cterm=reverse
+  endfunction
+
+  augroup colorschemeload
     autocmd!
-    autocmd ColorScheme * call s:base16_customize()
+    autocmd ColorScheme base16-eighties call s:base16_customize()
+    autocmd ColorScheme eighties call s:eighties_customize()
+    autocmd ColorScheme janah call s:janah_customize()
+    autocmd ColorScheme gruvbox* call s:gruvbox_customize()
+    autocmd ColorScheme allomancer highlight Cursor guifg=bg guibg=fg
+    autocmd ColorScheme photon call s:photon_customize()
+
+    autocmd FileType python highlight semshiSelected ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE gui=undercurl
+    " autocmd FileType python highlight semshiImported cterm=bold ctermfg=NONE gui=bold guifg=NONE
   augroup END
 
   let g:nord_italic = 1
   let g:nord_italic_comments = 1
-  let g:nord_comment_brightness = 15
+  let g:nord_underline = 1
 
-  " let g:gruvbox_bold = 1
-  " let g:gruvbox_italic = 1
-  " let g:gruvbox_underline = 1
-  " let g:gruvbox_undercurl = 1
+  let g:gruvbox_contrast_dark = 'soft'
+  let g:gruvbox_italic = 1
+  let g:gruvbox_improved_strings = 1
+  let g:gruvbox_improved_warnings = 1
+
+  let g:gruvbox_filetype_hi_groups = 1
+  let g:gruvbox_plugin_hi_groups = 1
+  let g:gruvbox_italic = 1
 
   let g:onedark_terminal_italics = 1
   let g:one_allow_italics = 1
 
-  colorscheme base16-eighties
-else
-  colorscheme hybrid
+  " let g:hybrid_reduced_contrast = 1
+
+  let g:seoul256_background = 235
+
+  let g:quantum_black = 1
+  let g:quantum_italics = 1
+
+  let g:deus_italic = 1
+
+  " Make sure dark background is used for colorschemes.
+  set background=dark
+  colorscheme eighties
 endif
 
 " Stop the sh syntax file from highlighting $(...) as errors.
@@ -467,6 +661,10 @@ if exists('+breakindent')
   let &showbreak = "\u21AA "
 endif
 
+if has('nvim-0.3.2') || has('patch-8.1.0360')
+  set diffopt+=algorithm:histogram,indent-heuristic
+endif
+
 " Show line numbers.
 " set number
 
@@ -519,8 +717,9 @@ end
 " When more than one match, list all matches.
 set wildmode=list:longest,list:full
 
+set wildignore=*.o
 if has('patch-7.4.156')
-  let &wildignore = netrw_gitignore#Hide()
+  set wildignore+=netrw_gitignore#Hide()
 endif
 " Mappings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -542,14 +741,14 @@ nnoremap ,b :ls<CR>:buffer<Space>
 
 " Display all lines that contain the keyword under the cursor and then waits
 " to select one to jump to.
-function! Occurrences()
+function! Occurrences() abort
   execute 'normal [I'
   let l:nr = input("Type number and \<Enter\> (empty cancels): ")
   if l:nr
     execute 'normal ' . l:nr . '[\t'
   endif
 endfunction
-nnoremap ,i :call Occurrences()<CR>
+nnoremap <silent> ,i :call Occurrences()<CR>
 " nnoremap ,i [I:let nr = input("Type number and \<Enter\>: ")<Bar>exe "normal " . nr ."[\t"<CR>
 
 " https://www.reddit.com/r/vim/comments/7iy03o/you_aint_gonna_need_it_your_replacement_for/dr2qo4k/
@@ -558,65 +757,59 @@ inoremap {<CR> {<CR>}<Esc>O
 inoremap [<CR> [<CR>]<Esc>O
 " Statusline {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-augroup statuslinewhitespace
-  autocmd!
-  autocmd CursorHold,BufWritePost * unlet! b:statusline_whitespace_check
-augroup END
+if has('statusline')
+  augroup statuslinewhitespace
+    autocmd!
+    autocmd CursorHold,BufWritePost * unlet! b:statusline_whitespace_check
+  augroup END
 
-function! StatuslineWhitespace()
-  if &readonly || !&modifiable || line('$') > 20000
-    return ''
-  endif
+  function! s:StatuslineWhitespace() abort
+    if &readonly || !&modifiable || line('$') > 20000
+      return ''
+    endif
 
-  if !exists('b:statusline_whitespace_check')
-    let b:statusline_whitespace_check = ''
+    if exists('b:statusline_whitespace_check')
+      return b:statusline_whitespace_check
+    endif
 
     let l:trailing = search('\s$', 'nw')
     let l:mixed = search('\v(^\t+ +)|(^ +\t+)', 'nw')
 
-    if l:trailing != 0 || l:mixed != 0
-      let b:statusline_whitespace_check = '!'
-      if l:trailing != 0
-        let b:statusline_whitespace_check .= (' ').printf('[%s]trailing', l:trailing)
-      endif
-      if l:mixed != 0
-        let b:statusline_whitespace_check .= (' ').printf('[%s]mixed-indent', l:mixed)
+    if l:trailing != 0
+      let b:statusline_whitespace_check = l:trailing
+    elseif l:mixed != 0
+      let b:statusline_whitespace_check = l:mixed
+    else
+      let b:statusline_whitespace_check = ''
+    endif
+
+    return b:statusline_whitespace_check
+  endfunction
+
+  function! StatusLine() abort
+    let l:status_line = '%<%f %h%m%r%=%-14.(%l,%c%V%) %P'
+
+    if &runtimepath =~# 'ale'
+      let l:ale = ale#statusline#Count(bufnr(''))
+      if l:ale.error + l:ale.style_error > 0
+        let l:status_line .= ' %3*err%*'
+      elseif l:ale.warning + l:ale.style_warning > 0
+        let l:status_line .= ' %2*warn%*'
+      else
+        let l:status_line .= ' %1*ok%*'
       endif
     endif
-  endif
 
-  return b:statusline_whitespace_check
-endfunction
+    let l:ws = s:StatuslineWhitespace()
+    if l:ws > 0
+      let l:status_line .= ' %4*ws:' . l:ws . '%*'
+    endif
 
-function! CustomALEStatusLine()
-  let [l:error_format, l:warning_format, l:no_errors] = ["\u2716 %d", "\u267A %d", '']
-  let l:counts = ale#statusline#Count(bufnr(''))
+    return l:status_line
+  endfunction
 
-  " Build strings based on user formatting preferences.
-  let l:errors = l:counts[0] ? printf(l:error_format, l:counts[0]) : ''
-  let l:warnings = l:counts[1] ? printf(l:warning_format, l:counts[1]) : ''
-
-  " Different formats based on the combination of errors and warnings.
-  if empty(l:errors) && empty(l:warnings)
-    let l:res = l:no_errors
-  elseif !empty(l:errors) && !empty(l:warnings)
-    let l:res = printf('%s %s', l:errors, l:warnings)
-  else
-    let l:res = empty(l:errors) ? l:warnings : l:errors
-  endif
-
-  if empty(l:res)
-    return ''
-  endif
-
-  return ' ' . l:res . ' '
-endfunction
-
-let &statusline = '%< %f %h%m%r%=%-14.(%l,%c%V%) %P '
-if &runtimepath =~# 'ale'
-  set statusline+=%#Error#%{CustomALEStatusLine()}%*
+  set statusline=%!StatusLine()
 endif
-set statusline+=%#Error#%{StatuslineWhitespace()}%*
 " Auto commands {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -627,14 +820,13 @@ augroup autoresize
 augroup END
 
 " When editing a file, always jump to the last known cursor position.
-augroup lastposition
+" :h last-position-jump
+augroup lastpositionjump
   autocmd!
   autocmd BufReadPost *
-        \ if &filetype !~ 'svn\|commit\c' |
-        \   if line("'\"") > 0 && line("'\"") <= line("$") |
-        \     execute 'normal! g`"zvzz' |
-        \   endif |
-        \ endif
+        \ if line("'\"") > 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+        \ |   exe "normal! g`\""
+        \ | endif
 augroup END
 
 " Only show cursorline in the current buffer, and only in normal mode.
@@ -657,15 +849,11 @@ if has('patch-7.3.598')
 endif
 " Filetype settings {{{1
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-function! SetupPython()
-  setlocal foldmethod=indent foldlevel=2 foldnestmax=2 textwidth=79
-endfunction
-
 augroup vimrc
   autocmd!
+  autocmd FileType python setlocal foldmethod=indent foldlevel=2 foldnestmax=2 textwidth=79
   autocmd FileType text setlocal textwidth=79
-  autocmd FileType python call SetupPython()
+  autocmd FileType markdown setlocal conceallevel=2 textwidth=79
 augroup END
 " Neovim {{{1
 if has('nvim')

@@ -27,13 +27,13 @@
 
 [user]
 	name = Peter Lithammer
-	email = peterlithammer@gmail.com
+	email = peter.lithammer@gmail.com
 
 [core]
 	autocrlf = input
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
-	pager = diff-so-fancy --patch-mode | less --tabs=4 -RFX
+	pager = diff-so-fancy | less --tabs=4 -RFX
 	# pager = diff-highlight | less --tabs=4 -RFX
 
 [alias]
@@ -87,15 +87,16 @@
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
 
 [interactive]
-	# diffFilter = diff-highlight
-	diffFilter = diff-so-fancy --patch-mode
+	diffFilter = diff-highlight
+	# diffFilter = diff-so-fancy --patch-mode | less --tabs=4 -RFX
 
 [diff]
 	compactionHeuristic = true
 	# diffFilter = diff-highlight
-	diffFilter = diff-so-fancy --patch-mode
+	# diffFilter = diff-so-fancy --patch-mode
 
 [commit]
 	verbose = true

@@ -1,38 +1,54 @@
 function fish_prompt -d 'Show prompt'
-  set -l last_status $status
+    set -l last_status $status
 
-  # Colors.
-  set -l normal (set_color normal)
-  set -l yellow (set_color yellow)
-  set -l magenta (set_color magenta)
-  set -l cyan (set_color cyan)
+    # Colors.
+    set -l bold (set_color --bold)
+    set -l normal (set_color normal)
+    set -l black (set_color black)
+    set -l red (set_color red)
+    set -l green (set_color green)
+    set -l yellow (set_color yellow)
+    set -l blue (set_color blue)
+    set -l magenta (set_color magenta)
+    set -l cyan (set_color cyan)
+    set -l white (set_color white)
+    set -l brblack (set_color brblack)
+    set -l error (set_color $fish_color_error)
 
-  set -l pad ' '
-  set -l suffix '$'
+    set -l pad ' '
+    set -l suffix "$yellow\$$normal"
 
-  # Array with symbols to be prepended to the prompt.
-  set -l symbols
+    # Array with symbols to be prepended to the prompt.
+    set -l symbols
 
-  # Virtualenv and pipenv.
-  if test -n "$VIRTUAL_ENV"
-    set -l icon ●
-    set symbols[1] $cyan$icon$normal
-
-    if test -n "$PIPENV_ACTIVE"
-      set symbols[2] $magenta$icon$normal
+    if not set -q VIRTUAL_ENV_DISABLE_PROMPT
+        set -g VIRTUAL_ENV_DISABLE_PROMPT 1
     end
 
-    set symbols[3] $pad
-  end
+    # Virtualenv and pipenv.
+    set -l venv (__python_find_virtualenv)
+    if test -n "$VIRTUAL_ENV"
+        set -l icon '#'
+        if test "$VIRTUAL_ENV" = "$venv"
+            set symbols[3] $cyan$icon$normal
+        else
+            set symbols[3] $error$icon$normal
+        end
+        set symbols[4] $pad
+    else if test -n "$venv"
+        set -l icon '#'
+        set symbols[3] $white$icon$normal
+        set symbols[4] $pad
+    end
 
-  for symbol in $symbols
-    echo -n $symbol
-  end
+    if test $last_status -gt 0
+        set symbols[1] $error$last_status$normal$pad
+    end
 
-  echo -n $yellow(prompt_pwd)$normal
+    for symbol in $symbols
+        printf $symbol
+    end
 
-  if test $last_status -gt 0
-    set_color $fish_color_error
-  end
-  echo -n $pad$suffix$pad$normal
+    printf $magenta(prompt_pwd)$normal
+    printf $pad$suffix$pad$normal
 end

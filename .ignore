@@ -1,8 +1,0 @@
-*.min.js
-*.min.css
-venv
-env
-vendor
-node_modules
-
-fabric_env

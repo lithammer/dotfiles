@@ -1,0 +1,689 @@
+" Functions {{{1
+function! s:stdpath(what) abort
+  return has('nvim') ? stdpath(a:what) : expand('~/.vim')
+endfunction
+" Environment {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+scriptencoding utf-8
+
+if has('nvim')
+  " Enable mode shapes, cursor highlight and blinking.
+  set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
+  \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
+  \,sm:block-blinkwait175-blinkoff150-blinkon175
+else
+  " http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
+  " This flickers to much on backspace.
+  " let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  " let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+  " let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+  " let &t_SI = "\<Esc>[6 q"
+  " let &t_SR = "\<Esc>[4 q"
+  " let &t_EI = "\<Esc>[2 q"
+endif
+" }}}
+" Plugins {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function! PackagerInit() abort
+  packadd vim-packager
+  command! -nargs=+ -bar Plug call packager#add(<args>)
+  call packager#init()
+
+  Plug 'kristijanhusak/vim-packager', {'type': 'opt'}
+
+  " Neovim specific.
+  Plug 'hrsh7th/nvim-cmp', {'type': 'opt'}
+  Plug 'hrsh7th/cmp-nvim-lsp', {'type': 'opt'}
+  " Plug 'hrsh7th/vim-vsnip', {'type': 'opt'}
+  Plug 'L3MON4D3/LuaSnip', {'type': 'opt'}
+  Plug 'neovim/nvim-lspconfig', {'type': 'opt'}
+  Plug 'nvim-lua/lsp_extensions.nvim', {'type': 'opt'}
+  Plug 'nvim-treesitter/nvim-treesitter', {'type': 'opt', 'branch': '0.5-compat'}
+  Plug 'wbthomason/lsp-status.nvim', {'type': 'opt'}
+
+  Plug 'neoclide/coc.nvim', {'branch': 'release', 'type': 'opt'}
+
+  Plug 'fladson/vim-kitty'
+  Plug 'folke/zen-mode.nvim', {'type': 'opt'}
+  Plug 'jeetsukumaran/vim-pythonsense'
+  Plug 'junegunn/vim-easy-align'
+  Plug 'junegunn/vim-peekaboo'
+  Plug 'justinmk/vim-sneak'
+  Plug 'kshenoy/vim-signature'
+  Plug 'lifepillar/pgsql.vim'
+  " Plug 'lifepillar/vim-mucomplete'
+  Plug 'ludovicchabant/vim-gutentags'
+  Plug 'mbbill/undotree'
+  Plug 'mhinz/vim-grepper'
+  Plug 'mhinz/vim-signify'
+  Plug 'norcalli/nvim-colorizer.lua', {'type': 'opt'}
+  Plug 'romainl/vim-cool'
+  Plug 'romainl/vim-qf'
+  Plug 'sheerun/vim-polyglot'
+  Plug 'srstevenson/vim-picker'
+  Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-eunuch'
+  Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-repeat'
+  Plug 'tpope/vim-sensible'
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-vinegar'
+  Plug 'liuchengxu/vista.vim'
+
+  " Colorschemes
+
+  Plug 'lifepillar/vim-colortemplate'
+  Plug 'andreypopp/vim-colors-plain'
+  " Plug 'arzg/vim-corvine'
+  Plug 'axvr/photon.vim'
+  " Plug 'cormacrelf/vim-colors-github'
+  " Plug 'chriskempson/base16-vim'
+  Plug 'franbach/miramare'
+  Plug 'fxn/vim-monochrome'
+  Plug 'gruvbox-community/gruvbox'
+  Plug 'habamax/vim-alchemist'
+  " Plug 'Iron-E/nvim-highlite'
+  Plug 'junegunn/seoul256.vim'
+  Plug 'lifepillar/vim-gruvbox8'
+  " Plug 'lifepillar/vim-solarized8'
+  " Plug 'mhinz/vim-janah'
+  " Plug 'morhetz/gruvbox'
+  Plug 'nanotech/jellybeans.vim'
+  " Plug 'owickstrom/vim-colors-paramount'
+  Plug 'romainl/Apprentice'
+  Plug 'sainnhe/gruvbox-material'
+  Plug 'sainnhe/sonokai'
+  Plug 'srcery-colors/srcery-vim'
+  Plug 'w0ng/vim-hybrid'
+endfunction
+
+command! PackagerInstall call PackagerInit() | call packager#install()
+command! -bang PackagerUpdate call PackagerInit() | call packager#update({'force_hooks': '<bang>'})
+command! PackagerClean call PackagerInit() | call packager#clean()
+command! PackagerStatus call PackagerInit() | call packager#status()
+
+" LSP {{{2
+let g:coc_config_home = expand('~/.vim')
+let g:coc_global_extensions = [
+      \ 'coc-clangd',
+      \ 'coc-cmake',
+      \ 'coc-css',
+      \ 'coc-deno',
+      \ 'coc-diagnostic',
+      \ 'coc-docker',
+      \ 'coc-eslint',
+      \ 'coc-go',
+      \ 'coc-groovy',
+      \ 'coc-highlight',
+      \ 'coc-html',
+      \ 'coc-json',
+      \ 'coc-prettier',
+      \ 'coc-pyright',
+      \ 'coc-rust-analyzer',
+      \ 'coc-sh',
+      \ 'coc-snippets',
+      \ 'coc-solargraph',
+      \ 'coc-sourcekit',
+      \ 'coc-stylelintplus',
+      \ 'coc-sumneko-lua',
+      \ 'coc-svelte',
+      \ 'coc-toml',
+      \ 'coc-tailwindcss',
+      \ 'coc-tsserver',
+      \ 'coc-vetur',
+      \ 'coc-vimlsp',
+      \ 'coc-xml',
+      \ 'coc-yaml',
+      \ 'coc-zig',
+      \]
+
+let g:coc_filetype_map = {
+      \ 'Jenkinsfile': 'groovy',
+      \}
+
+" if !has('nvim')
+if 1
+  packadd coc.nvim
+endif
+" packadd coc.nvim
+if match(&runtimepath, 'coc.nvim') != -1
+  " inoremap <silent><expr> <Tab>
+  "     \ pumvisible() ? "\<C-n>" :
+  "     \ <SID>check_back_space() ? "\<Tab>" :
+  "     \ coc#refresh()
+  " inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+  " function! s:check_back_space() abort
+  "   let col = col('.') - 1
+  "   return !col || getline('.')[col - 1]  =~# '\s'
+  " endfunction
+
+  " Override omnifunc.
+  inoremap <silent><expr> <C-x><C-o> coc#refresh()
+
+  " Make <CR> auto-select the first completion item and notify coc.nvim to
+  " format on enter, <CR> could be remapped by other vim plugin
+  inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm()
+        \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+  " Use `[g` and `]g` to navigate diagnostics
+  " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+  nmap <silent> [g <Plug>(coc-diagnostic-prev)
+  nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+  " GoTo code navigation.
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gy <Plug>(coc-type-definition)
+  nmap <silent> gi <Plug>(coc-implementation)
+  nmap <silent> gR <Plug>(coc-references)
+
+  " Symbol renaming.
+  nmap <silent> gr <Plug>(coc-rename)
+
+  " Use K to show documentation in preview window.
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+  function! s:show_documentation()
+    if index(['vim','help'], &filetype) >= 0
+      execute 'h '.expand('<cword>')
+    elseif coc#rpc#ready()
+      call CocActionAsync('doHover')
+    else
+      execute '!' . &keywordprg . ' ' . expand('<cword>')
+    endif
+  endfunction
+
+  augroup coc_highlight
+    autocmd!
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+  augroup END
+
+  augroup coc_signature_help
+    autocmd!
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  augroup end
+
+  " Formatting selected code.
+  " xmap <leader>f  <Plug>(coc-format-selected)
+  " nmap <leader>f  <Plug>(coc-format-selected)
+
+  " Applying codeAction to the selected region.
+  xmap ga  <Plug>(coc-codeaction-selected)
+  nmap ga  <Plug>(coc-codeaction-selected)
+  nmap ga  <Plug>(coc-codeaction-line)
+  nmap gA  <Plug>(coc-codeaction)
+  " Apply AutoFix to problem on the current line.
+  nmap <leader>qf  <Plug>(coc-fix-current)
+
+  " Map function and class text objects
+  " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+  xmap if <Plug>(coc-funcobj-i)
+  omap if <Plug>(coc-funcobj-i)
+  xmap af <Plug>(coc-funcobj-a)
+  omap af <Plug>(coc-funcobj-a)
+  xmap ic <Plug>(coc-classobj-i)
+  omap ic <Plug>(coc-classobj-i)
+  xmap ac <Plug>(coc-classobj-a)
+  omap ac <Plug>(coc-classobj-a)
+
+  " Remap <C-f> and <C-b> for scroll float windows/popups.
+  if has('nvim-0.4.0') || has('patch-8.2.0750')
+    nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+    nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+    inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+    vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+    vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  endif
+
+  " Use CTRL-S for selections ranges.
+  " Requires 'textDocument/selectionRange' support of language server.
+  nmap <silent> <C-s> <Plug>(coc-range-select)
+  xmap <silent> <C-s> <Plug>(coc-range-select)
+
+  " Add `:Format` command to format current buffer.
+  command! -nargs=0 Format :call CocAction('format')
+
+  " Add `:Fold` command to fold current buffer.
+  command! -nargs=? Fold :call CocAction('fold', <f-args>)
+
+  " Add `:OR` command for organize imports of the current buffer.
+  command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
+
+  " Add (Neo)Vim's native statusline support.
+  " NOTE: Please see `:h coc-status` for integrations with external plugins that
+  " provide custom statusline: lightline.vim, vim-airline.
+  set statusline=%<%f\ %h%m%r%{get(g:,'coc_status','')}%=%-14.(%l,%c%V%)\ %P
+
+  nnoremap <silent><nowait> <leader>a :<C-u>CocList diagnostics<cr>
+  nnoremap <silent><nowait> <leader>e :<C-u>CocList extensions<cr>
+  nnoremap <silent><nowait> <leader>c :<C-u>CocList commands<cr>
+  nnoremap <silent><nowait> <leader>o :<C-u>CocList outline<cr>
+  nnoremap <silent><nowait> <leader>s :<C-u>CocList -I symbols<cr>
+  nnoremap <silent><nowait> <leader>j :<C-u>CocNext<CR>
+  nnoremap <silent><nowait> <leader>k :<C-u>CocPrev<CR>
+  nnoremap <silent><nowait> <leader>p :<C-u>CocListResume<CR>
+  nnoremap <silent><nowait> <leader>i :CocCommand editor.action.organizeImport<CR>
+endif
+" jeetsukumaran/vim-pythonsense {{{2
+" let g:is_pythonsense_alternate_motion_keymaps = 1
+" junegunn/vim-easy-align {{{2
+vmap <Enter> <Plug>(EasyAlign)
+" lifepillar/pgsql.vim {{{2
+let g:sql_type_default = 'pgsql'
+" ludovicchabant/vim-gutentags {{{2
+if executable('ctags')
+  let g:gutentags_generate_on_empty_buffer = 1
+  let g:gutentags_cache_dir = s:stdpath('data') . '/tags'
+  let g:gutentags_project_root = [
+        \ 'Cargo.toml',
+        \ 'go.mod',
+        \ 'Makefile',
+        \ 'package.json',
+        \ 'pyproject.toml',
+        \ 'requirements.txt',
+        \ 'setup.cfg',
+        \ 'setup.py',
+        \]
+  let g:gutentags_ctags_exclude = [
+        \ '*.min.js',
+        \ '*/build/*',
+        \ '*/dist/*',
+        \ '*/env/*',
+        \ '*/node_modules/*',
+        \ '*/target/*',
+        \ '*/third_party/*',
+        \ '*/vendor/*',
+        \ '*/venv/*',
+        \]
+  let g:gutentags_file_list_command = {
+        \ 'markers': {
+        \   '.git': 'git ls-files',
+        \ }
+        \}
+endif
+" mhinz/vim-grepper {{{2
+" Browse input history.
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+nnoremap <leader>g :Grepper -noswitch -jump<CR>
+" mhinz/vim-signify {{{2
+let g:signify_vcs_list = ['git']
+let g:signify_sign_add = "\u2502"
+let g:signify_sign_change = "\u2502"
+" srstevenson/vim-picker {{{2
+let g:picker_split = 'topleft'
+nmap <leader>f <Plug>(PickerEdit)
+nmap <C-w>,f <Plug>(PickerSplit)
+nmap <leader>t <Plug>(PickerTag)
+nmap <C-w>,t <Plug>(PickerStag)
+" Options {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Use :help 'option' or press 'K' while having the cursor on the option to see
+" documention about it.
+
+if has('termguicolors')
+  if $TERM_PROGRAM !=# 'Apple_Terminal'
+    set termguicolors
+  end
+
+  let g:jellybeans_overrides = {
+        \ 'background': {'ctermbg': 'none', 'guibg': 'none'},
+        \ 'SpecialKey': {'ctermfg': '238', 'ctermbg': 'none', 'guifg': '444444', 'guibg': 'none'},
+        \ 'SignifySignAdd': {'ctermfg': '4', 'ctermbg': '242', 'guifg': '437019', 'guibg': '333333'},
+        \ 'SignifySignChange': {'ctermfg': '5', 'ctermbg': '242', 'guifg': '2B5B77', 'guibg': '333333'},
+        \ 'SignifySignDelete': {'ctermfg': '1', 'ctermbg': '242', 'guifg': 'A72525', 'guibg': '333333'},
+        \}
+
+  function! s:janah_customize() abort
+    highlight link Whitespace SpecialKey
+    highlight Normal guibg=NONE
+  endfunction
+
+  function! s:gruvbox_customize() abort
+    highlight SignifySignAdd guibg=#3c3836
+    highlight SignifySignChange guibg=#3c3836
+    highlight SignifySignDelete guibg=#3c3836
+    highlight SignifySignChangeDelete guibg=#3c3836
+    highlight SignifySignDeleteFirstLine guibg=#3c3836
+  endfunction
+
+  function! s:photon_customize() abort
+    highlight Normal ctermfg=251 ctermbg=NONE guifg=#c6c6c6 guibg=NONE
+    highlight NonText ctermfg=237 ctermbg=NONE guifg=#3a3a3a guibg=NONE
+    highlight Cursor cterm=reverse gui=reverse ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
+  endfunction
+
+  function! s:plain_customize() abort
+    highlight SignifySignAdd guifg=#10A778
+    highlight SignifySignDelete guifg=#C30771
+    highlight SignifySignChange guifg=#A89C14
+
+    highlight StatusLine ctermbg=NONE guibg=NONE
+    highlight StatusLineNC ctermbg=NONE guibg=NONE
+
+    " This fixes an annoying issues that causes the characters 'ff' to show up
+    " on the command-line in iTerm 2.
+    if $TERM_PROGRAM ==? 'iTerm.app'
+      highlight clear Cursor
+    endif
+  endfunction
+
+  function! s:srcery_customize() abort
+    highlight link Sneak PmenuSel
+  endfunction
+
+  function! s:apprentice_customize() abort
+    highlight VertSplit ctermbg=NONE guibg=NONE
+
+    highlight LspDiagnosticsError ctermfg=131 guifg=#af5f5f guisp=#af5f5f
+    highlight LspDiagnosticsWarning ctermfg=208 guifg=#ff8700 guisp=#ff8700
+    highlight LspDiagnosticsInformation ctermfg=73 guifg=#5fafaf guisp=#5fafaf
+    highlight link LspReferenceText CursorColumn
+
+    highlight SignifySignAdd ctermfg=108 ctermbg=234 guifg=#87af87 guibg=#1c1c1c
+    highlight SignifySignChange ctermfg=103 ctermbg=234 guifg=#8787af guibg=#1c1c1c
+    highlight SignifySignDelete ctermfg=131 ctermbg=234 guifg=#af5f5f guibg=#1c1c1c
+
+    " Looks ugly in LSP completion popup windows.
+    highlight clear mkdLineBreak
+
+    highlight link Sneak PmenuSel
+  endfunction
+
+  function! s:sonokai_customize() abort
+    highlight link CocRustChainingHint Conceal
+    highlight link CocRustTypeHint Conceal
+  endfunction
+
+  augroup colorschemeload
+    autocmd!
+    autocmd ColorScheme allomancer highlight Cursor guifg=bg guibg=fg
+    autocmd ColorScheme apprentice call s:apprentice_customize()
+    autocmd ColorScheme gruvbox* call s:gruvbox_customize()
+    autocmd ColorScheme janah call s:janah_customize()
+    autocmd ColorScheme photon call s:photon_customize()
+    autocmd ColorScheme plain call s:plain_customize()
+    autocmd ColorScheme sonokai call s:sonokai_customize()
+    autocmd ColorScheme srcery call s:srcery_customize()
+  augroup END
+
+  let g:gruvbox_contrast_dark = 'soft'
+  let g:gruvbox_italic = 1
+  let g:gruvbox_improved_strings = 1
+  let g:gruvbox_improved_warnings = 1
+
+  let g:gruvbox_filetype_hi_groups = 1
+  let g:gruvbox_plugin_hi_groups = 1
+  let g:gruvbox_italic = 1
+
+  let g:onedark_terminal_italics = 1
+  let g:one_allow_italics = 1
+
+  let g:seoul256_background = 235
+
+  let g:sonokai_style = 'shusia'
+  let g:sonokai_diagnostic_text_highlight = 1
+  let g:sonokai_diagnostic_virtual_text = 'colored'
+  let g:sonokai_better_performance = 1
+
+  set background=dark
+  if $TERM_PROGRAM ==? 'iTerm.app'
+    colorscheme plain
+  else
+    packadd! sonokai
+    colorscheme sonokai
+  endif
+endif
+
+" Stop the sh syntax file from highlighting $(...) as errors.
+" :h ft-sh-syntax.
+let g:is_posix = 1
+
+" Tree style file listing.
+let g:netrw_liststyle = 3
+
+" <C-^> should go to the last file, not to netrw.
+let g:netrw_altfile = 1
+
+" Hide patterns specified in .gitignore. Press "a" to cycle through the hiding modes.
+" :h netrw-hiding
+" if has('patch-7.4.156')
+"   let g:netrw_list_hide = netrw_gitignore#Hide()
+" endif
+
+" Highlight numbers, buitin functions, standard exceptions, doctests and
+" whitespace errors.
+" :h ft-python-syntax
+let g:python_highlight_all = 1
+
+" The g:lisp_rainbow option provides 10 levels of individual colorization for
+" the parentheses and backquoted parentheses.
+" :h ft-lisp-syntax
+let g:lisp_rainbow = 1
+
+" Don't try to highlight lines longer than 400 characters.
+set synmaxcol=400
+
+" Automatically save when moving between buffers (and more).
+set autowrite
+
+" When formatting text, recognize numbered lists.
+set formatoptions+=n
+
+" Don't break a line after a one-letter word. It's broken before it
+" instead (if possible).
+set formatoptions+=1
+
+" Where it makes sense, remove a comment leader when joining lines.
+if has('patch-7.3.541')
+  set formatoptions+=j
+endif
+
+" Use 4-space indentation, this might be overriden by language specific
+" indentation
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab shiftround
+
+" Round indent to multiple of 'shiftwidth'.
+set shiftround
+
+" menuone   Use the popup menu also when there is only one match.
+"
+" preview   Show extra information about the currently selected
+"           completion in the preview window.
+set completeopt=menuone,preview
+if has('textprop')
+    set completeopt-=preview
+    set completeopt+=popup
+end
+
+" Include line numbers in grep format.
+set grepformat^=%f:%l:%c:%m
+
+if executable('rg')
+  let &grepprg = 'rg --vimgrep'
+else
+  let &grepprg = 'grep -Inr $* /dev/null'
+endif
+
+" When there is a previous search pattern, highlight all its matches.
+set hlsearch
+
+" Ignore case in search patterns, unless they contain upper case characters.
+set ignorecase smartcase
+
+" Shows the effects of a command incrementally, as you type.
+" Also shows partial off-screen results in a preview window.
+if exists('&inccommand')
+  set inccommand=split
+endif
+
+" Enable list mode. See 'listhars'.
+set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:+
+
+set fillchars=vert:│,fold:·
+
+" If on, Vim will wrap long lines at a character in 'breakat' rather
+" than at the last character that fits on the screen. Unlike
+" 'wrapmargin' and 'textwidth', this does not insert <EOL>s in the file,
+" it only affects the way the file is displayed, not its contents.
+if has('linebreak')
+  set linebreak
+endif
+
+if exists('+breakindent')
+  " Every wrapped line will continue visually indented (same amount of
+  " space as the beginning of that line), thus preserving horizontal blocks
+  " of text.
+  set breakindent
+  " After applying 'breakindent', the wrapped line's beginning will be shifted
+  " by the given number of characters. It permits dynamic French paragraph
+  " indentation (negative) or emphasizing the line continuation (positive).
+  set breakindentopt=shift:2
+  let &showbreak = "\u21AA "
+endif
+
+if has('nvim-0.3.2') || has('patch-8.1.0360')
+  set diffopt+=algorithm:histogram,indent-heuristic
+endif
+
+" Show line numbers.
+" set number
+
+" Use current line as starting point for line numbering.
+" if exists('+relativenumber')
+"   set relativenumber
+" endif
+
+" Always report number of lines changes.
+set report=0
+
+" Minimal number of screen lines to keep above and below the cursor.
+set scrolloff=5
+
+" The minimal number of columns to scroll horizontally.
+set sidescroll=1
+
+" Set the title of the window to 'titlestring'.
+set title
+
+" Splitting a window will put the new window right of the current one.
+set splitright
+
+let &directory = s:stdpath('data') . '/swap//'
+if !isdirectory(&directory)
+  call mkdir(&directory)
+endif
+
+let &backupdir = s:stdpath('data') . '/backup'
+if !isdirectory(&backupdir)
+  call mkdir(&backupdir)
+endif
+
+if has('persistent_undo')
+  set undofile
+  let &undodir = s:stdpath('data') . '/undo'
+  if !isdirectory(&undodir)
+    call mkdir(&undodir)
+  endif
+endif
+
+" Allow cursor beyond EOL in Visual block mode.
+set virtualedit=block
+
+" Case-insensitive completion for file names and directories.
+if exists('+wildignorecase')
+  set wildignorecase
+end
+
+" When more than one match, list all matches.
+set wildmode=longest:full,full
+
+set wildignore=*.o
+" if has('patch-7.4.156')
+"   set wildignore+=netrw_gitignore#Hide()
+" endif
+" Mappings {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Repeat the last recorded macro.
+nnoremap Q @@
+
+" Copy to clipboard.
+vnoremap <C-c> "*y"
+
+" Toggle fold under cursor.
+noremap <Space> za
+
+" nnoremap <C-w>gd :only<Bar>split<CR>gd
+" nnoremap <C-w>gD :only<Bar>split<CR>gD
+
+" List buffers and wait for input.
+nnoremap ,b :ls<CR>:buffer<Space>
+
+" Display all lines that contain the keyword under the cursor and then waits
+" to select one to jump to.
+function! Occurrences() abort
+  execute 'normal [I'
+  let l:nr = input("Type number and \<Enter\> (empty cancels): ")
+  if l:nr
+    execute 'normal ' . l:nr . '[\t'
+  endif
+endfunction
+nnoremap <silent> ,i :call Occurrences()<CR>
+
+nmap ]q <Plug>(qf_qf_next)
+nmap [q <Plug>(qf_qf_previous)
+nmap ]l <Plug>(qf_loc_next)
+nmap [l <Plug>(qf_loc_previous)
+
+nnoremap <silent> ]n :<C-U>call <SID>find_conflict_marker(0)<CR>
+nnoremap <silent> [n :<C-U>call <SID>find_conflict_marker(1)<CR>
+
+function! s:find_conflict_marker(reverse) abort
+  call search('^\(@@ .* @@\|[<=>|]\{7}[<=>|]\@!\)', a:reverse ? 'bW' : 'W')
+endfunction
+
+" https://gist.github.com/romainl/6351afff54003b3d58c5d9c56f9960e5
+" function! Sort(type, ...)
+"     '[,']sort
+" endfunction
+" nmap <silent> l :set opfunc=Sort<CR>g@
+" Auto commands {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" Resize splits when the window is resized
+augroup autoresize
+  autocmd!
+  autocmd VimResized * :wincmd =
+augroup END
+
+" When editing a file, always jump to the last known cursor position.
+" :h last-position-jump
+augroup lastpositionjump
+  autocmd!
+  autocmd BufReadPost *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+        \ |   exe "normal! g`\""
+        \ | endif
+augroup END
+
+" Only show cursorline in the current buffer, and only in normal mode.
+if exists('+cursorline')
+  augroup cursorLine
+    autocmd!
+    autocmd VimEnter,InsertLeave,BufEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave,InsertEnter,BufLeave,BufWinLeave * setlocal nocursorline
+  augroup END
+endif
+" Filetype settings {{{1
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+augroup filetype_settings
+  autocmd!
+  autocmd FileType go packadd vim-go
+  autocmd FileType python setlocal foldmethod=indent foldlevel=2 foldnestmax=2
+  autocmd FileType text setlocal textwidth=79
+  autocmd FileType markdown setlocal conceallevel=2 textwidth=79
+augroup END
+" ----- vim: set foldenable foldmethod=marker foldlevel=0:

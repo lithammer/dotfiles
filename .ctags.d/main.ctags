@@ -1,0 +1,8 @@
+--tag-relative=yes
+
+--fields=+l
+
+--exclude=.*
+--exclude=build
+--exclude=dist
+--exclude=tags

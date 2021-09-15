@@ -1,0 +1,5 @@
+ignore = {}
+
+globals = {
+  "vim",
+}

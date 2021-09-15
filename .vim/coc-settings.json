@@ -1,0 +1,124 @@
+{
+  "diagnostic.errorSign": "E",
+  "diagnostic.hintSign": "!",
+  "diagnostic.infoSign": "!",
+  "diagnostic.warningSign": "W",
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextPrefix": "■ ",
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "c",
+    "cpp",
+    "css",
+    "fish",
+    "go",
+    "json",
+    "jsonc",
+    "javascript",
+    "javascriptreact",
+    "lua",
+    "python",
+    "rust",
+    "sql",
+    "typescript",
+    "typescriptreact"
+  ],
+  "coc.preferences.willSaveHandlerTimeout": 5000,
+  "diagnostic-languageserver.formatters": {
+    "black": {
+      "rootPatterns": ["pyproject.toml"]
+    },
+    "lua-format": {
+      "requiredFiles": [".lua-format"],
+      "rootPatterns": [".lua-format"]
+    },
+    "pg_format": {
+      "command": "pg_format",
+      "args": ["-B", "-L"]
+    },
+    "stylua": {
+      "command": "stylua",
+      "args": ["-"],
+      "rootPatterns": ["stylua.toml"],
+      "requiredFiles": ["stylua.toml"]
+    }
+  },
+  "diagnostic-languageserver.filetypes": {
+    "go": "golangci-lint",
+    "lua": "luacheck",
+    "markdown": ["markdownlint"],
+    "python": ["pylint"],
+    "sh": "shellcheck",
+    "vim": "vint",
+    "yaml": "yamllint",
+    "yaml.ansible": ["yamllint", "ansibleLint"]
+  },
+  "diagnostic-languageserver.formatFiletypes": {
+    "fish": "fish_indent",
+    "lua": ["lua-format", "stylua"],
+    "python": ["isort", "black"],
+    "sh": "shfmt",
+    "sql": "pg_format"
+  },
+  "diagnostic-languageserver.linters": {
+    "mypy": {
+      "args": [
+        "--follow-imports=silent",
+        "--hide-error-codes",
+        "--hide-error-context",
+        "--no-color-output",
+        "--no-error-summary",
+        "--no-pretty",
+        "--show-column-numbers",
+        "%file"
+      ]
+    },
+    "pylint": {
+      "rootPatterns": ["pyproject.toml", "setup.py"]
+    },
+    "shellcheck": {
+      "args": ["--format", "json1", "--external-sources", "-"]
+    }
+  },
+  "diagnostic-languageserver.mergeConfig": true,
+  "highlight.colorNames.enable": false,
+  "highlight.document.enable": false,
+  "languageserver": {
+    "nimlsp": {
+      "command": "nimlsp",
+      "filetypes": ["nim"]
+    },
+    "terraform-ls": {
+      "command": "terraform-ls",
+      "args": ["serve"],
+      "filetypes": ["terraform"]
+    }
+  },
+  "Lua.completion.callSnippet": "Replace",
+  "Lua.diagnostics.disable": ["undefined-global"],
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.telemetry.enable": false,
+  "groovy.java.home": "/usr/local/opt/openjdk",
+  "pyright.disableDiagnostics": true,
+  "pyright.organizeimports.provider": "isort",
+  "python.formatting.provider": "black",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportDuplicateImport": "information",
+    "reportUnusedCallResult": "information",
+    "reportUnusedClass": "information",
+    "reportUnusedFunction": "information",
+    "reportUnusedImport": "information",
+    "reportUnusedVariable": "information"
+  },
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": true,
+  "svelte.enable-ts-plugin": true,
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.inlayHints.chainingHints": true,
+  "rust-analyzer.inlayHints.chainingHintsSeparator": "<- ",
+  "rust-analyzer.inlayHints.enable": true,
+  "rust-analyzer.inlayHints.typeHints": true,
+  "rust-analyzer.inlayHints.typeHintsSeparator": "=> ",
+  "rust-analyzer.procMacro.enable": true,
+  "xml.java.home": "/usr/local/opt/openjdk"
+}

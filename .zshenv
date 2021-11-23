@@ -21,3 +21,6 @@ export LESS='-R'
 
 # Report CPU usage for commands running longer than 10 seconds
 export REPORTTIME=10
+
+# Don't allow running Pip outside a virtualenv.
+export PIP_REQUIRE_VIRTUALENV=1

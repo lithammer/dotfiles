@@ -15,7 +15,6 @@ export CARGO_HOME="$HOME/.cargo"
 
 # Default editor
 export EDITOR='nvim'
-export EDITOR="nvim --noplugin -u $HOME/.config/nvim/minimal.vim"
 
 export LESS='-R'
 # export PAGER='less'

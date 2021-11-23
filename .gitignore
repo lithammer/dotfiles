@@ -8,6 +8,7 @@
 *.local
 
 # Vim
+.vim/.netrwhist
 .vim/backup/
 .vim/pack/
 .vim/spell/

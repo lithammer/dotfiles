@@ -1,18 +1,59 @@
-" let g:python_host_prog = '/usr/local/bin/python2'
-" let g:python3_host_prog = '/usr/local/bin/python3'
+scriptencoding utf-8
+
+let g:loaded_node_provider = 0
+let g:loaded_perl_provider = 0
+" let g:loaded_python3_provider = 1
 let g:loaded_python_provider = 0
-" let g:loaded_python3_provider = 0
+let g:loaded_ruby_provider = 0
 let g:python3_host_prog = expand('~/.local/share/nvim/venv/bin/python')
 
 set runtimepath^=~/.vim runtimepath+=~/.vim/after
 let &packpath = &runtimepath
+
+if v:progname ==# 'nv' && filereadable(expand('~/.vim/minimal.vim'))
+  " source stdpath('config') . '/minimal.vim'
+  source ~/.vim/minimal.vim
+  finish
+endif
+
 source ~/.vim/vimrc
+
+" packadd nvim-treesitter
+" lua require("treesitter")
 
 " :h lua-highlight
 autocmd TextYankPost * silent! lua require('vim.highlight').on_yank()
 
-packadd nvim-treesitter
-lua require("treesitter")
+packadd plenary.nvim
+packadd telescope.nvim
+packadd telescope-coc.nvim
+
+lua <<EOF
+local telescope = require('telescope')
+telescope.load_extension('coc')
+telescope.setup({
+  defaults = {
+    mappings = {
+      i = {
+        ['<Esc>'] = require('telescope.actions').close,
+      },
+    }
+  }
+})
+EOF
+
+nnoremap <C-p> <cmd>Telescope find_files theme=ivy<cr>
+
+packadd diffview.nvim
+lua <<EOF
+local cb = require('diffview.config').diffview_callback
+require('diffview').setup({
+  use_icons = false,
+  ['diffview-config-enhanced_diff_hl'] = true
+})
+EOF
+
+" set fillchars+=diff:╱
 if 0
   packadd lsp-status.nvim
   packadd lsp_extensions.nvim
@@ -27,7 +68,7 @@ if 0
 
   function! LspStatus() abort
     if luaeval('#vim.lsp.buf_get_clients() > 0')
-      return luaeval("require('lsp-status').status()")
+      return luaeval('require("lsp-status").status()')
     endif
     return ''
   endfunction
@@ -38,14 +79,7 @@ if 0
   highlight link LspReferenceText CursorColumn
   highlight link LspReferenceWrite CursorColumn
 
-  if &runtimepath =~? 'nvim-compe'
-    inoremap <silent><expr> <CR> compe#confirm('<CR>')
-    inoremap <silent><expr> <C-e> compe#close('<C-e>')
-    inoremap <silent><expr> <C-f> compe#scroll({'delta': +4})
-    inoremap <silent><expr> <C-b> compe#scroll({'delta': -4})
-  endif
-
-  lua require("init")
+  lua require('init')
 end
 
 if has('gui_vimr')

@@ -1,2 +1,12 @@
-set guifont=Iosevka\ Term:h14
-color antiphoton
+set guioptions-=r
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+" set guifont=Iosevka\ Term:h14
+" set guifont=PragmataPro\ Mono\ Liga\ Regular:h14
+
+set background=light
+" colorscheme antiphoton
+colorscheme plain
+
+set signcolumn=yes

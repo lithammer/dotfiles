@@ -1,4 +1,6 @@
 {
+  // Native settings:
+  "codeLens.enable": true,
   "diagnostic.errorSign": "E",
   "diagnostic.hintSign": "!",
   "diagnostic.infoSign": "!",
@@ -9,21 +11,29 @@
   "coc.preferences.formatOnSaveFiletypes": [
     "c",
     "cpp",
+    "crystal",
     "css",
     "fish",
     "go",
-    "json",
-    "jsonc",
     "javascript",
     "javascriptreact",
+    "json",
+    "jsonc",
     "lua",
+    "nim",
     "python",
     "rust",
+    "sh",
     "sql",
+    "svelte",
+    "terraform",
     "typescript",
     "typescriptreact"
   ],
+  "coc.preferences.semanticTokensHighlights": true,
   "coc.preferences.willSaveHandlerTimeout": 5000,
+  // Plugin settings:
+  "clangd.semanticHighlighting": true,
   "diagnostic-languageserver.formatters": {
     "black": {
       "rootPatterns": ["pyproject.toml"]
@@ -31,6 +41,10 @@
     "lua-format": {
       "requiredFiles": [".lua-format"],
       "rootPatterns": [".lua-format"]
+    },
+    "nimpretty": {
+      "command": "nimpretty",
+      "args": ["--out:/dev/stdout", "%tempfile"]
     },
     "pg_format": {
       "command": "pg_format",
@@ -45,17 +59,17 @@
   },
   "diagnostic-languageserver.filetypes": {
     "go": "golangci-lint",
-    "lua": "luacheck",
+    "lua": ["selene", "luacheck"],
     "markdown": ["markdownlint"],
-    "python": ["pylint"],
+    // "python": ["pylint"],
     "sh": "shellcheck",
     "vim": "vint",
-    "yaml": "yamllint",
-    "yaml.ansible": ["yamllint", "ansibleLint"]
+    "yaml": "yamllint"
   },
   "diagnostic-languageserver.formatFiletypes": {
     "fish": "fish_indent",
     "lua": ["lua-format", "stylua"],
+    "nim": "nimpretty",
     "python": ["isort", "black"],
     "sh": "shfmt",
     "sql": "pg_format"
@@ -74,24 +88,74 @@
       ]
     },
     "pylint": {
-      "rootPatterns": ["pyproject.toml", "setup.py"]
+      "rootPatterns": [
+        "pylintrc",
+        ".pylintrc",
+        "pyproject.toml",
+        "setup.cfg",
+        ".git"
+      ]
+    },
+    "selene": {
+      "command": "selene",
+      "args": ["--display-style", "quiet", "-"],
+      "sourceName": "selene",
+      "formatPattern": [
+        "^[^:]+:(\\d+):(\\d+):\\s(\\w+)\\[\\w+\\]:\\s(.*)$",
+        {
+          "line": 1,
+          "column": 2,
+          "endLine": 1,
+          "endColumn": 2,
+          "security": 3,
+          "message": 4
+        }
+      ],
+      "rootPatterns": ["selene.toml"],
+      "requiredFiles": ["selene.toml"],
+      "debounce": 100,
+      "securities": {
+        "error": "error",
+        "warning": "warning"
+      }
     },
     "shellcheck": {
       "args": ["--format", "json1", "--external-sources", "-"]
     }
   },
   "diagnostic-languageserver.mergeConfig": true,
+  "git.addedSign.text": "│",
+  "git.changedSign.text": "│",
+  "go.goplsOptions": {
+    "gofumpt": true,
+    "semanticTokens": true,
+    "staticcheck": true,
+    "usePlaceholders": true
+  },
   "highlight.colorNames.enable": false,
   "highlight.document.enable": false,
   "languageserver": {
+    "crystalline": {
+      "command": "crystalline",
+      "filetypes": ["crystal"],
+      "rootPatterns": ["shard.yml"]
+    },
     "nimlsp": {
       "command": "nimlsp",
-      "filetypes": ["nim"]
+      "filetypes": ["nim"],
+      "rootPatterns": ["*.nimble"]
     },
     "terraform-ls": {
       "command": "terraform-ls",
       "args": ["serve"],
-      "filetypes": ["terraform"]
+      "filetypes": ["terraform"],
+      "rootPatterns": [".terraform"]
+    },
+    "tflint": {
+      "command": "tflint",
+      "args": ["--langserver"],
+      "filetypes": ["terraform"],
+      "rootPatterns": [".tflint.hcl", ".terraform"]
     }
   },
   "Lua.completion.callSnippet": "Replace",
@@ -99,6 +163,7 @@
   "Lua.runtime.version": "LuaJIT",
   "Lua.telemetry.enable": false,
   "groovy.java.home": "/usr/local/opt/openjdk",
+  "prettier.statusItemText": "",
   "pyright.disableDiagnostics": true,
   "pyright.organizeimports.provider": "isort",
   "python.formatting.provider": "black",

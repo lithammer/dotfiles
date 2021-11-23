@@ -3,7 +3,7 @@
 # Search for a virtualenv in the current directory and its preceeding
 # directories, and if found prints it to stdout.
 __find_virtualenv() {
-    # zsh: required by zsh to prevent globs for failing when there's no match.
+    # zsh: required by zsh to prevent globs from failing when there's no match.
     setopt local_options
     setopt +o nomatch
 
@@ -56,8 +56,13 @@ __activate_virtualenv() {
     . "$venv/bin/activate"
 }
 
-__pyx() {
+px() {
     local venv
+
+    if [[ -z "$1" ]]; then
+        echo 'Usage: px <command> [<option>, ...] [<argument>, ...]' >&2
+        exit 1
+    fi
 
     venv=${VIRTUAL_ENV:-$(__find_virtualenv)}
     if [ -z "$venv" ] || [ ! -x "$venv/bin/python" ]; then
@@ -71,17 +76,17 @@ __pyx() {
 } >&2
 
 py() {
-    __pyx python "$@"
+    px python "$@"
 }
 
 compdef py=python
 
 pip() {
-    __pyx pip "$@"
+    px pip "$@"
 }
 
 pip3() {
-    __pyx pip3 "$@"
+    px pip3 "$@"
 }
 
 v() {

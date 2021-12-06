@@ -314,12 +314,10 @@ nmap gs <Plug>(coc-git-chunkinfo)
 
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-nnoremap <silent><nowait> <leader>a :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <leader>d :<C-u>CocList diagnostics<cr>
 nnoremap <silent><nowait> <leader>c :<C-u>CocList commands<cr>
 nnoremap <silent><nowait> <leader>o :<C-u>CocList outline<cr>
 nnoremap <silent><nowait> <leader>s :<C-u>CocList -I symbols<cr>
-" nnoremap <silent><nowait> <leader>j :<C-u>CocNext<CR>
-" nnoremap <silent><nowait> <leader>k :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <leader>p :<C-u>CocListResume<CR>
 nnoremap <silent><nowait> <leader>i :OR<CR>
 nnoremap <silent><nowait> <leader>h :SwitchSourceHeader<CR>

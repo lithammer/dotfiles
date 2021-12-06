@@ -15,7 +15,7 @@ function! PackagerInit() abort
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-grepper'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'nvim-treesitter/nvim-treesitter', {'branch': '0.5-compat', 'type': 'opt'}
+  Plug 'nvim-treesitter/nvim-treesitter', {'type': 'opt'}
   Plug 'romainl/vim-cool'
   Plug 'romainl/vim-qf'
   Plug 'sheerun/vim-polyglot'

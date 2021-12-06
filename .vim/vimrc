@@ -278,9 +278,10 @@ vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(
 vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
 xmap ga <Plug>(coc-codeaction-selected)
-nmap ga <Plug>(coc-codeaction-selected)
+vmap ga <Plug>(coc-codeaction-selected)
 nmap ga <Plug>(coc-codeaction-line)
 nmap gA <Plug>(coc-codeaction)
+nmap <leader>a <Plug>(coc-codeaction-cursor)
 nmap <leader>qf <Plug>(coc-fix-current)
 nmap <leader>l <Plug>(coc-codelens-action)
 

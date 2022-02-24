@@ -108,6 +108,11 @@ else
 
 endif
 
+set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:+
+set fillchars+=vert:│,fold:·,diff:╱
+set title
+set nowrapscan
+
 set statusline=%<%f\ %h%m%r
 set statusline+=%{get(g:,'coc_status','')}
 set statusline+=%{gutentags#statusline(\"\\ua0[\",']')}
@@ -133,11 +138,6 @@ set formatoptions+=1
 if has('patch-7.3.541')
   set formatoptions+=j
 endif
-
-set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:+
-set fillchars+=vert:│,fold:·,diff:╱
-
-set title
 
 if has('nvim-0.3.2') || has('patch-8.1.0360')
   set diffopt+=algorithm:histogram,indent-heuristic

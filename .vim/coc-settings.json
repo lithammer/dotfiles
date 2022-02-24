@@ -1,6 +1,7 @@
 {
   // Native settings:
   "codeLens.enable": true,
+  "codeLens.position": "eol", // "top" | "eol" | "right_align"
   "diagnostic.errorSign": "E",
   "diagnostic.hintSign": "!",
   "diagnostic.infoSign": "!",
@@ -30,10 +31,9 @@
     "typescript",
     "typescriptreact"
   ],
-  "coc.preferences.semanticTokensHighlights": true,
   "coc.preferences.willSaveHandlerTimeout": 5000,
+  "semanticTokens.filetypes": ["*"],
   // Plugin settings:
-  "clangd.semanticHighlighting": true,
   "diagnostic-languageserver.formatters": {
     "black": {
       "rootPatterns": ["pyproject.toml"]
@@ -50,11 +50,16 @@
       "command": "pg_format",
       "args": ["-B", "-L"]
     },
+    "shfmt": {
+      // Upstream includes "-i 2".
+      // https://github.com/iamcco/coc-diagnostic/pull/119
+      "args": ["-filename", "%filepath"]
+    },
     "stylua": {
       "command": "stylua",
       "args": ["-"],
       "rootPatterns": ["stylua.toml"],
-      "requiredFiles": ["stylua.toml"]
+      "requiredFiles": ["stylua.toml", ".stylua.toml"]
     }
   },
   "diagnostic-languageserver.filetypes": {
@@ -134,7 +139,14 @@
   },
   "highlight.colorNames.enable": false,
   "highlight.document.enable": false,
+  "htmldjango.djlint.enableLint": true,
+  "htmldjango.djlint.lintOnChange": false,
   "languageserver": {
+    "awk": {
+      "command": "awk-language-server",
+      "args": [],
+      "filetypes": ["awk"]
+    },
     "crystalline": {
       "command": "crystalline",
       "filetypes": ["crystal"],
@@ -178,12 +190,27 @@
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,
   "svelte.enable-ts-plugin": true,
+  "rust-analyzer.cargo.runBuildScripts": true,
   "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.completion.postfix.enable": false,
+  "rust-analyzer.experimental.procAttrMacros": true,
   "rust-analyzer.inlayHints.chainingHints": true,
   "rust-analyzer.inlayHints.chainingHintsSeparator": "<- ",
   "rust-analyzer.inlayHints.enable": true,
   "rust-analyzer.inlayHints.typeHints": true,
   "rust-analyzer.inlayHints.typeHintsSeparator": "=> ",
   "rust-analyzer.procMacro.enable": true,
-  "xml.java.home": "/usr/local/opt/openjdk"
+  "solargraph.checkGemVersion": false,
+  "solargraph.diagnostics": true,
+  "solargraph.formatting": true,
+  "sumneko-lua.enableNvimLuaDev": true,
+  "typescript.referencesCodeLens.enable": false, // Too noisy.
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.parameterTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.variableTypes.enabled": true,
+  "xml.java.home": "/usr/local/opt/openjdk",
+  "yaml.format.enable": true
 }

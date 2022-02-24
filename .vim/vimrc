@@ -63,6 +63,7 @@ command! -bang PackagerUpdate call PackagerInit() | call packager#update({'force
 command! PackagerClean call PackagerInit() | call packager#clean()
 command! PackagerStatus call PackagerInit() | call packager#status()
 
+set tabstop=4
 packadd vim-polyglot
 
 let g:netrw_altfile = 1

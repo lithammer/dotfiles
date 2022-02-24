@@ -204,6 +204,13 @@ if executable('ctags')
         \}
 endif
 " vim-grepper {{{1
+let g:grepper = {
+      \ 'tools': ['git', 'rg', 'grep', 'semgrep'],
+      \ 'semgrep': {
+      \   'grepprg': 'semgrep -q --vim',
+      \   'grepformat': '%f:%l:%c:%.:%.:%m',
+      \ }
+      \}
 nnoremap <leader>g :Grepper -noswitch -jump<CR>
 " coc.nvim {{{1
 " if $TERM_PROGRAM ==? 'iTerm.app'

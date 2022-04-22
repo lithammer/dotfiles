@@ -1,92 +1,90 @@
 -- local log = require("vim/lsp/log")
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
+local diagnosticls = require("diagnosticls")
+local lsp_python = require("lsp_python")
+local lsp_status = require("lsp-status")
 local lspconfig = require("lspconfig")
 local util = require("lspconfig/util")
-local lsp_status = require("lsp-status")
-local lsp_python = require("lsp_python")
-local diagnosticls = require("diagnosticls")
 
 local function on_attach(client, bufnr)
-  local function buf_set_keymap(...)
-    vim.api.nvim_buf_set_keymap(bufnr, ...)
-  end
-  local function buf_set_option(...)
-    vim.api.nvim_buf_set_option(bufnr, ...)
-  end
-  local function buf_get_option(...)
-    vim.api.nvim_buf_get_option(bufnr, ...)
-  end
-
-  local filetype = buf_get_option("filetype")
+  -- Plugins.
+  lsp_status.on_attach(client)
 
   local keymaps = {
-    -- { "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>" },
-    { "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>" },
-    { "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>" },
-    -- { "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>" },
-    { "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>" },
-    { "n", "gr", "<cmd>lua vim.lsp.buf.rename()<CR>" },
-    { "n", "[I", "<cmd>lua vim.lsp.buf.references()<CR>" },
-    { "n", "gO", "<cmd>lua vim.lsp.buf.document_symbol()<CR>" },
-    { "n", "gW", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>" },
-    { "n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>" },
-    { "n", "<leader>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>" },
-    { "n", "[g", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>" },
-    { "n", "]g", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>" },
+    -- { "n", "K", vim.lsp.buf.hover },
+    { "n", "gd", vim.lsp.buf.definition },
+    { "n", "gD", vim.lsp.buf.declaration },
+    -- { "n", "gI", vim.lsp.buf.implementation },
+    { "n", "<C-k>", vim.lsp.buf.signature_help },
+    { "n", "gr", vim.lsp.buf.rename },
+    { "n", "[I", vim.lsp.buf.references },
+    { "n", "gO", vim.lsp.buf.document_symbol },
+    { "n", "gW", vim.lsp.buf.workspace_symbol },
+    { "n", "ga", vim.lsp.buf.code_action },
+    { "n", "<leader>e", vim.diagnostic.open_float },
+    { "n", "<leader>f", vim.lsp.buf.formatting_seq_sync },
+    { "n", "[g", vim.diagnostic.goto_prev },
+    { "n", "]g", vim.diagnostic.goto_next },
   }
 
-  if not vim.tbl_contains({ "c", "vim" }, filetype) then
-    table.insert(keymaps, { "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>" })
+  if not vim.tbl_contains({ "c", "vim" }, vim.bo.filetype) then
+    table.insert(keymaps, { "n", "K", vim.lsp.buf.hover })
   end
 
   for _, keymap in pairs(keymaps) do
     local mode, lhs, rhs = unpack(keymap)
-    buf_set_keymap(mode, lhs, rhs, { noremap = true, silent = true })
+    local opts = { buffer = true, noremap = true, silent = true }
+    vim.keymap.set(mode, lhs, rhs, opts)
   end
 
   -- Snippets.
-  for _, keymap in pairs({
-    { "i", "<C-j>", "vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<C-j>'" },
-    { "s", "<C-j>", "vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<C-j>'" },
-  }) do
-    local mode, lhs, rhs = unpack(keymap)
-    buf_set_keymap(mode, lhs, rhs, { expr = true })
-  end
+  vim.keymap.set(
+    { "i", "s" },
+    "<C-j>", "vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : '<C-j>'",
+    { expr = true }
+  )
 
   -- Completion.
-  buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
-  -- buf_set_option("completeopt", "menuone,noinsert,noselect")
+  vim.bo.omnifunc = "v:lua.vim.lsp.omnifunc"
+  vim.go.completeopt = "menuone,noinsert,noselect"
 
-  -- Statusline.
-  lsp_status.on_attach(client)
-
-  if client.resolved_capabilities.document_formatting then
-    vim.api.nvim_exec(
-      [[
-      augroup lsp_document_format
-        autocmd! * <buffer>
-        autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync(nil, 5000)
-      augroup END
-    ]],
-      false
+  if client.server_capabilities.documentFormattingProvider then
+    local lsp_document_format = vim.api.nvim_create_augroup(
+      "lsp_document_format",
+      { clear = false }
     )
+    vim.api.nvim_create_autocmd(
+      "BufWritePre", {
+        callback = vim.lsp.buf.formatting_seq_sync,
+        buffer = bufnr,
+        group = lsp_document_format,
+      })
   end
 
-  if client.resolved_capabilities.document_highlight then
-    vim.api.nvim_exec(
-      [[
-      augroup lsp_document_highlight
-        autocmd! * <buffer>
-        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-      augroup END
-    ]],
-      false
+  if client.server_capabilities.documentHighlightProvider then
+    local lsp_document_highlight = vim.api.nvim_create_augroup(
+      "lsp_document_highlight",
+      { clear = false }
     )
+    vim.api.nvim_create_autocmd(
+      "CursorHold", {
+        callback = vim.lsp.buf.document_highlight,
+        buffer = bufnr,
+        group = lsp_document_highlight,
+      })
+    vim.api.nvim_create_autocmd(
+      "CursorMoved", {
+        callback = vim.lsp.buf.clear_references,
+        buffer = bufnr,
+        group = lsp_document_highlight,
+      })
   end
 
-  vim.cmd(
-    "autocmd CursorHold <buffer> lua vim.lsp.diagnostic.show_line_diagnostics(focusable=false)"
-  )
+  vim.api.nvim_create_autocmd(
+    "CursorHold", {
+      callback = vim.diagnostic.open_float,
+      buffer = bufnr
+    })
 end
 
 lsp_status.config({
@@ -104,8 +102,8 @@ if not lspconfig.mypy_ls then
       filetypes = { "python" },
       root_dir = function(fname)
         return util.root_pattern("mypy.ini", ".mypy.ini", "setup.cfg")(fname)
-          or util.find_git_ancestor(fname)
-          or util.path.dirname(fname)
+            or util.find_git_ancestor(fname)
+            or util.path.dirname(fname)
       end,
       settings = {},
     },
@@ -226,15 +224,15 @@ local enabled_servers = {
     cmd = { "/usr/local/lib/ruby/gems/3.0.0/bin/solargraph", "stdio" },
     root_dir = function(fname)
       return util.root_pattern("Gemfile")(fname)
-        or util.find_git_ancestor(fname)
-        or util.path.dirname(fname)
+          or util.find_git_ancestor(fname)
+          or util.path.dirname(fname)
     end,
   },
   sourcekit = {
     root_dir = function(fname)
       return util.root_pattern("Package.swift", "*.xcodeproj")(fname)
-        or util.find_git_ancestor(fname)
-        or util.path.dirname(fname)
+          or util.find_git_ancestor(fname)
+          or util.path.dirname(fname)
     end,
   },
   sumneko_lua = {
@@ -277,23 +275,14 @@ local enabled_servers = {
 vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
 
 local default_config = {
   capabilities = capabilities,
-  log_level = vim.lsp.protocol.MessageType.Log,
-  message_level = vim.lsp.protocol.MessageType.Log,
   on_attach = on_attach,
   flags = {
-    allow_incremental_sync = true, -- https://github.com/neovim/neovim/pull/14079
-    debounce_text_changes = 80, -- https://github.com/neovim/neovim/pull/14119
+    debounce_text_changes = 150,
   },
-  -- on_init = function(client)
-  --   -- https://github.com/neovim/neovim/pull/14079
-  --   client.config.flags.allow_incremental_sync = true
-  --   -- https://github.com/neovim/neovim/pull/14119
-  --   client.config.flags.debounce_text_changes = 80
-  -- end,
 }
 
 for server, config in pairs(enabled_servers) do

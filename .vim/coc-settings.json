@@ -2,6 +2,7 @@
   // Native settings:
   "codeLens.enable": true,
   "codeLens.position": "eol", // "top" | "eol" | "right_align"
+  "colors.filetypes": ["*"],
   "diagnostic.errorSign": "E",
   "diagnostic.hintSign": "!",
   "diagnostic.infoSign": "!",
@@ -9,6 +10,13 @@
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextPrefix": "■ ",
   "diagnostic.virtualTextCurrentLineOnly": false,
+  "list.insertMappings": {
+    "<C-n>": "normal:j",
+    "<C-p>": "normal:k"
+  },
+  "semanticTokens.filetypes": ["*"],
+  "suggest.noselect": true,
+  "workspace.bottomUpFiletypes": ["python"],
   "coc.preferences.formatOnSaveFiletypes": [
     "c",
     "cpp",
@@ -16,6 +24,7 @@
     "css",
     "fish",
     "go",
+    "hcl",
     "javascript",
     "javascriptreact",
     "json",
@@ -32,11 +41,13 @@
     "typescriptreact"
   ],
   "coc.preferences.willSaveHandlerTimeout": 5000,
-  "semanticTokens.filetypes": ["*"],
   // Plugin settings:
   "diagnostic-languageserver.formatters": {
     "black": {
       "rootPatterns": ["pyproject.toml"]
+    },
+    "hclfmt": {
+      "command": "hclfmt"
     },
     "lua-format": {
       "requiredFiles": [".lua-format"],
@@ -50,11 +61,6 @@
       "command": "pg_format",
       "args": ["-B", "-L"]
     },
-    "shfmt": {
-      // Upstream includes "-i 2".
-      // https://github.com/iamcco/coc-diagnostic/pull/119
-      "args": ["-filename", "%filepath"]
-    },
     "stylua": {
       "command": "stylua",
       "args": ["-"],
@@ -63,6 +69,7 @@
     }
   },
   "diagnostic-languageserver.filetypes": {
+    "dockerfile": "hadolint",
     "go": "golangci-lint",
     "lua": ["selene", "luacheck"],
     "markdown": ["markdownlint"],
@@ -73,7 +80,8 @@
   },
   "diagnostic-languageserver.formatFiletypes": {
     "fish": "fish_indent",
-    "lua": ["lua-format", "stylua"],
+    "hcl": "hclfmt",
+    "lua": ["stylua", "lua-format"],
     "nim": "nimpretty",
     "python": ["isort", "black"],
     "sh": "shfmt",
@@ -132,6 +140,12 @@
   "git.addedSign.text": "│",
   "git.changedSign.text": "│",
   "go.goplsOptions": {
+    "codelenses": {
+      "generate": true,
+      "tidy": true,
+      "upgrade_dependency": true
+    },
+    "experimentalPostfixCompletions": false,
     "gofumpt": true,
     "semanticTokens": true,
     "staticcheck": true,
@@ -156,6 +170,11 @@
       "command": "nimlsp",
       "filetypes": ["nim"],
       "rootPatterns": ["*.nimble"]
+    },
+    "ocamllsp": {
+      "command": "ocamllsp",
+      "filetypes": ["ocaml"],
+      "rootPatterns": ["dune", "dune-project"]
     },
     "terraform-ls": {
       "command": "terraform-ls",
@@ -190,15 +209,8 @@
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,
   "svelte.enable-ts-plugin": true,
-  "rust-analyzer.cargo.runBuildScripts": true,
   "rust-analyzer.checkOnSave.command": "clippy",
   "rust-analyzer.completion.postfix.enable": false,
-  "rust-analyzer.experimental.procAttrMacros": true,
-  "rust-analyzer.inlayHints.chainingHints": true,
-  "rust-analyzer.inlayHints.chainingHintsSeparator": "<- ",
-  "rust-analyzer.inlayHints.enable": true,
-  "rust-analyzer.inlayHints.typeHints": true,
-  "rust-analyzer.inlayHints.typeHintsSeparator": "=> ",
   "rust-analyzer.procMacro.enable": true,
   "solargraph.checkGemVersion": false,
   "solargraph.diagnostics": true,

@@ -12,6 +12,7 @@ function! PackagerInit() abort
   Plug 'kristijanhusak/vim-packager', {'type': 'opt'}
 
   Plug 'fladson/vim-kitty'
+  Plug 'jeetsukumaran/vim-pythonsense'
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'mhinz/vim-grepper'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -19,7 +20,6 @@ function! PackagerInit() abort
   Plug 'romainl/vim-cool'
   Plug 'romainl/vim-qf'
   Plug 'sheerun/vim-polyglot'
-  Plug 'sindrets/diffview.nvim', {'type': 'opt'}
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-fugitive'
@@ -27,33 +27,38 @@ function! PackagerInit() abort
   Plug 'tpope/vim-sensible'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-vinegar'
+  " Plug 'wellle/targets.vim'
+
+  Plug 'github/copilot.vim', {'type': 'opt'}
 
   Plug 'nvim-lua/plenary.nvim', {'type': 'opt'}
-  Plug 'nvim-telescope/telescope.nvim', {'type': 'opt'}
-  Plug 'fannheyward/telescope-coc.nvim', {'type': 'opt'}
+  Plug 'sindrets/diffview.nvim', {'type': 'opt'}
 
   Plug 'lifepillar/vim-colortemplate'
   Plug 'andreypopp/vim-colors-plain'
   " Plug 'arzg/vim-corvine'
   Plug 'axvr/photon.vim'
+  Plug 'axvr/raider.vim'
+  Plug 'catppuccin/nvim', {'name': 'catppuccin', 'type': 'opt'}
   " Plug 'cormacrelf/vim-colors-github'
   " Plug 'chriskempson/base16-vim'
   " Plug 'franbach/miramare'
-  " Plug 'fxn/vim-monochrome'
   " Plug 'gruvbox-community/gruvbox'
-  " Plug 'habamax/vim-alchemist'
+  Plug 'habamax/vim-alchemist'
   " Plug 'Iron-E/nvim-highlite'
   " Plug 'junegunn/seoul256.vim'
   Plug 'lifepillar/vim-gruvbox8'
   " Plug 'lifepillar/vim-solarized8'
   " Plug 'mhinz/vim-janah'
   " Plug 'morhetz/gruvbox'
-  " Plug 'nanotech/jellybeans.vim'
-  " Plug 'owickstrom/vim-colors-paramount'
-  " Plug 'romainl/Apprentice'
-  " Plug 'sainnhe/gruvbox-material'
+  Plug 'nanotech/jellybeans.vim'
+  Plug 'navarasu/onedark.nvim'
+  Plug 'rebelot/kanagawa.nvim'
+  Plug 'romainl/Apprentice'
+  Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/sonokai'
-  " Plug 'srcery-colors/srcery-vim'
+  Plug 'srcery-colors/srcery-vim'
+  Plug 'VonHeikemen/little-wonder'
   " Plug 'w0ng/vim-hybrid'
   Plug 'wuelnerdotexe/vim-enfocado'
 endfunction
@@ -71,41 +76,83 @@ let g:netrw_liststyle = 3
 
 set termguicolors
 set background=dark
-if $TERM_PROGRAM ==? 'iTerm.app' && strftime('%H') >= 21
+
+augroup colorschemeload
+  autocmd!
+  autocmd ColorScheme alchemist call s:alchemist_customize()
+  autocmd ColorScheme plain highlight link CocUnusedHighlight NonText
+  autocmd ColorScheme sonokai call s:sonokai_customize()
+augroup END
+
+if exists('$WEZTERM_EXECUTABLE')
+  " let g:kanagawa2_keyword_italics = 0
+  colorscheme kanagawa2
+  highlight link CocSemVariable Normal
+" elseif $TERM_PROGRAM ==? 'iTerm.app' && strftime('%H') >= 21
+elseif $TERM_PROGRAM ==? 'iTerm.app'
   colorscheme plain
 else
   function! s:sonokai_customize() abort
-    highlight link CocRustChainingHint Conceal
-    highlight link CocRustTypeHint Conceal
+    " highlight link CocRustChainingHint Conceal
+    " highlight link CocRustTypeHint Conceal
+    highlight link CocHintSign Conceal
   endfunction
-
-  augroup colorschemeload
-    autocmd!
-    autocmd ColorScheme sonokai call s:sonokai_customize()
-  augroup END
 
   let g:sonokai_style = 'shusia'
   let g:sonokai_diagnostic_text_highlight = 1
   let g:sonokai_diagnostic_virtual_text = 'colored'
   let g:sonokai_better_performance = 1
 
-  packadd! sonokai
-  colorscheme sonokai
-
-  " colorscheme seoul
-
-  " colorscheme photon
-
-  " let g:enfocado_style = 'neon'
-  " if !(has('gui') || has('gui_running'))
-  "   augroup enfocado
-  "     autocmd!
-  "     autocmd VimEnter * ++nested colorscheme enfocado
-  "     autocmd ColorScheme enfocado highlight Normal ctermbg=NONE guibg=NONE
-  "     autocmd ColorScheme enfocado highlight TabLineSel ctermbg=NONE guibg=NONE
-  "   augroup END
+  " if has('nvim')
+  "   lua <<EOF
+  "   require('kanagawa').setup({ keywordStyle = 'NONE' })
+" EOF
+  "   colorscheme kanagawa
+  " else
+  "   packadd! sonokai
+  "   colorscheme sonokai
   " endif
 
+  " let g:kanagawa2_keyword_italics = 0
+  " colorscheme kanagawa2
+
+  " packadd! sonokai
+  " colorscheme sonokai
+
+  " colorscheme gruvbox8
+
+  function! s:alchemist_customize() abort
+    highlight CocGitAddedSign ctermbg=242 guifg=#87af87 guibg=#1c1c1c
+    highlight CocGitChangeRemovedSign ctermbg=242 guifg=#d7af5f guibg=#1c1c1c
+    highlight CocGitChangedSign ctermbg=242 guifg=#8787af guibg=#1c1c1c
+    highlight CocGitRemovedSign ctermbg=242 guifg=#d75f5f guibg=#1c1c1c
+
+    highlight link CocErrorSign DiagnosticSignError
+    highlight link CocErrorVirtualText DiagnosticVirtualTextError
+    highlight link CocHintSign DiagnosticSignHint
+    highlight link CocHintVirtualText DiagnosticVirtualTextHint
+    highlight link CocInfoSign DiagnosticSignInfo
+    highlight link CocInfoVirtualText DiagnosticVirtualTextInfo
+    highlight link CocWarningSign DiagnosticSignWarn
+    highlight link CocWarningVirtualText DiagnosticVirtualTextWarn
+
+    " highlight link CocHintSign Conceal
+    " highlight link CocHintSign CocCodeLens
+
+    highlight link CocRustChainingHint CocCodeLens
+    highlight link CocRustTypeHint CocCodeLens
+
+    hi VertSplit guibg=NONE ctermbg=NONE
+  endfunction
+
+  let g:alchemist_transp_bg = v:true
+  " colorscheme alchemist
+
+  let g:gruvbox_material_better_performance = 1
+  let g:gruvbox_material_diagnostic_text_highlight = 1
+  " let g:gruvbox_material_disable_italic_comment = 1
+  let g:gruvbox_material_foreground = 'original'
+  colorscheme sonokai
 endif
 
 set list listchars=tab:\|\ ,trail:·,extends:>,precedes:<,nbsp:+
@@ -231,12 +278,14 @@ let g:coc_global_extensions = [
       \ 'coc-eslint',
       \ 'coc-git',
       \ 'coc-go',
-      \ 'coc-groovy',
       \ 'coc-highlight',
       \ 'coc-html',
       \ 'coc-htmldjango',
+      \ 'coc-java',
       \ 'coc-json',
+      \ 'coc-lists',
       \ 'coc-markdownlint',
+      \ 'coc-marketplace',
       \ 'coc-prettier',
       \ 'coc-pyright',
       \ 'coc-rust-analyzer',
@@ -253,19 +302,20 @@ let g:coc_global_extensions = [
       \ 'coc-vimlsp',
       \ 'coc-xml',
       \ 'coc-yaml',
+      \ 'coc-yank',
       \ 'coc-zig',
       \]
 
 let g:coc_filetype_map = {
       \ 'Jenkinsfile': 'groovy',
+      \ 'yaml.ansible': 'ansible',
       \}
+
+" set formatexpr=CocAction('formatSelected')
 
 " Override omnifunc.
 inoremap <silent><expr> <C-x><C-o> coc#refresh()
-
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <CR> could be remapped by other vim plugin
-inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm()
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
       \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -325,23 +375,25 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 nnoremap <silent><nowait> <leader>d :<C-u>CocList diagnostics<cr>
 nnoremap <silent><nowait> <leader>c :<C-u>CocList commands<cr>
 nnoremap <silent><nowait> <leader>o :<C-u>CocList outline<cr>
-nnoremap <silent><nowait> <leader>s :<C-u>CocList -I symbols<cr>
-nnoremap <silent><nowait> <leader>p :<C-u>CocListResume<CR>
-nnoremap <silent><nowait> <leader>i :OR<CR>
-nnoremap <silent><nowait> <leader>h :SwitchSourceHeader<CR>
+" nnoremap <silent><nowait> gO :CocOutline<cr>
+nnoremap <silent><nowait> <leader>s :<C-u>CocList -I -A symbols<cr>
+nnoremap <silent><nowait> <leader>p :<C-u>CocListResume<cr>
+nnoremap <silent><nowait> <leader>i :OrganizeImport<cr>
+nnoremap <silent><nowait> <leader>h :SwitchSourceHeader<cr>
+nnoremap <silent><nowait> <C-p> :CocList files<cr>
+
+nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 
 command! -nargs=0 Format :call CocActionAsync('format')
 command! -nargs=? Fold :call CocAction('fold', <f-args>)
-command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 OrganizeImport :call CocAction('runCommand', 'editor.action.organizeImport')
 command! -nargs=0 SwitchSourceHeader :CocCommand clangd.switchSourceHeader
 
 function! s:show_documentation()
-  if index(['vim','help'], &filetype) >= 0
-    execute 'h '.expand('<cword>')
-  elseif coc#rpc#ready()
+  if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
   else
-    execute '!' . &keywordprg . ' ' . expand('<cword>')
+    call feedkeys('K', 'in')
   endif
 endfunction
 
